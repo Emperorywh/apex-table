@@ -14,55 +14,8 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 - 当有大量结构化的数据需要展现时；
 - 当需要对数据进行排序、搜索、分页、自定义操作等复杂行为时。
 
-## 如何使用
-
-指定表格的数据源 `dataSource` 为一个数组。
-
-<!-- ```jsx
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号',
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
-  },
-];
-
-const columns = [
-  {
-    title: '姓名',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: '年龄',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: '住址',
-    dataIndex: 'address',
-    key: 'address',
-  },
-];
-
-<ApexTable dataSource={dataSource} columns={columns} />;
-``` -->
-
-## 相关推荐
-
-- [Kitchen Sketch 插件 💎](https://kitchen.alipay.com/)：设计师神器，两步自动生成 Ant Design 表格组件。
-- [ProTable](https://procomponents.ant.design/components/table) 高级表格：在 `antd` ApexTable 之上扩展了更多便捷易用的功能，内置搜索、筛选、刷新等常用表格行为，并为多种类型数据展示提供了内置格式化。
-- [S2](https://s2.antv.vision/zh) 多维交叉分析表格：[AntV S2 和 Antd ApexTable 有什么区别？](https://zhuanlan.zhihu.com/p/494995642)
-
 ## 代码演示
-
+<code src="./demo/basic.tsx">基本用法</code>
 <!-- prettier-ignore -->
 <!-- <code src="./demo/basic.tsx">基本用法</code>
 <code src="./demo/jsx.tsx">JSX 风格的 API</code>
@@ -108,11 +61,7 @@ const columns = [
 <code src="./demo/selections-debug.tsx" debug>带下拉箭头的表头</code>
 <code src="./demo/component-token.tsx" debug>组件 Token</code> -->
 
-## API
-
-通用属性参考：[通用属性](/docs/react/common-props)
-
-### ApexTable
+### ApexTable API
 
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
