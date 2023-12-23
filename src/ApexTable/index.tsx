@@ -1,107 +1,67 @@
-import React, { type FC } from 'react';
+import React, { ReactNode, type FC, useState, useEffect } from 'react';
 import "./index.less"
+import { Checkbox, Input } from 'antd';
+import { apexDeepClone } from './utils/tool';
 
-interface IProps {
+export interface ApexTableProps<T> {
+    /**
+    * 是否允许勾选
+    */
+    allowSelect?: boolean;
+
+    /**
+     * 表格的列配置
+     */
+    columns: IApexTableColumns<T>[];
+
+    /**
+     * 表格数据源(静态)
+     */
+    dataSource: T[];
+
+    /**
+     * 是否展示表头复选框
+     */
+    showHeaderCheckBox?: boolean
+
+    /**
+     * 表格标题
+     */
+    tableTitle?: ReactNode;
 
 }
 
-interface ITableListItem {
-    kFullName: string,
-    eFullName: string,
-    inOutTypeName: string,
-    billSourceName: string,
-    sumQty: number,
-    statusName: string,
-    billIndexId: number,
-    billCode: string,
-    billDate: string,
-    remark: string
-}
-
-interface IApexTableColumn<T> {
+/**
+ * 表格列的配置描述
+ */
+export interface IApexTableColumns<T> {
     title: string;
     name: keyof T;
+    columnType?: 'input' | 'date' | 'dropdown' | 'customer'
 }
 
-const ApexTable: FC<IProps> = (props) => {
+const ApexTable: FC<ApexTableProps<any>> = (props) => {
 
-    const dataSource: ITableListItem[] = [
-        {
-            "kFullName": "西奥仓库",
-            "eFullName": "超级管理员",
-            "inOutTypeName": "采购入库",
-            "billSourceName": "手工",
-            "sumQty": 11,
-            "statusName": "待入库",
-            "billIndexId": 26,
-            "billCode": "RKJHD-20231218-0001",
-            "billDate": "2023-12-18 21:56:03",
-            "remark": "备注1"
-        },
-        {
-            "kFullName": "成都01仓",
-            "eFullName": "超级管理员",
-            "inOutTypeName": "采购入库",
-            "billSourceName": "手工",
-            "sumQty": 12,
-            "statusName": "已入库",
-            "billIndexId": 27,
-            "billCode": "RKJHD-20231218-0002",
-            "billDate": "2023-12-18 21:55:58",
-            "remark": "备注2"
-        },
-        {
-            "kFullName": "西奥仓库1",
-            "eFullName": "超级管理员2",
-            "inOutTypeName": "采购入库3",
-            "billSourceName": "手工4",
-            "sumQty": 13,
-            "statusName": "待入库",
-            "billIndexId": 28,
-            "billCode": "RKJHD-20231218-0003",
-            "billDate": "2023-12-18 21:56:11",
-            "remark": "备注3"
-        },
-    ]
+    const {
+        allowSelect = false,
+        columns = [],
+        dataSource = [],
+        showHeaderCheckBox = false,
+        tableTitle = false
+    } = props;
 
-    const columns: IApexTableColumn<ITableListItem>[] = [
-        {
-            title: '仓库',
-            name: 'kFullName',
-        },
-        {
-            title: '经手人',
-            name: 'eFullName',
-        },
-        {
-            title: '入库类型',
-            name: 'inOutTypeName',
-        },
-        {
-            title: '单据来源',
-            name: 'billSourceName',
-        },
-        {
-            title: '计划数量',
-            name: 'sumQty',
-        },
-        {
-            title: '单据状态',
-            name: 'statusName',
-        },
-        {
-            title: '单据编号',
-            name: 'billCode',
-        },
-        {
-            title: '单据日期',
-            name: 'billDate',
-        },
-        {
-            title: '备注',
-            name: 'remark',
+    const [tableDataSource, setTableDataSource] = useState<any[]>(dataSource);
+
+    useEffect(() => {
+        console.log("tableDataSource 改变");
+    }, [tableDataSource]);
+
+    useEffect(() => {
+        console.log("组件加载");
+        return () => {
+            console.log("组件卸载");
         }
-    ]
+    }, []);
 
     return <div className='apex-table-container'>
         <div className='apex-table-content'>
@@ -109,23 +69,60 @@ const ApexTable: FC<IProps> = (props) => {
                 <colgroup>
 
                 </colgroup>
-                <caption>这是表格的标题</caption>
+                {
+                    tableTitle && <caption>{tableTitle}</caption>
+                }
                 <thead className='apex-table-thead'>
                     <tr>
                         {
+                            showHeaderCheckBox ? <th>
+                                <Checkbox onChange={() => { }} />
+                            </th> : <th>
+
+                            </th>
+                        }
+                        {
                             columns.map((item, index) => {
-                                return <th key={item['name'] + index} className='apex-table-thead-th'>{item['title']}</th>
+                                return <th key={`${String(item.name)}-${index}`} className='apex-table-thead-th'>
+                                    {item['title']}
+                                </th>
                             })
                         }
                     </tr>
                 </thead>
                 <tbody className='apex-table-tbody'>
                     {
-                        dataSource.map((dataSourceItem, dataSourceIndex) => {
+                        tableDataSource.map((dataSourceItem, dataSourceIndex) => {
                             return <tr key={dataSourceIndex} className='apex-table-tbody-tr'>
                                 {
+                                    allowSelect && <td className='apex-table-tbody-td'>
+                                        <Checkbox onChange={() => { }} />
+                                    </td>
+                                }
+                                {
                                     columns.map((columnItem, columnIndex) => {
-                                        return <td key={columnItem['name'] + "-" + columnIndex} className='apex-table-tbody-td'>{dataSourceItem[columnItem['name']]}</td>
+                                        const { columnType = 'input' } = columnItem;
+                                        const columnValue = dataSourceItem[columnItem['name']];
+                                        switch (columnType) {
+                                            case 'input':
+                                                return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    <Input
+                                                        defaultValue={columnValue}
+                                                        onBlur={inputEvent => {
+                                                            const inputValue = inputEvent.target.value;
+                                                            const tempDataSource: any[] = apexDeepClone(tableDataSource);
+                                                            if (inputValue !== tempDataSource[dataSourceIndex][columnItem['name']]) {
+                                                                tempDataSource[dataSourceIndex][columnItem['name']] = inputValue;
+                                                                setTableDataSource(tempDataSource);
+                                                            }
+                                                        }}
+                                                    />
+                                                </td>
+                                            default:
+                                                return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    <Input value={columnValue} />
+                                                </td>
+                                        }
                                     })
                                 }
                             </tr>
