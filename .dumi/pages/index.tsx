@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import React from "react";
 
 /**
@@ -5,7 +6,11 @@ import React from "react";
  * @returns 
  */
 const Index: React.FC = () => {
-    return <h1>这是首页</h1>
+    return <>
+        <Button type="link" onClick={() => {
+            window.open('https://github.com/Emperorywh/apex-table', '_blank');
+        }}>源码地址</Button>
+    </>
 }
 
 export default Index;
