@@ -2,6 +2,7 @@ import React, { ReactNode, type FC, useState, useEffect } from 'react';
 import "./index.less"
 import { Checkbox, Input } from 'antd';
 import { apexDeepClone } from './utils/tool';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 
 export interface ApexTableProps<T> {
     /**
@@ -50,7 +51,28 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         tableTitle = false
     } = props;
 
+    /**
+     * 表格数据源
+     */
     const [tableDataSource, setTableDataSource] = useState<any[]>(dataSource);
+
+    /**
+     * 表格选中的数据
+     */
+    const [checkedData, setCheckedData] = useState<any[]>([]);
+
+    /**
+     * 表头复选框改变事件
+     * @param event 
+     */
+    const onHeaderCheckBoxChange = (event: CheckboxChangeEvent) => {
+        const eventValue = event.target.checked;
+        if (eventValue) {
+            setCheckedData(tableDataSource);
+        } else {
+            setCheckedData([]);
+        }
+    }
 
     useEffect(() => {
         console.log("tableDataSource 改变");
@@ -76,7 +98,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     <tr>
                         {
                             showHeaderCheckBox ? <th>
-                                <Checkbox onChange={() => { }} />
+                                <Checkbox onChange={onHeaderCheckBoxChange} />
                             </th> : <th>
 
                             </th>
