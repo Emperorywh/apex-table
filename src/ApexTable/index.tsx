@@ -54,7 +54,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     /**
      * 表格数据源
      */
-    const [tableDataSource, setTableDataSource] = useState<any[]>(dataSource);
+    const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
     /**
      * 表格选中的数据
@@ -74,16 +74,40 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         }
     }
 
-    useEffect(() => {
-        console.log("tableDataSource 改变");
-    }, [tableDataSource]);
+    /**
+     * 行选中事件
+     */
+    const handleRowSelected = (event: CheckboxChangeEvent, row: any) => {
+        const eventValue = event.target.checked;
+        const tempCheck: any[] = apexDeepClone(checkedData);
+        const findRowIndex = tempCheck.findIndex(item => item['apexTableId'] === row['apexTableId']);
+        if (eventValue) {
+            if (findRowIndex < 0) {
+                tempCheck.push(row);
+                setCheckedData(tempCheck);
+            }
+        } else {
+            if (findRowIndex > -1) {
+                tempCheck.splice(findRowIndex, 1);
+                setCheckedData(tempCheck);
+            }
+        }
+    }
+
+    /**
+     * 初始化外部传入的数据源
+     */
+    const initOuterDataSource = () => {
+        const data: any[] = apexDeepClone(dataSource);
+        data.forEach((item, index) => {
+            item['apexTableId'] =  index;
+        });
+        setTableDataSource(data);
+    }
 
     useEffect(() => {
-        console.log("组件加载");
-        return () => {
-            console.log("组件卸载");
-        }
-    }, []);
+        initOuterDataSource();
+    }, [dataSource]);
 
     return <div className='apex-table-container'>
         <div className='apex-table-content'>
@@ -118,7 +142,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                             return <tr key={dataSourceIndex} className='apex-table-tbody-tr'>
                                 {
                                     allowSelect && <td className='apex-table-tbody-td'>
-                                        <Checkbox onChange={() => { }} />
+                                        <Checkbox onChange={(event) => handleRowSelected(event, dataSourceItem)} />
                                     </td>
                                 }
                                 {
