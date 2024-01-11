@@ -62,16 +62,32 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     const [checkedData, setCheckedData] = useState<any[]>([]);
 
     /**
+     * 表头复选框半选样式
+     */
+    const [indeterminate, setIndeterminate] = useState(false);
+
+    /**
+     * 表头复选框是否全选
+     */
+    const [headerChecked, setHeaderChecked] = useState(false);
+
+    /**
      * 表头复选框改变事件
      * @param event 
      */
     const onHeaderCheckBoxChange = (event: CheckboxChangeEvent) => {
         const eventValue = event.target.checked;
+        setHeaderChecked(eventValue);
+        const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
+        tempTableDataSource.forEach((item: any) => {
+            item['apexTableChecked'] = eventValue;
+        });
         if (eventValue) {
             setCheckedData(tableDataSource);
         } else {
             setCheckedData([]);
         }
+        setTableDataSource(tempTableDataSource);
     }
 
     /**
@@ -80,7 +96,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     const handleRowSelected = (event: CheckboxChangeEvent, row: any) => {
         const eventValue = event.target.checked;
         const tempCheck: any[] = apexDeepClone(checkedData);
+        const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
         const findRowIndex = tempCheck.findIndex(item => item['apexTableId'] === row['apexTableId']);
+        const findTableIndex = tempTableDataSource.findIndex(item => item['apexTableId'] === row['apexTableId']);
         if (eventValue) {
             if (findRowIndex < 0) {
                 tempCheck.push(row);
@@ -92,6 +110,10 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                 setCheckedData(tempCheck);
             }
         }
+        if (findTableIndex > -1) {
+            tempTableDataSource[findTableIndex]['apexTableChecked'] = eventValue;
+            setTableDataSource(tempTableDataSource);
+        }
     }
 
     /**
@@ -100,14 +122,35 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     const initOuterDataSource = () => {
         const data: any[] = apexDeepClone(dataSource);
         data.forEach((item, index) => {
-            item['apexTableId'] =  index;
+            item['apexTableId'] = index;
+            item['apexTableChecked'] = false;
         });
         setTableDataSource(data);
+    }
+
+    /**
+     * 表头复选框半选状态
+     */
+    const onChangeHeaderCheckBoxIndeter = () => {
+        if (checkedData.length > 0) {
+            setIndeterminate(true);
+            if (checkedData.length === dataSource.length) {
+                setIndeterminate(false);
+                setHeaderChecked(true);
+            }
+        } else {
+            setIndeterminate(false);
+            setHeaderChecked(false);
+        }
     }
 
     useEffect(() => {
         initOuterDataSource();
     }, [dataSource]);
+
+    useEffect(() => {
+        onChangeHeaderCheckBoxIndeter();
+    }, [checkedData, dataSource]);
 
     return <div className='apex-table-container'>
         <div className='apex-table-content'>
@@ -122,7 +165,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     <tr>
                         {
                             showHeaderCheckBox ? <th>
-                                <Checkbox onChange={onHeaderCheckBoxChange} />
+                                <Checkbox checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
                             </th> : <th>
 
                             </th>
@@ -142,7 +185,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                             return <tr key={dataSourceIndex} className='apex-table-tbody-tr'>
                                 {
                                     allowSelect && <td className='apex-table-tbody-td'>
-                                        <Checkbox onChange={(event) => handleRowSelected(event, dataSourceItem)} />
+                                        <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => handleRowSelected(event, dataSourceItem)} />
                                     </td>
                                 }
                                 {
