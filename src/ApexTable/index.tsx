@@ -1,6 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect } from 'react';
 import "./index.less"
-import { Checkbox, Input } from 'antd';
+import { Checkbox, Input, Select } from 'antd';
 import { apexDeepClone } from './utils/tool';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 
@@ -38,7 +38,11 @@ export interface ApexTableProps<T> {
 export interface IApexTableColumns<T> {
     title: string;
     name: keyof T;
-    columnType?: 'input' | 'date' | 'dropdown' | 'customer'
+    columnType?: 'input' | 'date' | 'select' | 'customer';
+    options?: any[];
+    defaultValue?: any;
+    onChange?: (value: any, option: any) => void
+
 }
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
@@ -144,6 +148,22 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         }
     }
 
+    /**
+     * 下拉框事件监听
+     * @param row 
+     * @param columnName 
+     * @param value 
+     */
+    const handleSelectChange = (row: any, columnName: any, value: any, option: any, onChange?: (value: any, option: any) => void) => {
+        onChange && onChange(value, option);
+        const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
+        const findIndex = tempTableDataSource.findIndex((item: any) => item?.apexTableId === row?.apexTableId);
+        if (findIndex > -1) {
+            tempTableDataSource[findIndex][columnName] = value;
+            setTableDataSource(tempTableDataSource);
+        }
+    }
+
     useEffect(() => {
         initOuterDataSource();
     }, [dataSource]);
@@ -205,6 +225,17 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                                 setTableDataSource(tempDataSource);
                                                             }
                                                         }}
+                                                    />
+                                                </td>;
+                                            case 'select':
+                                                const { options = [], defaultValue, onChange } = columnItem;
+                                                return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    <Select
+                                                        defaultValue={defaultValue}
+                                                        style={{ width: '100%' }}
+                                                        value={dataSourceItem[columnItem.name]}
+                                                        onChange={(value, option) => handleSelectChange(dataSourceItem, columnItem.name, value, option, onChange)}
+                                                        options={options}
                                                     />
                                                 </td>
                                             default:

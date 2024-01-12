@@ -12,7 +12,8 @@ interface ITableListItem {
     billIndexId: number,
     billCode: string,
     billDate: string,
-    remark: string
+    remark: string,
+    unitId: number
 }
 
 const App: React.FC = () => {
@@ -28,7 +29,8 @@ const App: React.FC = () => {
             "billIndexId": 26,
             "billCode": "RKJHD-20231218-0001",
             "billDate": "2023-12-18 21:56:03",
-            "remark": "备注1"
+            "remark": "备注1",
+            unitId: 1
         },
         {
             "kFullName": "成都01仓",
@@ -40,7 +42,8 @@ const App: React.FC = () => {
             "billIndexId": 27,
             "billCode": "RKJHD-20231218-0002",
             "billDate": "2023-12-18 21:55:58",
-            "remark": "备注2"
+            "remark": "备注2",
+            unitId: 2
         },
         {
             "kFullName": "西奥仓库1",
@@ -52,7 +55,8 @@ const App: React.FC = () => {
             "billIndexId": 28,
             "billCode": "RKJHD-20231218-0003",
             "billDate": "2023-12-18 21:56:11",
-            "remark": "备注3"
+            "remark": "备注3",
+            unitId: 3
         }
     ]);
 
@@ -60,6 +64,20 @@ const App: React.FC = () => {
         {
             title: '仓库',
             name: 'kFullName',
+        },
+        {
+            title: '静态下拉框',
+            name: 'unitId',
+            columnType: 'select',
+            options: [
+                { value: 1, label: '个' },
+                { value: 2, label: '件' },
+                { value: 3, label: '箱' }
+            ],
+            defaultValue: 1,
+            onChange: (value, option) => {
+                console.log(">>>>>>>>>>>>>>", value, option)
+            },
         },
         {
             title: '经手人',
