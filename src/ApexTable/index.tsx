@@ -39,9 +39,9 @@ export interface IApexTableColumns<T> {
     title: string;
     name: keyof T;
     columnType?: 'input' | 'date' | 'select' | 'customer';
-    options?: any[];
+    options?: any[] | ((value: any,row: any) => any);
     defaultValue?: any;
-    onChange?: (value: any, option: any) => void
+    onChange?: (value: any, option?: any, options?: any) => void
 
 }
 
@@ -154,8 +154,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      * @param columnName 
      * @param value 
      */
-    const handleSelectChange = (row: any, columnName: any, value: any, option: any, onChange?: (value: any, option: any) => void) => {
-        onChange && onChange(value, option);
+    const handleSelectChange = (row: any, columnName: any, value: any, option: any, options: any, onChange?: (value: any, option?: any, options?: any) => void) => {
+        onChange && onChange(value, option, options);
         const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
         const findIndex = tempTableDataSource.findIndex((item: any) => item?.apexTableId === row?.apexTableId);
         if (findIndex > -1) {
@@ -228,14 +228,20 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     />
                                                 </td>;
                                             case 'select':
-                                                const { options = [], defaultValue, onChange } = columnItem;
+                                                const { options, defaultValue, onChange } = columnItem;
+                                                let selectOption = [];
+                                                if (typeof options === 'object') {
+                                                    selectOption = options;
+                                                } else if (typeof options === 'function') {
+                                                    selectOption = options(dataSourceItem[columnItem.name], dataSourceItem)
+                                                }
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
                                                     <Select
                                                         defaultValue={defaultValue}
                                                         style={{ width: '100%' }}
                                                         value={dataSourceItem[columnItem.name]}
-                                                        onChange={(value, option) => handleSelectChange(dataSourceItem, columnItem.name, value, option, onChange)}
-                                                        options={options}
+                                                        onChange={(value, option) => handleSelectChange(dataSourceItem, columnItem.name, value, option, options, onChange)}
+                                                        options={selectOption}
                                                     />
                                                 </td>
                                             default:

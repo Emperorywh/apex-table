@@ -13,7 +13,14 @@ interface ITableListItem {
     billCode: string,
     billDate: string,
     remark: string,
-    unitId: number
+    unitId: number,
+    brandId: number,
+    brand?: IBrand[]
+}
+
+interface IBrand {
+    id: string | number;
+    name: string
 }
 
 const App: React.FC = () => {
@@ -30,7 +37,22 @@ const App: React.FC = () => {
             "billCode": "RKJHD-20231218-0001",
             "billDate": "2023-12-18 21:56:03",
             "remark": "备注1",
-            unitId: 1
+            unitId: 1,
+            brandId: 1,
+            brand: [
+                {
+                    id: 1,
+                    name: '法拉利'
+                },
+                {
+                    id: 2,
+                    name: '劳斯莱斯'
+                },
+                {
+                    id: 3,
+                    name: '玛莎拉蒂'
+                },
+            ]
         },
         {
             "kFullName": "成都01仓",
@@ -43,7 +65,22 @@ const App: React.FC = () => {
             "billCode": "RKJHD-20231218-0002",
             "billDate": "2023-12-18 21:55:58",
             "remark": "备注2",
-            unitId: 2
+            unitId: 2,
+            brandId: 3,
+            brand: [
+                {
+                    id: 3,
+                    name: '玛莎拉蒂'
+                },
+                {
+                    id: 4,
+                    name: '兰博基尼'
+                },
+                {
+                    id: 5,
+                    name: '长城'
+                },
+            ]
         },
         {
             "kFullName": "西奥仓库1",
@@ -56,7 +93,23 @@ const App: React.FC = () => {
             "billCode": "RKJHD-20231218-0003",
             "billDate": "2023-12-18 21:56:11",
             "remark": "备注3",
-            unitId: 3
+            unitId: 3,
+            brandId: 5,
+            brand: [
+                {
+                    id: 5,
+                    name: '长城'
+                },
+                {
+                    id: 6,
+                    name: '大众'
+                },
+                {
+                    id: 7,
+                    name: '吉利'
+                },
+
+            ]
         }
     ]);
 
@@ -75,8 +128,24 @@ const App: React.FC = () => {
                 { value: 3, label: '箱' }
             ],
             defaultValue: 1,
-            onChange: (value, option) => {
-                console.log(">>>>>>>>>>>>>>", value, option)
+            onChange: (value, option, options) => {
+                console.log(">>>>>>>>>>>>>>", value, option, options)
+            },
+        },
+        {
+            title: '动态下拉框',
+            name: 'brandId',
+            columnType: 'select',
+            options: (value, row) => {
+                const { brand = [] } = row;
+                brand?.forEach((item: any) => {
+                    item['value'] = item['id'];
+                    item['label'] = item['name'];
+                });
+                return brand;
+            },
+            onChange: (value, option, options) => {
+                console.log(">>>>>>>>>>>>>>", value, option, options)
             },
         },
         {
