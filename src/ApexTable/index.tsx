@@ -1,8 +1,11 @@
 import React, { ReactNode, type FC, useState, useEffect } from 'react';
 import "./index.less"
-import { Checkbox, Input, Select } from 'antd';
+import { Checkbox, DatePicker, Input, Select } from 'antd';
 import { apexDeepClone } from './utils/tool';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import dayjs from 'dayjs';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import 'dayjs/locale/zh-cn';
 
 export interface ApexTableProps<T> {
     /**
@@ -38,11 +41,10 @@ export interface ApexTableProps<T> {
 export interface IApexTableColumns<T> {
     title: string;
     name: keyof T;
-    columnType?: 'input' | 'date' | 'select' | 'customer';
-    options?: any[] | ((value: any,row: any) => any);
+    columnType?: 'input' | 'datePicker' | 'rangePicker' | 'select' | 'customer';
+    options?: any[] | ((value: any, row: any) => any);
     defaultValue?: any;
     onChange?: (value: any, option?: any, options?: any) => void
-
 }
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
@@ -155,7 +157,33 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      * @param value 
      */
     const handleSelectChange = (row: any, columnName: any, value: any, option: any, options: any, onChange?: (value: any, option?: any, options?: any) => void) => {
+        handleChangeCellValue(row, columnName, value);
         onChange && onChange(value, option, options);
+    }
+
+
+    /**
+     * 时间选择器 改变时间监听
+     * @param date 
+     * @param dateString 
+     */
+    const handleDatePickerChange = (row: any, columnName: any, date: dayjs.Dayjs | null, dateString: string, onChange?: (date: dayjs.Dayjs | null, dateString: string) => void) => {
+        handleChangeCellValue(row, columnName, date);
+        onChange && onChange(date, dateString);
+    }
+
+    const handleRangePickerChange = (row: any, columnName: any, date: any, dateString: [string, string], onChange?: (date: dayjs.Dayjs | null, dateString: [string, string]) => void) => {
+        handleChangeCellValue(row, columnName, date);
+        onChange && onChange(date, dateString);
+    }
+
+    /**
+     * 改变单元格的值
+     * @param row           当前行信息
+     * @param columnName    单元格列名
+     * @param value         新值
+     */
+    const handleChangeCellValue = (row: any, columnName: any, value: any) => {
         const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
         const findIndex = tempTableDataSource.findIndex((item: any) => item?.apexTableId === row?.apexTableId);
         if (findIndex > -1) {
@@ -219,11 +247,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         defaultValue={columnValue}
                                                         onBlur={inputEvent => {
                                                             const inputValue = inputEvent.target.value;
-                                                            const tempDataSource: any[] = apexDeepClone(tableDataSource);
-                                                            if (inputValue !== tempDataSource[dataSourceIndex][columnItem['name']]) {
-                                                                tempDataSource[dataSourceIndex][columnItem['name']] = inputValue;
-                                                                setTableDataSource(tempDataSource);
-                                                            }
+                                                            handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                         }}
                                                     />
                                                 </td>;
@@ -243,6 +267,14 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         onChange={(value, option) => handleSelectChange(dataSourceItem, columnItem.name, value, option, options, onChange)}
                                                         options={selectOption}
                                                     />
+                                                </td>
+                                            case 'datePicker':
+                                                return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    <DatePicker locale={locale} style={{ width: '100%' }} defaultValue={defaultValue} onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                </td>
+                                            case 'rangePicker':
+                                                return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    <DatePicker.RangePicker locale={locale} style={{ width: '100%' }} defaultValue={defaultValue} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
                                                 </td>
                                             default:
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>

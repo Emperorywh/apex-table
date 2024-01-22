@@ -11,11 +11,12 @@ interface ITableListItem {
     statusName: string,
     billIndexId: number,
     billCode: string,
-    billDate: string,
+    billDate: [string, string],
     remark: string,
     unitId: number,
     brandId: number,
-    brand?: IBrand[]
+    brand?: IBrand[],
+    createTime?: string
 }
 
 interface IBrand {
@@ -35,7 +36,7 @@ const App: React.FC = () => {
             "statusName": "待入库",
             "billIndexId": 26,
             "billCode": "RKJHD-20231218-0001",
-            "billDate": "2023-12-18 21:56:03",
+            "billDate": ['2024-1-22 17:27:15', '2024-1-22 17:27:20'],
             "remark": "备注1",
             unitId: 1,
             brandId: 1,
@@ -52,7 +53,8 @@ const App: React.FC = () => {
                     id: 3,
                     name: '玛莎拉蒂'
                 },
-            ]
+            ],
+            createTime: '2024-1-22 17:07:34'
         },
         {
             "kFullName": "成都01仓",
@@ -63,7 +65,7 @@ const App: React.FC = () => {
             "statusName": "已入库",
             "billIndexId": 27,
             "billCode": "RKJHD-20231218-0002",
-            "billDate": "2023-12-18 21:55:58",
+            "billDate": ['2024-1-22 17:27:15', '2024-1-22 17:27:33'],
             "remark": "备注2",
             unitId: 2,
             brandId: 3,
@@ -80,7 +82,8 @@ const App: React.FC = () => {
                     id: 5,
                     name: '长城'
                 },
-            ]
+            ],
+            createTime: '2024-1-22 17:08:06'
         },
         {
             "kFullName": "西奥仓库1",
@@ -91,7 +94,7 @@ const App: React.FC = () => {
             "statusName": "待入库",
             "billIndexId": 28,
             "billCode": "RKJHD-20231218-0003",
-            "billDate": "2023-12-18 21:56:11",
+            "billDate": ['2024-1-22 17:27:15', '2024-1-22 17:27:37'],
             "remark": "备注3",
             unitId: 3,
             brandId: 5,
@@ -109,7 +112,8 @@ const App: React.FC = () => {
                     name: '吉利'
                 },
 
-            ]
+            ],
+            createTime: '2024-1-22 17:08:17'
         }
     ]);
 
@@ -149,37 +153,15 @@ const App: React.FC = () => {
             },
         },
         {
-            title: '经手人',
-            name: 'eFullName',
+            title: '日期列',
+            name: 'createTime',
+            columnType: 'datePicker'
         },
         {
-            title: '入库类型',
-            name: 'inOutTypeName',
-        },
-        {
-            title: '单据来源',
-            name: 'billSourceName',
-        },
-        {
-            title: '计划数量',
-            name: 'sumQty',
-        },
-        {
-            title: '单据状态',
-            name: 'statusName',
-        },
-        {
-            title: '单据编号',
-            name: 'billCode',
-        },
-        {
-            title: '单据日期',
+            title: '日期范围列',
             name: 'billDate',
+            columnType: 'rangePicker'
         },
-        {
-            title: '备注',
-            name: 'remark',
-        }
     ]
 
     return <ApexTable
