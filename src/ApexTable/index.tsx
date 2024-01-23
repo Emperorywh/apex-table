@@ -44,7 +44,8 @@ export interface IApexTableColumns<T> {
     columnType?: 'input' | 'datePicker' | 'rangePicker' | 'select' | 'customer';
     options?: any[] | ((value: any, row: any) => any);
     defaultValue?: any;
-    onChange?: (value: any, option?: any, options?: any) => void
+    onChange?: (value: any, option?: any, options?: any) => void;
+    onFormatter?: (row: any) => React.ReactNode;
 }
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
@@ -275,6 +276,13 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             case 'rangePicker':
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
                                                     <DatePicker.RangePicker locale={locale} style={{ width: '100%' }} defaultValue={defaultValue} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                </td>
+                                            case 'customer':
+                                                const { onFormatter } = columnItem;
+                                                return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    {
+                                                        onFormatter?.(dataSourceItem)
+                                                    }
                                                 </td>
                                             default:
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>

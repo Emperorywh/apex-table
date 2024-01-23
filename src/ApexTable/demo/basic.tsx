@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { IApexTableColumns } from 'apex-table/ApexTable';
+import { Space } from 'antd';
 
 interface ITableListItem {
     kFullName: string,
@@ -16,7 +17,8 @@ interface ITableListItem {
     unitId: number,
     brandId: number,
     brand?: IBrand[],
-    createTime?: string
+    createTime?: string,
+    option?: any
 }
 
 interface IBrand {
@@ -161,6 +163,26 @@ const App: React.FC = () => {
             title: '日期范围列',
             name: 'billDate',
             columnType: 'rangePicker'
+        },
+        {
+            title: '自定义列',
+            name: 'option',
+            columnType: 'customer',
+            onFormatter: (row) => {
+                return <Space>
+                    <a
+                        key="editable"
+                        onClick={() => {
+                            console.log("哈哈哈", Date.now())
+                        }}
+                    >
+                        编辑
+                    </a>
+                    <a key="view">
+                        查看
+                    </a>
+                </Space>
+            }
         },
     ]
 
