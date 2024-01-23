@@ -121,8 +121,16 @@ const App: React.FC = () => {
 
     const columns: IApexTableColumns<ITableListItem>[] = [
         {
-            title: '仓库',
+            title: '普通输入框1',
             name: 'kFullName',
+        },
+        {
+            title: '普通输入框2',
+            name: 'eFullName',
+        },
+        {
+            title: '普通输入框3',
+            name: 'inOutTypeName',
         },
         {
             title: '静态下拉框',
@@ -183,7 +191,7 @@ const App: React.FC = () => {
                     </a>
                 </Space>
             }
-        },
+        }
     ]
 
     return <ApexTable
