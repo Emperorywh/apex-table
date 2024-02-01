@@ -44,6 +44,7 @@ export interface IApexTableColumns<T> {
     columnType?: 'input' | 'datePicker' | 'rangePicker' | 'select' | 'customer';
     options?: any[] | ((value: any, row: any) => any);
     defaultValue?: any;
+    width?: number;
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row: any) => React.ReactNode;
 }
@@ -205,7 +206,14 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         <div className='apex-table-content'>
             <table className='apex-table'>
                 <colgroup>
-
+                    {
+                        allowSelect && <col style={{ width: 50 }}></col>
+                    }
+                    {
+                        columns.map((item, index) => {
+                            return <col style={{ width: item.width || 120 }}></col>
+                        })
+                    }
                 </colgroup>
                 {
                     tableTitle && <caption>{tableTitle}</caption>
@@ -213,7 +221,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                 <thead className='apex-table-thead'>
                     <tr>
                         {
-                            showHeaderCheckBox ? <th>
+                            showHeaderCheckBox ? <th className='apex-table-thead-th'>
                                 <Checkbox checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
                             </th> : <th>
 
@@ -233,7 +241,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                         tableDataSource.map((dataSourceItem, dataSourceIndex) => {
                             return <tr key={dataSourceIndex} className='apex-table-tbody-tr'>
                                 {
-                                    allowSelect && <td className='apex-table-tbody-td'>
+                                    allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
                                         <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => handleRowSelected(event, dataSourceItem)} />
                                     </td>
                                 }
@@ -250,6 +258,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             const inputValue = inputEvent.target.value;
                                                             handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                         }}
+                                                        style={{ border: 'none' }}
                                                     />
                                                 </td>;
                                             case 'select':

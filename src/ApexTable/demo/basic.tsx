@@ -133,6 +133,10 @@ const App: React.FC = () => {
             name: 'inOutTypeName',
         },
         {
+            title: '普通输入框4',
+            name: 'billSourceName',
+        },
+        {
             title: '静态下拉框',
             name: 'unitId',
             columnType: 'select',
@@ -170,14 +174,15 @@ const App: React.FC = () => {
         {
             title: '日期范围列',
             name: 'billDate',
-            columnType: 'rangePicker'
+            columnType: 'rangePicker',
+            width: 300
         },
         {
             title: '自定义列',
             name: 'option',
             columnType: 'customer',
             onFormatter: (row) => {
-                return <Space>
+                return <Space style={{ width: '100%', display: 'flex', justifyContent: 'space-evenly' }}>
                     <a
                         key="editable"
                         onClick={() => {
