@@ -258,7 +258,6 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             const inputValue = inputEvent.target.value;
                                                             handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                         }}
-                                                        style={{ border: 'none' }}
                                                     />
                                                 </td>;
                                             case 'select':
@@ -272,19 +271,19 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
                                                     <Select
                                                         defaultValue={defaultValue}
-                                                        style={{ width: '100%' }}
                                                         value={dataSourceItem[columnItem.name]}
                                                         onChange={(value, option) => handleSelectChange(dataSourceItem, columnItem.name, value, option, options, onChange)}
                                                         options={selectOption}
+                                                        allowClear
                                                     />
                                                 </td>
                                             case 'datePicker':
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                    <DatePicker locale={locale} style={{ width: '100%' }} defaultValue={defaultValue} onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                    <DatePicker locale={locale} defaultValue={defaultValue} onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
                                                 </td>
                                             case 'rangePicker':
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                    <DatePicker.RangePicker locale={locale} style={{ width: '100%' }} defaultValue={defaultValue} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                    <DatePicker.RangePicker locale={locale} defaultValue={defaultValue} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
                                                 </td>
                                             case 'customer':
                                                 const { onFormatter } = columnItem;

@@ -9,41 +9,95 @@
 
             .apex-table-thead {
                 background: rgb(250, 250, 250);
-                height: 40px;
+                font-size: 14px;
+
                 .apex-table-thead-th {
+                    height: 40px;
                     white-space: nowrap;
                     box-sizing: border-box;
+                    border: 1px solid rgba(5, 5, 5, 0.06);
+                    border-right: none;
+                }
+
+                .apex-table-thead-th:last-child {
+                    border-right: 1px solid rgba(5, 5, 5, 0.06);
                 }
             }
 
             .apex-table-tbody {
                 .apex-table-tbody-tr {
+
                     .apex-table-tbody-td-checkbox {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
+                        text-align: center;
                     }
 
                     .apex-table-tbody-td {
+                        height: 40px;
+                        box-sizing: border-box;
+                        border: 1px solid rgba(5, 5, 5, 0.06);
+                        border-top: none;
+                        border-right: none;
+
+
                         .ant-input {
                             border-radius: 0;
+                            box-shadow: none !important;
+                            border: none !important;
+                            width: 100%;
+                            height: 100%;
+                            box-sizing: border-box;
+                            padding-top: 0;
+                            padding-bottom: 0;
+                            background-color: transparent;
                         }
 
-                        .ant-input:focus,
-                        .ant-input:focus-within {
-                            box-shadow: 0 0 0 1px rgba(5, 145, 255, 0.1);
+                        .ant-select {
+                            width: 100%;
+                            height: 100%;
+                            box-sizing: border-box;
+
+                            .ant-select-selector {
+                                border-radius: 0;
+                                box-shadow: none !important;
+                                border: none !important;
+                                padding-top: 0;
+                                padding-bottom: 0;
+                                background-color: transparent;
+                            }
                         }
 
-                        .ant-select-selector {
-                            border: none;
-                            border-radius: 0;
-                        }
 
                         .ant-picker {
-                            border: none;
                             border-radius: 0;
+                            box-shadow: none !important;
+                            border: none !important;
+                            width: 100%;
+                            height: 100%;
+                            box-sizing: border-box;
+                            padding-top: 0;
+                            padding-bottom: 0;
+                            background-color: transparent;
                         }
                     }
+
+                    .apex-table-tbody-td:last-child {
+                        border-right: 1px solid rgba(5, 5, 5, 0.06);
+                    }
+
+                    .apex-table-tbody-td:focus-within {
+                        border: 1px solid #40a9ff;
+                        // box-shadow: 0 0 0 2px #ccc;
+                        // border-color: #40a9ff;
+                        background-color: #FFF;
+                    }
+                }
+
+                .apex-table-tbody-tr:focus-within {
+                    background-color: #FDF5E6 !important;
+                }
+
+                .apex-table-tbody-tr:hover {
+                    background-color: #FFFAF0 !important;
                 }
             }
 
