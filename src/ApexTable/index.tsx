@@ -45,6 +45,7 @@ export interface IApexTableColumns<T> {
     options?: any[] | ((value: any, row: any) => any);
     defaultValue?: any;
     width?: number;
+    showTime?: boolean;
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
 }
@@ -247,7 +248,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                 }
                                 {
                                     columns.map((columnItem, columnIndex) => {
-                                        const { columnType = 'input' } = columnItem;
+                                        const { columnType = 'input', showTime = false } = columnItem;
                                         const columnValue = dataSourceItem[columnItem['name']];
                                         switch (columnType) {
                                             case 'input':
@@ -279,11 +280,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 </td>
                                             case 'datePicker':
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                    <DatePicker locale={locale} defaultValue={defaultValue} onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                    <DatePicker locale={locale} showTime={showTime} defaultValue={dayjs(columnValue)} onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
                                                 </td>
                                             case 'rangePicker':
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                    <DatePicker.RangePicker locale={locale} defaultValue={defaultValue} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                    <DatePicker.RangePicker locale={locale} showTime={showTime} defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
                                                 </td>
                                             case 'customer':
                                                 const { onFormatter } = columnItem;

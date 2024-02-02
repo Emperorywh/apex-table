@@ -174,7 +174,9 @@ const App: React.FC = () => {
         {
             title: '日期列',
             name: 'createTime',
-            columnType: 'datePicker'
+            columnType: 'datePicker',
+            width: 180,
+            showTime: true
         },
         {
             title: '日期范围列',
@@ -207,7 +209,7 @@ const App: React.FC = () => {
                     <a
                         key="editable"
                         onClick={() => {
-                            console.log("哈哈哈", Date.now())
+                            console.log("哈哈哈", row)
                         }}
                     >
                         编辑

@@ -16,52 +16,8 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 
 ## 代码演示
 <code src="./demo/basic.tsx">基本用法</code>
-<!-- prettier-ignore -->
-<!-- <code src="./demo/basic.tsx">基本用法</code>
-<code src="./demo/jsx.tsx">JSX 风格的 API</code>
-<code src="./demo/row-selection.tsx">可选择</code>
-<code src="./demo/row-selection-and-operation.tsx">选择和操作</code>
-<code src="./demo/row-selection-custom.tsx">自定义选择项</code>
-<code src="./demo/row-selection-debug.tsx" debug>选择性能</code>
-<code src="./demo/head.tsx">筛选和排序</code>
-<code src="./demo/filter-in-tree.tsx">树型筛选菜单</code>
-<code src="./demo/filter-search.tsx">自定义筛选的搜索</code>
-<code src="./demo/multiple-sorter.tsx">多列排序</code>
-<code src="./demo/reset-filter.tsx">可控的筛选和排序</code>
-<code src="./demo/custom-filter-panel.tsx">自定义筛选菜单</code>
-<code src="./demo/ajax.tsx">远程加载数据</code>
-<code src="./demo/size.tsx">紧凑型</code>
-<code src="./demo/narrow.tsx" debug>紧凑型</code>
-<code src="./demo/bordered.tsx">带边框</code>
-<code src="./demo/expand.tsx">可展开</code>
-<code src="./demo/order-column.tsx">特殊列排序</code>
-<code src="./demo/colspan-rowspan.tsx">表格行/列合并</code>
-<code src="./demo/tree-data.tsx">树形数据展示</code>
-<code src="./demo/tree-table-ellipsis.tsx" debug>树形数据省略情况测试</code>
-<code src="./demo/fixed-header.tsx">固定表头</code>
-<code src="./demo/fixed-columns.tsx">固定列</code>
-<code src="./demo/fixed-columns-header.tsx">固定头和列</code>
-<code src="./demo/grouping-columns.tsx">表头分组</code>
-<code src="./demo/edit-cell.tsx">可编辑单元格</code>
-<code src="./demo/edit-row.tsx">可编辑行</code>
-<code src="./demo/nested-table.tsx">嵌套子表格</code>
-<code src="./demo/drag-sorting.tsx">拖拽排序</code>
-<code src="./demo/drag-sorting-handler.tsx">拖拽手柄列</code>
-<code src="./demo/resizable-column.tsx" debug>可伸缩列</code>
-<code src="./demo/ellipsis.tsx">单元格自动省略</code>
-<code src="./demo/ellipsis-custom-tooltip.tsx">自定义单元格省略提示</code>
-<code src="./demo/summary.tsx">总结栏</code>
-<code src="./demo/virtual-list.tsx" version=">= 5.9.0">虚拟列表</code>
-<code src="./demo/responsive.tsx">响应式</code>
-<code src="./demo/nest-table-border-debug.tsx" debug>嵌套带边框的表格 Debug</code>
-<code src="./demo/pagination.tsx">分页设置</code>
-<code src="./demo/row-selection-custom-debug.tsx" debug>自定义选择项组</code>
-<code src="./demo/sticky.tsx">随页面滚动的固定表头和滚动条</code>
-<code src="./demo/dynamic-settings.tsx">动态控制表格属性</code>
-<code src="./demo/selections-debug.tsx" debug>带下拉箭头的表头</code>
-<code src="./demo/component-token.tsx" debug>组件 Token</code> -->
 
-### ApexTable API
+<!-- ### ApexTable API
 
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
@@ -98,29 +54,6 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 | --- | --- | --- | --- |
 | nativeElement | 最外层 div 元素 | HTMLDivElement | 5.11.0 |
 | scrollTo | 滚动到目标位置（设置 `key` 时为 Record 对应的 `rowKey`） | (config: { index?: number, key?: React.Key, top?: number }) => void | 5.11.0 |
-
-#### onRow 用法
-
-适用于 `onRow` `onHeaderRow` `onCell` `onHeaderCell`。
-
-<!-- ```jsx
-<ApexTable
-  onRow={(record) => {
-    return {
-      onClick: (event) => {}, // 点击行
-      onDoubleClick: (event) => {},
-      onContextMenu: (event) => {},
-      onMouseEnter: (event) => {}, // 鼠标移入行
-      onMouseLeave: (event) => {},
-    };
-  }}
-  onHeaderRow={(columns, index) => {
-    return {
-      onClick: () => {}, // 点击表头行
-    };
-  }}
-/>
-``` -->
 
 ### Column
 
@@ -244,51 +177,7 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 | text     | 选择项显示的文字           | ReactNode                   | -      |
 | onSelect | 选择项点击回调             | function(changeableRowKeys) | -      |
 
-## 在 TypeScript 中使用
 
-<!-- ```tsx
-import React from 'react';
-import { ApexTable } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-
-interface User {
-  key: number;
-  name: string;
-}
-
-const columns: ColumnsType<User> = [
-  {
-    key: 'name',
-    title: 'Name',
-    dataIndex: 'name',
-  },
-];
-
-const data: User[] = [
-  {
-    key: 0,
-    name: 'Jack',
-  },
-];
-
-const Demo: React.FC = () => (
-  <>
-    <ApexTable<User> columns={columns} dataSource={data} />
-    {/* 使用 JSX 风格的 API */}
-    <ApexTable<User> dataSource={data}>
-      <ApexTable.Column<User> key="name" title="Name" dataIndex="name" />
-    </ApexTable>
-  </>
-);
-
-export default Demo;
-``` -->
-
-TypeScript 里使用 ApexTable 的 [CodeSandbox 实例](https://codesandbox.io/s/serene-platform-0jo5t)。
-
-## 主题变量（Design Token）
-
-<!-- <ComponentTokenTable component="ApexTable"></ComponentTokenTable> -->
 
 ## 注意
 
@@ -297,13 +186,6 @@ TypeScript 里使用 ApexTable 的 [CodeSandbox 实例](https://codesandbox.io/s
 ![控制台警告](https://os.alipayobjects.com/rmsportal/luLdLvhPOiRpyss.png)
 
 如果 `dataSource[i].key` 没有提供，你应该使用 `rowKey` 来指定 `dataSource` 的主键，如下所示。若没有指定，控制台会出现以上的提示，表格组件也会出现各类奇怪的错误。
-
-<!-- ```jsx
-// 比如你的数据主键是 uid
-return <ApexTable rowKey="uid" />;
-// 或
-return <ApexTable rowKey={(record) => record.uid} />;
-``` -->
 
 ## FAQ
 
@@ -331,4 +213,4 @@ return <ApexTable rowKey={(record) => record.uid} />;
 
 ### 如何自定义渲染可选列的勾选框（比如增加 Tooltip）？
 
-自 `4.1.0` 起，可以通过 [rowSelection](https://ant.design/components/table-cn/#rowselection) 的 `renderCell` 属性控制，可以参考此处 [Demo](https://codesandbox.io/s/table-row-tooltip-v79j2v) 实现展示 Tooltip 需求或其他自定义的需求。
+自 `4.1.0` 起，可以通过 [rowSelection](https://ant.design/components/table-cn/#rowselection) 的 `renderCell` 属性控制，可以参考此处 [Demo](https://codesandbox.io/s/table-row-tooltip-v79j2v) 实现展示 Tooltip 需求或其他自定义的需求。 -->
