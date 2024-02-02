@@ -46,7 +46,7 @@ export interface IApexTableColumns<T> {
     defaultValue?: any;
     width?: number;
     onChange?: (value: any, option?: any, options?: any) => void;
-    onFormatter?: (row: any) => React.ReactNode;
+    onFormatter?: (row?: any, value?: any) => React.ReactNode;
 }
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
@@ -289,7 +289,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 const { onFormatter } = columnItem;
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
                                                     {
-                                                        onFormatter?.(dataSourceItem)
+                                                        onFormatter?.(dataSourceItem, dataSourceItem[columnItem.name])
                                                     }
                                                 </td>
                                             default:

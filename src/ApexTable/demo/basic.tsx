@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { IApexTableColumns } from 'apex-table/ApexTable';
-import { Space } from 'antd';
+import { Space, Switch } from 'antd';
+import { apexDeepClone } from '../utils/tool';
 
 interface ITableListItem {
     kFullName: string,
@@ -18,7 +19,8 @@ interface ITableListItem {
     brandId: number,
     brand?: IBrand[],
     createTime?: string,
-    option?: any
+    option?: any,
+    isOpen?: any
 }
 
 interface IBrand {
@@ -30,16 +32,16 @@ const App: React.FC = () => {
 
     const [dataSource, setDataSource] = useState<ITableListItem[]>([
         {
-            "kFullName": "西奥仓库",
-            "eFullName": "超级管理员",
-            "inOutTypeName": "采购入库",
-            "billSourceName": "手工",
-            "sumQty": 11,
-            "statusName": "待入库",
-            "billIndexId": 26,
-            "billCode": "RKJHD-20231218-0001",
-            "billDate": ['2024-1-22 17:27:15', '2024-1-22 17:27:20'],
-            "remark": "备注1",
+            kFullName: "西奥仓库",
+            eFullName: "超级管理员",
+            inOutTypeName: "采购入库",
+            billSourceName: "手工",
+            sumQty: 11,
+            statusName: "待入库",
+            billIndexId: 26,
+            billCode: "RKJHD-20231218-0001",
+            billDate: ['2024-1-22 17:27:15', '2024-1-22 17:27:20'],
+            remark: "备注1",
             unitId: 1,
             brandId: 1,
             brand: [
@@ -56,19 +58,20 @@ const App: React.FC = () => {
                     name: '玛莎拉蒂'
                 },
             ],
-            createTime: '2024-1-22 17:07:34'
+            createTime: '2024-1-22 17:07:34',
+            isOpen: true
         },
         {
-            "kFullName": "成都01仓",
-            "eFullName": "超级管理员",
-            "inOutTypeName": "采购入库",
-            "billSourceName": "手工",
-            "sumQty": 12,
-            "statusName": "已入库",
-            "billIndexId": 27,
-            "billCode": "RKJHD-20231218-0002",
-            "billDate": ['2024-1-22 17:27:15', '2024-1-22 17:27:33'],
-            "remark": "备注2",
+            kFullName: "成都01仓",
+            eFullName: "超级管理员",
+            inOutTypeName: "采购入库",
+            billSourceName: "手工",
+            sumQty: 12,
+            statusName: "已入库",
+            billIndexId: 27,
+            billCode: "RKJHD-20231218-0002",
+            billDate: ['2024-1-22 17:27:15', '2024-1-22 17:27:33'],
+            remark: "备注2",
             unitId: 2,
             brandId: 3,
             brand: [
@@ -85,19 +88,20 @@ const App: React.FC = () => {
                     name: '长城'
                 },
             ],
-            createTime: '2024-1-22 17:08:06'
+            createTime: '2024-1-22 17:08:06',
+            isOpen: false
         },
         {
-            "kFullName": "西奥仓库1",
-            "eFullName": "超级管理员2",
-            "inOutTypeName": "采购入库3",
-            "billSourceName": "手工4",
-            "sumQty": 13,
-            "statusName": "待入库",
-            "billIndexId": 28,
-            "billCode": "RKJHD-20231218-0003",
-            "billDate": ['2024-1-22 17:27:15', '2024-1-22 17:27:37'],
-            "remark": "备注3",
+            kFullName: "西奥仓库1",
+            eFullName: "超级管理员2",
+            inOutTypeName: "采购入库3",
+            billSourceName: "手工4",
+            sumQty: 13,
+            statusName: "待入库",
+            billIndexId: 28,
+            billCode: "RKJHD-20231218-0003",
+            billDate: ['2024-1-22 17:27:15', '2024-1-22 17:27:37'],
+            remark: "备注3",
             unitId: 3,
             brandId: 5,
             brand: [
@@ -115,7 +119,8 @@ const App: React.FC = () => {
                 },
 
             ],
-            createTime: '2024-1-22 17:08:17'
+            createTime: '2024-1-22 17:08:17',
+            isOpen: true
         }
     ]);
 
@@ -178,7 +183,23 @@ const App: React.FC = () => {
             width: 300
         },
         {
-            title: '自定义列',
+            title: '自定义列1',
+            name: 'isOpen',
+            columnType: 'customer',
+            width: 100,
+            onFormatter: (row, value) => {
+                return <Switch checked={value} onChange={event => {
+                    const tempData: any[] = apexDeepClone(dataSource);
+                    const find = tempData.find(item => item.billCode === row.billCode);
+                    if (find) {
+                        find.isOpen = event;
+                        setDataSource(tempData)
+                    }
+                }} />
+            }
+        },
+        {
+            title: '操作列',
             name: 'option',
             columnType: 'customer',
             onFormatter: (row) => {
