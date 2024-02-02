@@ -1,3 +1,14 @@
+// 默认行高
+@rowHeight: 40px;
+// 边框颜色
+@borderColor: rgba(5, 5, 5, 0.06);
+// 主要颜色
+@primaryColor: #40a9ff;
+// 悬浮背景颜色
+@hoverBackgroundColor: #FFFAF0;
+// 聚焦时背景颜色
+@focusBackgroundColor: #FDF5E6;
+
 .apex-table-container {
     .apex-table-content {
         overflow: auto;
@@ -13,14 +24,10 @@
                 font-size: 14px;
 
                 .apex-table-thead-th {
-                    height: 40px;
+                    height: @rowHeight;
                     white-space: nowrap;
                     box-sizing: border-box;
-                    border: 1px solid rgba(5, 5, 5, 0.06);
-                }
-
-                .apex-table-thead-th:last-child {
-                    border-right: 1px solid rgba(5, 5, 5, 0.06);
+                    border: 1px solid @borderColor;
                 }
             }
 
@@ -32,9 +39,9 @@
                     }
 
                     .apex-table-tbody-td {
-                        height: 40px;
+                        height: @rowHeight;
                         box-sizing: border-box;
-                        border: 1px solid rgba(5, 5, 5, 0.06);
+                        border: 1px solid @borderColor;
                         text-align: center;
 
                         .ant-input {
@@ -49,7 +56,7 @@
                         }
 
                         .ant-input:focus {
-                            border-color: #40a9ff;
+                            border-color: @primaryColor;
                             box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
                         }
 
@@ -69,11 +76,9 @@
                         }
 
                         .ant-select:focus-within {
-                            border: 1px solid #40a9ff;
+                            border: 1px solid @primaryColor;
                             box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
                         }
-
-
 
                         .ant-picker {
                             border-radius: 0;
@@ -87,7 +92,7 @@
                         }
 
                         .ant-picker:focus-within {
-                            border: 1px solid #40a9ff;
+                            border: 1px solid @primaryColor;
                             box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
                         }
                     }
@@ -98,11 +103,11 @@
                 }
 
                 .apex-table-tbody-tr:focus-within {
-                    background-color: #FDF5E6 !important;
+                    background-color: @focusBackgroundColor !important;
                 }
 
                 .apex-table-tbody-tr:hover {
-                    background-color: #FFFAF0 !important;
+                    background-color: @hoverBackgroundColor !important;
                 }
             }
 
