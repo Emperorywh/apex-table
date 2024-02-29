@@ -291,15 +291,18 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             case 'modal':
                                                 const { modalOptions } = columnItem;
                                                 if (modalOptions) {
-                                                    const { title, content, onOk, onCancel } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name]);
-                                                    return <ApexModal
-                                                        title={title}
-                                                        content={content}
-                                                        onOk={onOk}
-                                                        onCancel={onCancel}
-                                                        showText={columnValue}
-                                                        key={`${String(columnItem.name)}-${columnIndex}`}
-                                                    />
+                                                    const { title, content, onOk, onCancel, ...modalProps } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name]);
+                                                    return <td className='apex-table-tbody-td'>
+                                                        <ApexModal
+                                                            title={title}
+                                                            content={content}
+                                                            onOk={onOk}
+                                                            onCancel={onCancel}
+                                                            showText={columnValue}
+                                                            key={`${String(columnItem.name)}-${columnIndex}`}
+                                                            {...modalProps}
+                                                        />
+                                                    </td>
                                                 } else {
                                                     return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
                                                         <Input value={columnValue} />
