@@ -177,7 +177,6 @@ const App: React.FC = () => {
             name: 'eFullName',
             columnType: 'modal',
             modalOptions: (row, value) => {
-                console.log("行信息", row, value);
                 return {
                     title: '标题',
                     content: <div>
