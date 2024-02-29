@@ -6,6 +6,7 @@ import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
+import ApexModal, { ApexModalIProps } from './components/ApexModal';
 
 export interface ApexTableProps<T> {
     /**
@@ -41,13 +42,14 @@ export interface ApexTableProps<T> {
 export interface IApexTableColumns<T> {
     title: string;
     name: keyof T;
-    columnType?: 'input' | 'datePicker' | 'rangePicker' | 'select' | 'customer';
+    columnType?: 'input' | 'datePicker' | 'rangePicker' | 'select' | 'modal' | 'customer';
     options?: any[] | ((value: any, row: any) => any);
     defaultValue?: any;
     width?: number;
     showTime?: boolean;
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
+    modalOptions?: (row?: any, value?: any) => ApexModalIProps;
 }
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
@@ -212,7 +214,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     }
                     {
                         columns.map((item, index) => {
-                            return <col style={{ width: item.width || 120 }}></col>
+                            return <col key={`colgroup-${index}`} style={{ width: item.width || 120 }}></col>
                         })
                     }
                 </colgroup>
@@ -240,7 +242,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                 <tbody className='apex-table-tbody'>
                     {
                         tableDataSource.map((dataSourceItem, dataSourceIndex) => {
-                            return <tr key={dataSourceIndex} className='apex-table-tbody-tr'>
+                            return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
                                 {
                                     allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
                                         <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => handleRowSelected(event, dataSourceItem)} />
@@ -286,6 +288,23 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
                                                     <DatePicker.RangePicker locale={locale} showTime={showTime} defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
                                                 </td>
+                                            case 'modal':
+                                                const { modalOptions } = columnItem;
+                                                if (modalOptions) {
+                                                    const { title, content, onOk, onCancel } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name]);
+                                                    return <ApexModal
+                                                        title={title}
+                                                        content={content}
+                                                        onOk={onOk}
+                                                        onCancel={onCancel}
+                                                        showText={columnValue}
+                                                        key={`${String(columnItem.name)}-${columnIndex}`}
+                                                    />
+                                                } else {
+                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                        <Input value={columnValue} />
+                                                    </td>
+                                                }
                                             case 'customer':
                                                 const { onFormatter } = columnItem;
                                                 return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>

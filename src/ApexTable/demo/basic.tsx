@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { IApexTableColumns } from 'apex-table/ApexTable';
-import { Space, Switch } from 'antd';
+import { Space, Switch, message } from 'antd';
 import { apexDeepClone } from '../utils/tool';
 
 interface ITableListItem {
@@ -130,18 +130,6 @@ const App: React.FC = () => {
             name: 'kFullName',
         },
         {
-            title: '普通输入框2',
-            name: 'eFullName',
-        },
-        {
-            title: '普通输入框3',
-            name: 'inOutTypeName',
-        },
-        {
-            title: '普通输入框4',
-            name: 'billSourceName',
-        },
-        {
             title: '静态下拉框',
             name: 'unitId',
             columnType: 'select',
@@ -185,6 +173,26 @@ const App: React.FC = () => {
             width: 300
         },
         {
+            title: '弹框列',
+            name: 'eFullName',
+            columnType: 'modal',
+            modalOptions: (row, value) => {
+                console.log("行信息", row, value);
+                return {
+                    title: '标题',
+                    content: <div>
+                        哈哈哈哈
+                    </div>,
+                    onOk: () => {
+                        message.info("点击确定");
+                    },
+                    onCancel: () => {
+                        message.info("点击取消");
+                    }
+                }
+            }
+        },
+        {
             title: '自定义列1',
             name: 'isOpen',
             columnType: 'customer',
@@ -222,12 +230,15 @@ const App: React.FC = () => {
         }
     ]
 
-    return <ApexTable
-        allowSelect
-        columns={columns}
-        dataSource={dataSource}
-        showHeaderCheckBox
-    />
+    return <>
+
+        <ApexTable
+            allowSelect
+            columns={columns}
+            dataSource={dataSource}
+            showHeaderCheckBox
+        />
+    </>
 };
 
 export default App;
