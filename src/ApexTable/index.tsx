@@ -1,13 +1,12 @@
-import React, { ReactNode, type FC, useState, useEffect } from 'react';
+import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
-import { Checkbox, DatePicker, Input, Select } from 'antd';
+import { Checkbox, DatePicker, Input, Modal, ModalFuncProps, Select } from 'antd';
 import { apexDeepClone } from './utils/tool';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
-import ApexModal, { ApexModalIProps } from './components/ApexModal';
-
+import { ApexModalRef } from './types/ApexModal';
 export interface ApexTableProps<T> {
     /**
     * 是否允许勾选
@@ -49,7 +48,7 @@ export interface IApexTableColumns<T> {
     showTime?: boolean;
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
-    modalOptions?: (row?: any, value?: any) => ApexModalIProps;
+    modalOptions?: (row: any, value: any, modalRef: React.RefObject<ApexModalRef>) => ModalFuncProps;
 }
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
@@ -61,6 +60,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         showHeaderCheckBox = false,
         tableTitle = false
     } = props;
+
+    const modalRef = useRef<ApexModalRef>();
+
 
     /**
      * 表格数据源
@@ -291,21 +293,48 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             case 'modal':
                                                 const { modalOptions } = columnItem;
                                                 if (modalOptions) {
-                                                    const { title, content, onOk, onCancel, ...modalProps } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name]);
-                                                    return <td className='apex-table-tbody-td'>
-                                                        <ApexModal
-                                                            title={title}
-                                                            content={content}
-                                                            onOk={onOk}
-                                                            onCancel={onCancel}
-                                                            showText={columnValue}
-                                                            key={`${String(columnItem.name)}-${columnIndex}`}
-                                                            {...modalProps}
+                                                    const {
+                                                        title,
+                                                        content,
+                                                        icon = null,
+                                                        okText = '确定',
+                                                        cancelText = '取消',
+                                                        footer = null,
+                                                        onOk,
+                                                        onCancel,
+                                                        ...modalProps
+                                                    } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name], modalRef as unknown as any);
+                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                        <Input
+                                                            defaultValue={columnValue}
+                                                            onBlur={inputEvent => {
+                                                                const inputValue = inputEvent.target.value;
+                                                                handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                            }}
+                                                            onDoubleClick={() => {
+                                                                modalRef.current = Modal.confirm({
+                                                                    title,
+                                                                    icon,
+                                                                    content,
+                                                                    okText,
+                                                                    cancelText,
+                                                                    footer,
+                                                                    onOk,
+                                                                    onCancel,
+                                                                    ...modalProps
+                                                                });
+                                                            }}
                                                         />
                                                     </td>
                                                 } else {
                                                     return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                        <Input value={columnValue} />
+                                                        <Input
+                                                            defaultValue={columnValue}
+                                                            onBlur={inputEvent => {
+                                                                const inputValue = inputEvent.target.value;
+                                                                handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                            }}
+                                                        />
                                                     </td>
                                                 }
                                             case 'customer':

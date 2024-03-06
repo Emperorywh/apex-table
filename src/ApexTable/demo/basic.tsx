@@ -1,9 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { IApexTableColumns } from 'apex-table/ApexTable';
 import { Button, Space, Switch, message } from 'antd';
 import { apexDeepClone } from '../utils/tool';
-import { ApexModalRef } from '../components/ApexModal';
 
 interface ITableListItem {
     kFullName: string,
@@ -31,7 +30,6 @@ interface IBrand {
 
 const App: React.FC = () => {
 
-    const modalRef = useRef<ApexModalRef>(null);
     const [dataSource, setDataSource] = useState<ITableListItem[]>([
         {
             kFullName: "西奥仓库",
@@ -178,24 +176,25 @@ const App: React.FC = () => {
             title: '弹框列',
             name: 'eFullName',
             columnType: 'modal',
-            modalOptions: (row, value) => {
+            modalOptions: (row, value, modalRef) => {
                 return {
                     title: '标题',
                     content: <div>
-                        <div>哈哈哈哈</div>
+                        <div>哈哈哈哈{value}</div>
                         <Space>
-                            <Button onClick={() => modalRef.current?.handleCancel()}>取消</Button>
-                            <Button type='primary' onClick={() => modalRef.current?.handleOk()}>确定</Button>
+                            <Button onClick={() => {
+                                modalRef.current?.destroy();
+                            }}>取消</Button>
+                            <Button type='primary' onClick={() => { }}>确定</Button>
                         </Space>
                     </div>,
                     // footer: null,
-                    ref: modalRef,
                     onOk: () => {
                         message.info("点击确定");
                     },
                     onCancel: () => {
                         message.info("点击取消");
-                    }
+                    },
                 }
             }
         },
