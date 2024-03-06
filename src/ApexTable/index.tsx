@@ -300,6 +300,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         okText = '确定',
                                                         cancelText = '取消',
                                                         footer = null,
+                                                        closable = true,
                                                         onOk,
                                                         onCancel,
                                                         ...modalProps
@@ -312,13 +313,14 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                             }}
                                                             onDoubleClick={() => {
-                                                                modalRef.current = Modal.confirm({
+                                                                modalRef.current = Modal.info({
                                                                     title,
                                                                     icon,
                                                                     content,
                                                                     okText,
                                                                     cancelText,
                                                                     footer,
+                                                                    closable,
                                                                     onOk,
                                                                     onCancel,
                                                                     ...modalProps

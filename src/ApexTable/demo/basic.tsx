@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { IApexTableColumns } from 'apex-table/ApexTable';
-import { Button, Space, Switch, message } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Space, Switch, message } from 'antd';
 import { apexDeepClone } from '../utils/tool';
 
 interface ITableListItem {
@@ -29,7 +29,11 @@ interface IBrand {
 }
 
 const App: React.FC = () => {
-
+    // 弹窗状态
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    // 弹窗内部的form实例
+    const [form] = Form.useForm();
+    // 表格数据源
     const [dataSource, setDataSource] = useState<ITableListItem[]>([
         {
             kFullName: "西奥仓库",
@@ -123,7 +127,11 @@ const App: React.FC = () => {
             isOpen: true
         }
     ]);
-
+    // 弹窗点击确定
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    // 表格列
     const columns: IApexTableColumns<ITableListItem>[] = [
         {
             title: '普通输入框1',
@@ -223,12 +231,19 @@ const App: React.FC = () => {
                     <a
                         key="editable"
                         onClick={() => {
-                            console.log("哈哈哈", row)
+                            form.setFieldsValue(row);
+                            setIsModalOpen(true);
                         }}
                     >
                         编辑
                     </a>
-                    <a key="view">
+                    <a
+                        key="view"
+                        onClick={() => {
+                            form.setFieldsValue(row);
+                            setIsModalOpen(true);
+                        }}
+                    >
                         查看
                     </a>
                 </Space>
@@ -237,7 +252,47 @@ const App: React.FC = () => {
     ]
 
     return <>
+        <Modal
+            title="弹框信息"
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={() => setIsModalOpen(false)}
+            okText="确定"
+            cancelText="取消"
+        >
+            <Form
+                name="basic"
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 16 }}
+                style={{ maxWidth: 600 }}
+                initialValues={{ remember: true }}
+                autoComplete="off"
+                form={form}
+            >
+                <Form.Item
+                    label="仓库"
+                    name="kFullName"
+                    rules={[{ required: true, message: '这是必填项！' }]}
+                >
+                    <Input />
+                </Form.Item>
 
+                <Form.Item
+                    label="经手人"
+                    name="eFullName"
+                    rules={[{ required: true, message: '这是必填项！' }]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="备注"
+                    name="remark"
+                >
+                    <Input />
+                </Form.Item>
+            </Form>
+        </Modal>
         <ApexTable
             allowSelect
             columns={columns}
