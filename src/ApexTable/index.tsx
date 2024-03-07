@@ -6,6 +6,11 @@ import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { ApexModalRef } from './types/ApexModal';
+import ApexTdWrap from './components/ApexTdWrap';
+import ApexTableInput from './components/ApexTableInput';
+import ApexTableSelect from './components/ApexTableSelect';
+import { DefaultOptionType } from 'antd/es/select';
+import ApexModal from './components/ApexModal';
 export interface ApexTableProps<T> {
     /**
     * 是否允许勾选
@@ -308,108 +313,59 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             const columnValue = dataSourceItem[columnItem['name']];
                                             switch (columnType) {
                                                 case 'input':
-                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                        <Input
+                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                        <ApexTableInput
                                                             defaultValue={columnValue}
-                                                            onBlur={inputEvent => {
-                                                                const inputValue = inputEvent.target.value;
+                                                            onInputChange={inputValue => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                             }}
                                                         />
-                                                    </td>;
+                                                    </ApexTdWrap>;
                                                 case 'inputNumber':
-                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                        <InputNumber defaultValue={columnValue} onBlur={inputEvent => {
-                                                            const inputValue = Number.parseFloat(inputEvent.target.value);
-                                                            const realVal = Number.isNaN(inputValue) ? 0 : inputValue;
-                                                            handleChangeCellValue(dataSourceItem, columnItem['name'], realVal);
-                                                        }} />
-                                                    </td>;
-                                                case 'select':
-                                                    const { options, defaultValue, onChange } = columnItem;
-                                                    let selectOption = [];
-                                                    if (typeof options === 'object') {
-                                                        selectOption = options;
-                                                    } else if (typeof options === 'function') {
-                                                        selectOption = options(dataSourceItem[columnItem.name], dataSourceItem)
-                                                    }
-                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                        <Select
-                                                            defaultValue={defaultValue}
-                                                            value={dataSourceItem[columnItem.name]}
-                                                            onChange={(value, option) => handleSelectChange(dataSourceItem, columnItem.name, value, option, options, onChange)}
-                                                            options={selectOption}
-                                                            allowClear
+                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                        <ApexTableInput
+                                                            defaultValue={columnValue}
+                                                            onInputChange={inputValue => {
+                                                                handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                            }}
                                                         />
-                                                    </td>
+                                                    </ApexTdWrap>;
+                                                case 'select':
+                                                    return <ApexTableSelect
+                                                        key={`${String(columnItem.name)}-${columnIndex}`}
+                                                        columnItem={columnItem}
+                                                        dataSourceItem={dataSourceItem}
+                                                        onSelectChange={handleSelectChange}
+                                                    />
                                                 case 'datePicker':
-                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <DatePicker showTime={showTime} defaultValue={dayjs(columnValue)} onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
-                                                    </td>
+                                                    </ApexTdWrap>
                                                 case 'rangePicker':
-                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`} >
                                                         <DatePicker.RangePicker showTime={showTime} defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
-                                                    </td>
+                                                    </ApexTdWrap>
                                                 case 'modal':
-                                                    const { modalOptions } = columnItem;
-                                                    if (modalOptions) {
-                                                        const {
-                                                            title,
-                                                            content,
-                                                            icon = null,
-                                                            okText = '确定',
-                                                            cancelText = '取消',
-                                                            footer = null,
-                                                            closable = true,
-                                                            onOk,
-                                                            onCancel,
-                                                            ...modalProps
-                                                        } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name], modalRef as unknown as any);
-                                                        return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                            <Input
-                                                                defaultValue={columnValue}
-                                                                onBlur={inputEvent => {
-                                                                    const inputValue = inputEvent.target.value;
-                                                                    handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
-                                                                }}
-                                                                onDoubleClick={() => {
-                                                                    modalRef.current = Modal.info({
-                                                                        title,
-                                                                        icon,
-                                                                        content,
-                                                                        okText,
-                                                                        cancelText,
-                                                                        footer,
-                                                                        closable,
-                                                                        onOk,
-                                                                        onCancel,
-                                                                        ...modalProps
-                                                                    });
-                                                                }}
-                                                            />
-                                                        </td>
-                                                    } else {
-                                                        return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
-                                                            <Input
-                                                                defaultValue={columnValue}
-                                                                onBlur={inputEvent => {
-                                                                    const inputValue = inputEvent.target.value;
-                                                                    handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
-                                                                }}
-                                                            />
-                                                        </td>
-                                                    }
+                                                    return <ApexModal
+                                                        key={`${String(columnItem.name)}-${columnIndex}`}
+                                                        columnItem={columnItem}
+                                                        dataSourceItem={dataSourceItem}
+                                                        columnValue={columnValue}
+                                                        onInputChange={inputValue => {
+                                                            handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                        }}
+                                                    />
                                                 case 'customer':
                                                     const { onFormatter } = columnItem;
-                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         {
                                                             onFormatter?.(dataSourceItem, dataSourceItem[columnItem.name])
                                                         }
-                                                    </td>
+                                                    </ApexTdWrap>
                                                 default:
-                                                    return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <Input value={columnValue} />
-                                                    </td>
+                                                    </ApexTdWrap>
                                             }
                                         })
                                     }
