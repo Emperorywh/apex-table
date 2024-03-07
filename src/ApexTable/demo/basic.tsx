@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { IApexTableColumns } from 'apex-table/ApexTable';
-import { Button, Checkbox, Form, Input, Modal, Space, Switch, message } from 'antd';
-import { apexDeepClone } from '../utils/tool';
+import { Button, Form, Input, Modal, Space, Switch, message } from 'antd';
 
 interface ITableListItem {
     kFullName: string,
@@ -218,7 +217,7 @@ const App: React.FC = () => {
             width: 100,
             onFormatter: (row, value) => {
                 return <Switch checked={value} onChange={event => {
-                    const tempData: any[] = apexDeepClone(dataSource);
+                    const tempData: any[] = [...dataSource];
                     const find = tempData.find(item => item.billCode === row.billCode);
                     if (find) {
                         find.isOpen = event;
@@ -303,6 +302,7 @@ const App: React.FC = () => {
             columns={columns}
             dataSource={dataSource}
             showHeaderCheckBox
+            showPagination
         />
     </>
 };
