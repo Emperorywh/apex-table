@@ -53,15 +53,18 @@
                             box-sizing: border-box;
                             background-color: transparent;
                             padding: 5px;
-
                         }
 
                         .ant-input:focus,
-                        .ant-input-number-input:focus {
+                        .ant-input-number:focus-within {
                             border-color: @primaryColor;
                             box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
                         }
 
+                        .ant-input-number-input-wrap {
+                            width: 100%;
+                            height: 100%;
+                        }
 
                         .ant-select {
                             width: 100%;
