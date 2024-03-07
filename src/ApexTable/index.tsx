@@ -1,7 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
 import { Checkbox, DatePicker, Input, InputNumber, Modal, ModalFuncProps, Select } from 'antd';
-import { apexDeepClone } from './utils/tool';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -91,7 +90,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     const onHeaderCheckBoxChange = (event: CheckboxChangeEvent) => {
         const eventValue = event.target.checked;
         setHeaderChecked(eventValue);
-        const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
+        const tempTableDataSource: any[] = [...tableDataSource];
         tempTableDataSource.forEach((item: any) => {
             item['apexTableChecked'] = eventValue;
         });
@@ -108,8 +107,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      */
     const handleRowSelected = (event: CheckboxChangeEvent, row: any) => {
         const eventValue = event.target.checked;
-        const tempCheck: any[] = apexDeepClone(checkedData);
-        const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
+        const tempCheck: any[] = [...checkedData];
+        const tempTableDataSource: any[] = [...tableDataSource];
         const findRowIndex = tempCheck.findIndex(item => item['apexTableId'] === row['apexTableId']);
         const findTableIndex = tempTableDataSource.findIndex(item => item['apexTableId'] === row['apexTableId']);
         if (eventValue) {
@@ -133,7 +132,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      * 初始化外部传入的数据源
      */
     const initOuterDataSource = () => {
-        const data: any[] = apexDeepClone(dataSource);
+        const data: any[] = [...dataSource];
         data.forEach((item, index) => {
             item['apexTableId'] = index;
             item['apexTableChecked'] = false;
@@ -191,7 +190,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      * @param value         新值
      */
     const handleChangeCellValue = (row: any, columnName: any, value: any) => {
-        const tempTableDataSource: any[] = apexDeepClone(tableDataSource);
+        const tempTableDataSource: any[] = [...tableDataSource];
         const findIndex = tempTableDataSource.findIndex((item: any) => item?.apexTableId === row?.apexTableId);
         if (findIndex > -1) {
             tempTableDataSource[findIndex][columnName] = value;

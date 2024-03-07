@@ -72,6 +72,7 @@
 		"stylelint": "^14.9.1"
 	},
 	"dependencies": {
-		"antd": "^5.12.2"
+		"antd": "^5.12.2",
+		"dayjs": "^1.11.10"
 	}
 }
