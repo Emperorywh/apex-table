@@ -138,6 +138,11 @@ const App: React.FC = () => {
             name: 'kFullName',
         },
         {
+            title: '数字输入框',
+            name: 'sumQty',
+            columnType: 'inputNumber'
+        },
+        {
             title: '静态下拉框',
             name: 'unitId',
             columnType: 'select',

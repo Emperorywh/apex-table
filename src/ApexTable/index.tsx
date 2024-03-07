@@ -1,6 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
-import { Checkbox, DatePicker, Input, Modal, ModalFuncProps, Select } from 'antd';
+import { Checkbox, DatePicker, Input, InputNumber, Modal, ModalFuncProps, Select } from 'antd';
 import { apexDeepClone } from './utils/tool';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
@@ -41,7 +41,7 @@ export interface ApexTableProps<T> {
 export interface IApexTableColumns<T> {
     title: string;
     name: keyof T;
-    columnType?: 'input' | 'datePicker' | 'rangePicker' | 'select' | 'modal' | 'customer';
+    columnType?: 'input' | 'inputNumber' | 'datePicker' | 'rangePicker' | 'select' | 'modal' | 'customer';
     options?: any[] | ((value: any, row: any) => any);
     defaultValue?: any;
     width?: number;
@@ -264,6 +264,14 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                         }}
                                                     />
+                                                </td>;
+                                            case 'inputNumber':
+                                                return <td key={`${String(columnItem.name)}-${columnIndex}`} className='apex-table-tbody-td'>
+                                                    <InputNumber defaultValue={columnValue} onBlur={inputEvent => {
+                                                        const inputValue = Number.parseFloat(inputEvent.target.value);
+                                                        const realVal = Number.isNaN(inputValue) ? 0 : inputValue;
+                                                        handleChangeCellValue(dataSourceItem, columnItem['name'], realVal);
+                                                    }} />
                                                 </td>;
                                             case 'select':
                                                 const { options, defaultValue, onChange } = columnItem;
