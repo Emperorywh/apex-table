@@ -1,6 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, DatePicker, Input, InputNumber, Modal, ModalFuncProps, Pagination, PaginationProps, Select } from 'antd';
+import { Checkbox, ConfigProvider, DatePicker, Input, ModalFuncProps, Pagination, PaginationProps } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -9,8 +9,8 @@ import { ApexModalRef } from './types/ApexModal';
 import ApexTdWrap from './components/ApexTdWrap';
 import ApexTableInput from './components/ApexTableInput';
 import ApexTableSelect from './components/ApexTableSelect';
-import { DefaultOptionType } from 'antd/es/select';
 import ApexModal from './components/ApexModal';
+import hotkeys from 'hotkeys-js';
 export interface ApexTableProps<T> {
     /**
     * 是否允许勾选
@@ -67,6 +67,7 @@ export interface IApexTableColumns<T> {
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
 
+
     const {
         allowSelect = false,
         columns = [],
@@ -77,7 +78,20 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         pagination = {}
     } = props;
 
-    const modalRef = useRef<ApexModalRef>();
+    /**
+     * 可编辑单元格的 Ref
+     */
+    const editRefs = useRef<any>({});
+
+    /**
+     * 当前聚焦的行
+     */
+    const [focusRowIndex, setFocusRowIndex] = useState(-1);
+
+    /**
+     * 当前聚焦的列名
+     */
+    const [focusColumnName, setFocusColumnName] = useState<any>('');
 
     /**
      * 表格数据源
@@ -263,8 +277,26 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         onChangeHeaderCheckBoxIndeter();
     }, [checkedData, dataSource]);
 
+    useEffect(() => {
+        const find = columns.find(item => !item.columnType || item.columnType !== 'customer');
+        if (find) {
+            setFocusRowIndex(0);
+            setFocusColumnName(find.name)
+        }
+    }, []);
+
+    useEffect(() => {
+        const key = `${focusRowIndex}-${String(focusColumnName)}`;
+        console.log("key", key, editRefs)
+        editRefs.current?.[key]?.focus();
+    }, [focusRowIndex, focusColumnName]);
+
+
+
     return <ConfigProvider locale={zh_CN}>
-        <div className='apex-table-container'>
+        <div className='apex-table-container' tabIndex={0} onKeyDown={event => {
+            console.log("111111111", event)
+        }}>
             <div className='apex-table-content'>
                 <table className='apex-table'>
                     <colgroup>
@@ -311,48 +343,71 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                         columns.map((columnItem, columnIndex) => {
                                             const { columnType = 'input', showTime = false } = columnItem;
                                             const columnValue = dataSourceItem[columnItem['name']];
+                                            const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
                                             switch (columnType) {
                                                 case 'input':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
+                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
                                                             defaultValue={columnValue}
                                                             onInputChange={inputValue => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                            }}
+                                                            onFocus={() => {
+                                                                editRefs.current?.[refKey]?.select();
                                                             }}
                                                         />
                                                     </ApexTdWrap>;
                                                 case 'inputNumber':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
+                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
                                                             defaultValue={columnValue}
                                                             onInputChange={inputValue => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                            }}
+                                                            onFocus={() => {
+                                                                editRefs.current?.[refKey]?.select();
                                                             }}
                                                         />
                                                     </ApexTdWrap>;
                                                 case 'select':
                                                     return <ApexTableSelect
                                                         key={`${String(columnItem.name)}-${columnIndex}`}
+                                                        ref={inputRef => editRefs.current[refKey] = inputRef}
                                                         columnItem={columnItem}
                                                         dataSourceItem={dataSourceItem}
                                                         onSelectChange={handleSelectChange}
                                                     />
                                                 case 'datePicker':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        <DatePicker showTime={showTime} defaultValue={dayjs(columnValue)} onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                        <DatePicker
+                                                            showTime={showTime}
+                                                            defaultValue={dayjs(columnValue)}
+                                                            onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)}
+                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                        />
                                                     </ApexTdWrap>
                                                 case 'rangePicker':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`} >
-                                                        <DatePicker.RangePicker showTime={showTime} defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)} />
+                                                        <DatePicker.RangePicker
+                                                            showTime={showTime}
+                                                            defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)}
+                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                        />
                                                     </ApexTdWrap>
                                                 case 'modal':
                                                     return <ApexModal
+                                                        ref={(modalRef: any) => editRefs.current[refKey] = modalRef}
                                                         key={`${String(columnItem.name)}-${columnIndex}`}
                                                         columnItem={columnItem}
                                                         dataSourceItem={dataSourceItem}
                                                         columnValue={columnValue}
                                                         onInputChange={inputValue => {
                                                             handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                        }}
+                                                        onFocus={() => {
+                                                            editRefs.current?.[refKey]?.select();
                                                         }}
                                                     />
                                                 case 'customer':

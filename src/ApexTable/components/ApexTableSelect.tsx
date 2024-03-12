@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { IApexTableColumns } from "..";
 import ApexTdWrap from "./ApexTdWrap";
 import { Select } from "antd";
@@ -6,7 +6,9 @@ import { Select } from "antd";
 export interface ApexTableSelectProps<T> {
     columnItem: IApexTableColumns<T>;
     dataSourceItem: any;
+    ref?: React.Ref<any>;
     onSelectChange: (row: any, columnName: any, value: any, option: any, options: any, onChange?: (value: any, option?: any, options?: any) => void) => void;
+    onFocus?: React.FocusEventHandler<HTMLElement>;
 }
 
 /**
@@ -14,8 +16,8 @@ export interface ApexTableSelectProps<T> {
  * @param props 
  * @returns 
  */
-const ApexTableSelect: React.FC<ApexTableSelectProps<any>> = (props) => {
-    const { columnItem, dataSourceItem, onSelectChange } = props;
+const ApexTableSelect: React.FC<ApexTableSelectProps<any>> = forwardRef((props, ref) => {
+    const { columnItem, dataSourceItem, onSelectChange, onFocus } = props;
     const { options, defaultValue, onChange } = columnItem;
     let selectOption = [];
     if (typeof options === 'object') {
@@ -30,8 +32,10 @@ const ApexTableSelect: React.FC<ApexTableSelectProps<any>> = (props) => {
             onChange={(value, option) => onSelectChange(dataSourceItem, columnItem.name, value, option, options, onChange)}
             options={selectOption}
             allowClear
+            ref={ref}
+            onFocus={onFocus}
         />
     </ApexTdWrap>
-}
+})
 
 export default ApexTableSelect;

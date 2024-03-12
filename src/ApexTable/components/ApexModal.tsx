@@ -1,18 +1,21 @@
-import React, { useRef } from "react";
+import React, { forwardRef, useRef } from "react";
 import { IApexTableColumns } from "..";
 import { ApexModalRef } from "../types/ApexModal";
 import ApexTdWrap from "./ApexTdWrap";
-import { Input, Modal } from "antd";
+import { Input, InputRef, Modal } from "antd";
+import { MoreOutlined } from '@ant-design/icons';
 
 export interface IApexModalProps<T> {
     columnItem: IApexTableColumns<T>;
     dataSourceItem: any;
     columnValue: string;
     onInputChange: (value: string) => void;
+    ref?: React.Ref<InputRef>;
+    onFocus?: React.FocusEventHandler<HTMLInputElement>;
 }
 
-const ApexModal: React.FC<IApexModalProps<any>> = (props) => {
-    const { columnItem, dataSourceItem, columnValue, onInputChange } = props;
+const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
+    const { columnItem, dataSourceItem, columnValue, onInputChange, onFocus } = props;
     const { modalOptions } = columnItem;
     const modalRef = useRef<ApexModalRef>();
     if (modalOptions) {
@@ -49,6 +52,9 @@ const ApexModal: React.FC<IApexModalProps<any>> = (props) => {
                         ...modalProps
                     });
                 }}
+                suffix={<MoreOutlined />}
+                ref={ref}
+                onFocus={onFocus}
             />
         </ApexTdWrap>
     } else {
@@ -59,9 +65,12 @@ const ApexModal: React.FC<IApexModalProps<any>> = (props) => {
                     const inputValue = inputEvent.target.value;
                     onInputChange && onInputChange(inputValue);
                 }}
+                suffix={<MoreOutlined />}
+                ref={ref}
+                onFocus={onFocus}
             />
         </ApexTdWrap>
     }
-}
+});
 
 export default ApexModal;
