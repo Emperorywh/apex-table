@@ -328,6 +328,15 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
             const key = event.key;
             const eventValue = event.target.value;
             const cursorPosition = event.target.selectionStart;
+            // 最后一个可编辑列
+            let findLastEditIndex = -1;
+            for (let i = columns.length - 1; i > -1; i--) {
+                const item = columns[i];
+                if (item.columnType !== 'customer' || !item.columnType) {
+                    findLastEditIndex = i;
+                    break;
+                }
+            }
             switch (key) {
                 case 'ArrowUp':
                     const indexUp = focusRowIndex - 1;
@@ -347,29 +356,89 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     break;
                 case 'ArrowLeft':
                     if (cursorPosition === 0) {
-                        const findIndex = columns.findIndex(item => item.name === focusColumnName && item.columnType !== 'customer');
+                        const findIndex = columns.findIndex(item => item.name === focusColumnName);
                         if (findIndex > 0) {
-                            setFocusColumnName(columns[findIndex - 1].name);
+                            let findColumn;
+                            for (let i = findIndex - 1; i > -1; i--) {
+                                const item = columns[i];
+                                if (item.columnType !== 'customer' || !item.columnType) {
+                                    findColumn = item;
+                                    break;
+                                }
+                            }
+                            if (!findColumn) {
+                                for (let i = columns.length - 1; i > findIndex; i--) {
+                                    const item = columns[i];
+                                    if (item.columnType !== 'customer' || !item.columnType) {
+                                        findColumn = item;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (findColumn) {
+                                setFocusColumnName(findColumn.name);
+                            }
                         } else {
                             if (focusRowIndex > 0) {
                                 setFocusRowIndex(prev => prev - 1);
                             }
-                            setFocusColumnName(columns[columns.length - 1].name);
+                            let findColumn;
+                            for (let i = columns.length - 1; i > findIndex; i--) {
+                                const item = columns[i];
+                                if (item.columnType !== 'customer' || !item.columnType) {
+                                    findColumn = item;
+                                    break;
+                                }
+                            }
+                            if (findColumn) {
+                                setFocusColumnName(findColumn.name);
+                            }
                         }
                     }
                     break;
                 case 'ArrowRight':
                     if (cursorPosition === eventValue.length) {
-                        const findIndex = columns.findIndex(item => item.name === focusColumnName  && item.columnType !== 'customer');
-                        if (findIndex === columns.length - 1) {
+                        const findIndex = columns.findIndex(item => {
+                            return item.name === focusColumnName;
+                        });
+                        if (findIndex === findLastEditIndex) {
                             if (focusRowIndex === pageDataSource.length - 1) {
-                                setFocusRowIndex(0)
+                                setFocusRowIndex(0);
                             } else {
                                 setFocusRowIndex(prev => prev + 1);
                             }
-                            setFocusColumnName(columns[0].name);
+                            let findColumn;
+                            for (let i = 0; i < columns.length - 1; i++) {
+                                const item = columns[i];
+                                if (item.columnType !== 'customer' || !item.columnType) {
+                                    findColumn = item;
+                                    break;
+                                }
+                            }
+                            if (findColumn) {
+                                setFocusColumnName(findColumn.name);
+                            }
                         } else {
-                            setFocusColumnName(columns[findIndex + 1].name);
+                            let findColumn;
+                            for (let i = findIndex + 1; i < columns.length - 1; i++) {
+                                const item = columns[i];
+                                if (item.columnType !== 'customer' || !item.columnType) {
+                                    findColumn = item;
+                                    break;
+                                }
+                            }
+                            if (!findColumn) {
+                                for (let i = 0; i < findIndex; i++) {
+                                    const item = columns[i];
+                                    if (item.columnType !== 'customer' || !item.columnType) {
+                                        findColumn = item;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (findColumn) {
+                                setFocusColumnName(findColumn.name);
+                            }
                         }
                     }
                     break;
