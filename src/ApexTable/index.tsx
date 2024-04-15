@@ -285,7 +285,10 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         const name = `${rowInfo.rowIndex}-${rowInfo.columnName}`;
         const findRefName = Object.keys(editRefs.current).find(key => key === name);
         if (findRefName) {
-            editRefs.current?.[findRefName]?.focus();
+            requestAnimationFrame(() => {
+                editRefs.current?.[findRefName]?.focus();
+                editRefs.current?.[findRefName]?.select();
+            })
         }
     }
 
