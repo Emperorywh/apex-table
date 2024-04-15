@@ -1,6 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, DatePicker, Input, ModalFuncProps, Pagination, PaginationProps } from 'antd';
+import { Checkbox, ConfigProvider, DatePicker, Input, ModalFuncProps, Pagination, PaginationProps, message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -10,7 +10,8 @@ import ApexTdWrap from './components/ApexTdWrap';
 import ApexTableInput from './components/ApexTableInput';
 import ApexTableSelect from './components/ApexTableSelect';
 import ApexModal from './components/ApexModal';
-import hotkeys from 'hotkeys-js';
+import ApexShowCell from './components/ApexShowCell';
+
 export interface ApexTableProps<T> {
     /**
     * 是否允许勾选
@@ -55,7 +56,7 @@ export interface ApexTableProps<T> {
 export interface IApexTableColumns<T> {
     title: string;
     name: keyof T;
-    columnType?: 'input' | 'inputNumber' | 'datePicker' | 'rangePicker' | 'select' | 'modal' | 'customer';
+    columnType?: IColumnType;
     options?: any[] | ((value: any, row: any) => any);
     defaultValue?: any;
     width?: number;
@@ -63,6 +64,16 @@ export interface IApexTableColumns<T> {
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
     modalOptions?: (row: any, value: any, modalRef: React.RefObject<ApexModalRef>) => ModalFuncProps;
+}
+
+/**
+ * 列类型
+ */
+export type IColumnType = 'input' | 'inputNumber' | 'datePicker' | 'rangePicker' | 'select' | 'modal' | 'customer';
+
+export interface IRow {
+    rowIndex: number;
+    columnName: unknown;
 }
 
 const ApexTable: FC<ApexTableProps<any>> = (props) => {
@@ -265,6 +276,37 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         setPageDataSource(newArray);
     }
 
+    /**
+     * 聚焦可编辑单元格
+     * @param rowIndex  行号
+     * @param rowName   列名
+     */
+    const handleFocusEditAbleCell = (rowInfo: IRow) => {
+        const name = `${rowInfo.rowIndex}-${rowInfo.columnName}`;
+        const findRefName = Object.keys(editRefs.current).find(key => key === name);
+        if (findRefName) {
+            editRefs.current?.[findRefName]?.focus();
+        }
+    }
+
+    /**
+     * 组件聚焦时触发
+     * @param rowIndex   行下标
+     * @param columnName 列名
+     */
+    const handleFocus = (rowInfo: IRow, columnType: IColumnType) => {
+        setFocusRowIndex(rowInfo.rowIndex)
+        setFocusColumnName(rowInfo.columnName);
+    }
+
+    useEffect(() => {
+        const find = columns.find(item => !item.columnType || item.columnType !== 'customer');
+        if (find) {
+            setFocusRowIndex(0);
+            setFocusColumnName(find.name);
+        }
+    }, []);
+
     useEffect(() => {
         initOuterDataSource();
     }, [dataSource]);
@@ -278,24 +320,60 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     }, [checkedData, dataSource]);
 
     useEffect(() => {
-        const find = columns.find(item => !item.columnType || item.columnType !== 'customer');
-        if (find) {
-            setFocusRowIndex(0);
-            setFocusColumnName(find.name)
-        }
-    }, []);
-
-    useEffect(() => {
-        const key = `${focusRowIndex}-${String(focusColumnName)}`;
-        console.log("key", key, editRefs)
-        editRefs.current?.[key]?.focus();
+        handleFocusEditAbleCell({ rowIndex: focusRowIndex, columnName: focusColumnName });
     }, [focusRowIndex, focusColumnName]);
 
-
-
     return <ConfigProvider locale={zh_CN}>
-        <div className='apex-table-container' tabIndex={0} onKeyDown={event => {
-            console.log("111111111", event)
+        <div className='apex-table-container' tabIndex={0} onKeyDown={(event: any) => {
+            const key = event.key;
+            const eventValue = event.target.value;
+            const cursorPosition = event.target.selectionStart;
+            switch (key) {
+                case 'ArrowUp':
+                    const indexUp = focusRowIndex - 1;
+                    if (indexUp < 0) {
+                        setFocusRowIndex(0);
+                    } else {
+                        setFocusRowIndex(prev => prev - 1);
+                    }
+                    break;
+                case 'ArrowDown':
+                    const indexDown = focusRowIndex + 1;
+                    if (indexDown > pageDataSource.length - 1) {
+                        setFocusRowIndex(pageDataSource.length - 1);
+                    } else {
+                        setFocusRowIndex(prev => prev + 1);
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (cursorPosition === 0) {
+                        const findIndex = columns.findIndex(item => item.name === focusColumnName && item.columnType !== 'customer');
+                        if (findIndex > 0) {
+                            setFocusColumnName(columns[findIndex - 1].name);
+                        } else {
+                            if (focusRowIndex > 0) {
+                                setFocusRowIndex(prev => prev - 1);
+                            }
+                            setFocusColumnName(columns[columns.length - 1].name);
+                        }
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (cursorPosition === eventValue.length) {
+                        const findIndex = columns.findIndex(item => item.name === focusColumnName  && item.columnType !== 'customer');
+                        if (findIndex === columns.length - 1) {
+                            if (focusRowIndex === pageDataSource.length - 1) {
+                                setFocusRowIndex(0)
+                            } else {
+                                setFocusRowIndex(prev => prev + 1);
+                            }
+                            setFocusColumnName(columns[0].name);
+                        } else {
+                            setFocusColumnName(columns[findIndex + 1].name);
+                        }
+                    }
+                    break;
+            }
         }}>
             <div className='apex-table-content'>
                 <table className='apex-table'>
@@ -344,6 +422,16 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             const { columnType = 'input', showTime = false } = columnItem;
                                             const columnValue = dataSourceItem[columnItem['name']];
                                             const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
+                                            const showKey = `${focusRowIndex}-${focusColumnName}`;
+                                            if (showKey !== refKey && columnType !== 'customer') {
+                                                return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
+                                                        handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                    }}>
+                                                        {columnValue}
+                                                    </ApexShowCell>
+                                                </ApexTdWrap>
+                                            }
                                             switch (columnType) {
                                                 case 'input':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
@@ -355,9 +443,10 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             }}
                                                             onFocus={() => {
                                                                 editRefs.current?.[refKey]?.select();
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
                                                             }}
                                                         />
-                                                    </ApexTdWrap>;
+                                                    </ApexTdWrap>
                                                 case 'inputNumber':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
@@ -368,6 +457,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             }}
                                                             onFocus={() => {
                                                                 editRefs.current?.[refKey]?.select();
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'inputNumber')
                                                             }}
                                                         />
                                                     </ApexTdWrap>;
@@ -378,6 +468,10 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         columnItem={columnItem}
                                                         dataSourceItem={dataSourceItem}
                                                         onSelectChange={handleSelectChange}
+                                                        onFocus={() => {
+                                                            // editRefs.current?.[refKey]?.select();
+                                                            handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'select')
+                                                        }}
                                                     />
                                                 case 'datePicker':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
@@ -386,6 +480,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             defaultValue={dayjs(columnValue)}
                                                             onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)}
                                                             ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                            onFocus={() => {
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'datePicker')
+                                                            }}
                                                         />
                                                     </ApexTdWrap>
                                                 case 'rangePicker':
@@ -394,6 +491,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             showTime={showTime}
                                                             defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)}
                                                             ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                            onFocus={() => {
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'rangePicker')
+                                                            }}
                                                         />
                                                     </ApexTdWrap>
                                                 case 'modal':
@@ -408,6 +508,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         }}
                                                         onFocus={() => {
                                                             editRefs.current?.[refKey]?.select();
+                                                            handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'modal')
                                                         }}
                                                     />
                                                 case 'customer':
@@ -419,7 +520,13 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     </ApexTdWrap>
                                                 default:
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        <Input value={columnValue} />
+                                                        <Input
+                                                            value={columnValue}
+                                                            onFocus={() => {
+                                                                editRefs.current?.[refKey]?.select();
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
+                                                        />
                                                     </ApexTdWrap>
                                             }
                                         })
