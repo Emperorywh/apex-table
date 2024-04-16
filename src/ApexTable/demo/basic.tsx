@@ -133,6 +133,13 @@ const App: React.FC = () => {
     // 表格列
     const columns: IApexTableColumns<ITableListItem>[] = [
         {
+            title: '自定义样式',
+            name: 'statusName',
+            onRender: (row, value) => {
+                return <h1>{value}</h1>
+            }
+        },
+        {
             title: '普通输入框1',
             name: 'kFullName',
         },

@@ -1,5 +1,5 @@
 // 默认行高
-@rowHeight: 40px;
+@rowHeight: 45px;
 // 边框颜色
 @borderColor: rgba(5, 5, 5, 0.06);
 // 主要颜色
@@ -42,7 +42,7 @@
                         height: @rowHeight;
                         box-sizing: border-box;
                         border: 1px solid @borderColor;
-                        text-align: center;
+                        text-align: left;
 
                         .ant-input,
                         .ant-input-number,
@@ -53,8 +53,9 @@
                             height: 100%;
                             box-sizing: border-box;
                             background-color: transparent;
-                            padding: 5px;
-                            text-align: center;
+                            // padding: 5px;
+                            text-align: left;
+                            font-size: 14px;
                         }
 
                         .ant-input:focus,
@@ -70,7 +71,7 @@
                         }
 
                         .ant-input-number-input {
-                            text-align: center;
+                            text-align: left;
                         }
 
                         .ant-select {
@@ -128,7 +129,15 @@
     }
 
     .apex-show-cell {
-        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        width: 100%;
+        height: 100%;
+        word-break: break-all;
+        border: 1px solid transparent;
+        box-sizing: border-box;
     }
 
     .apex-table-pagination {

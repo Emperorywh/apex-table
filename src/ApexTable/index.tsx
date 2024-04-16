@@ -11,6 +11,7 @@ import ApexTableInput from './components/ApexTableInput';
 import ApexTableSelect from './components/ApexTableSelect';
 import ApexModal from './components/ApexModal';
 import ApexShowCell from './components/ApexShowCell';
+import ApexShowCellChildren from './components/ApexShowCellChildren';
 
 export interface ApexTableProps<T> {
     /**
@@ -63,6 +64,7 @@ export interface IApexTableColumns<T> {
     showTime?: boolean;
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
+    onRender?: (row?: any, value?: any) => React.ReactNode;
     modalOptions?: (row: any, value: any, modalRef: React.RefObject<ApexModalRef>) => ModalFuncProps;
 }
 
@@ -287,7 +289,6 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         if (findRefName) {
             requestAnimationFrame(() => {
                 editRefs.current?.[findRefName]?.focus();
-                editRefs.current?.[findRefName]?.select();
             })
         }
     }
@@ -302,13 +303,14 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         setFocusColumnName(rowInfo.columnName);
     }
 
-    useEffect(() => {
-        const find = columns.find(item => !item.columnType || item.columnType !== 'customer');
-        if (find) {
-            setFocusRowIndex(0);
-            setFocusColumnName(find.name);
-        }
-    }, []);
+    /**
+     * 组件失焦时触发
+     * @param rowInfo 
+     * @param columnType 
+     */
+    const handleBlur = (rowInfo: IRow, columnType: IColumnType) => {
+
+    }
 
     useEffect(() => {
         initOuterDataSource();
@@ -331,15 +333,6 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
             const key = event.key;
             const eventValue = event.target.value;
             const cursorPosition = event.target.selectionStart;
-            // 最后一个可编辑列
-            let findLastEditIndex = -1;
-            for (let i = columns.length - 1; i > -1; i--) {
-                const item = columns[i];
-                if (item.columnType !== 'customer' || !item.columnType) {
-                    findLastEditIndex = i;
-                    break;
-                }
-            }
             switch (key) {
                 case 'ArrowUp':
                     const indexUp = focusRowIndex - 1;
@@ -404,6 +397,15 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                         const findIndex = columns.findIndex(item => {
                             return item.name === focusColumnName;
                         });
+                        // 最后一个可编辑列
+                        let findLastEditIndex = -1;
+                        for (let i = columns.length - 1; i > -1; i--) {
+                            const item = columns[i];
+                            if (item.columnType !== 'customer' || !item.columnType) {
+                                findLastEditIndex = i;
+                                break;
+                            }
+                        }
                         if (findIndex === findLastEditIndex) {
                             if (focusRowIndex === pageDataSource.length - 1) {
                                 setFocusRowIndex(0);
@@ -491,7 +493,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                     }
                                     {
                                         columns.map((columnItem, columnIndex) => {
-                                            const { columnType = 'input', showTime = false } = columnItem;
+                                            const { columnType = 'input', showTime = false, onRender } = columnItem;
                                             const columnValue = dataSourceItem[columnItem['name']];
                                             const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
                                             const showKey = `${focusRowIndex}-${focusColumnName}`;
@@ -500,7 +502,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
                                                         handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
                                                     }}>
-                                                        {columnValue}
+                                                        {onRender ? onRender(columnItem, columnValue) : <ApexShowCellChildren columnItem={columnItem} dataSourceItem={dataSourceItem} />}
                                                     </ApexShowCell>
                                                 </ApexTdWrap>
                                             }
@@ -516,6 +518,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             onFocus={() => {
                                                                 editRefs.current?.[refKey]?.select();
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
                                                             }}
                                                         />
                                                     </ApexTdWrap>
