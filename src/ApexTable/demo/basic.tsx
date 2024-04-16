@@ -136,7 +136,7 @@ const App: React.FC = () => {
             title: '自定义样式',
             name: 'statusName',
             onRender: (row, value) => {
-                return <h1>{value}</h1>
+                return <div style={{ color: 'red' }}>{value}</div>
             }
         },
         {
