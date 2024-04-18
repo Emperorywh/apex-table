@@ -49,6 +49,11 @@ export interface ApexTableProps<T> {
      */
     pagination?: PaginationProps;
 
+    /**
+     * 是否只读，开启后不能进行编辑，列也有此属性，先以列为准
+     */
+    readOnly?: boolean;
+
 }
 
 /**
@@ -62,6 +67,10 @@ export interface IApexTableColumns<T> {
     defaultValue?: any;
     width?: number;
     showTime?: boolean;
+    /**
+     * 是否只读，优先级高于列表
+     */
+    readOnly?: boolean;
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
     onRender?: (row?: any, value?: any) => React.ReactNode;
@@ -88,7 +97,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         showHeaderCheckBox = false,
         tableTitle = false,
         showPagination = false,
-        pagination = {}
+        pagination = {},
+        readOnly = false
     } = props;
 
     /**
@@ -312,6 +322,131 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
 
     }
 
+    /**
+     * 监听键盘按下
+     * @param event 
+     */
+    const onApexTableKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
+        const key = event.key;
+        const eventValue = event.target.value;
+        const cursorPosition = event.target.selectionStart;
+        switch (key) {
+            case 'ArrowUp':
+                const indexUp = focusRowIndex - 1;
+                if (indexUp < 0) {
+                    setFocusRowIndex(0);
+                } else {
+                    setFocusRowIndex(prev => prev - 1);
+                }
+                break;
+            case 'ArrowDown':
+                const indexDown = focusRowIndex + 1;
+                if (indexDown > pageDataSource.length - 1) {
+                    setFocusRowIndex(pageDataSource.length - 1);
+                } else {
+                    setFocusRowIndex(prev => prev + 1);
+                }
+                break;
+            case 'ArrowLeft':
+                if (cursorPosition === 0) {
+                    const findIndex = columns.findIndex(item => item.name === focusColumnName);
+                    if (findIndex > 0) {
+                        let findColumn;
+                        for (let i = findIndex - 1; i > -1; i--) {
+                            const item = columns[i];
+                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                findColumn = item;
+                                break;
+                            }
+                        }
+                        if (!findColumn) {
+                            for (let i = columns.length - 1; i > findIndex; i--) {
+                                const item = columns[i];
+                                if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                    findColumn = item;
+                                    break;
+                                }
+                            }
+                        }
+                        if (findColumn) {
+                            setFocusColumnName(findColumn.name);
+                        }
+                    } else {
+                        if (focusRowIndex > 0) {
+                            setFocusRowIndex(prev => prev - 1);
+                        }
+                        let findColumn;
+                        for (let i = columns.length - 1; i > findIndex; i--) {
+                            const item = columns[i];
+                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                findColumn = item;
+                                break;
+                            }
+                        }
+                        if (findColumn) {
+                            setFocusColumnName(findColumn.name);
+                        }
+                    }
+                }
+                break;
+            case 'ArrowRight':
+                if (cursorPosition === eventValue.length) {
+                    const findIndex = columns.findIndex(item => {
+                        return item.name === focusColumnName;
+                    });
+                    // 最后一个可编辑列
+                    let findLastEditIndex = -1;
+                    for (let i = columns.length - 1; i > -1; i--) {
+                        const item = columns[i];
+                        if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                            findLastEditIndex = i;
+                            break;
+                        }
+                    }
+                    if (findIndex === findLastEditIndex) {
+                        if (focusRowIndex === pageDataSource.length - 1) {
+                            setFocusRowIndex(0);
+                        } else {
+                            setFocusRowIndex(prev => prev + 1);
+                        }
+                        let findColumn;
+                        for (let i = 0; i < columns.length - 1; i++) {
+                            const item = columns[i];
+                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                findColumn = item;
+                                break;
+                            }
+                        }
+                        if (findColumn) {
+                            setFocusColumnName(findColumn.name);
+                        }
+                    } else {
+                        let findColumn;
+                        for (let i = findIndex + 1; i < columns.length - 1; i++) {
+                            const item = columns[i];
+                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                findColumn = item;
+                                break;
+                            }
+                        }
+                        if (!findColumn) {
+                            for (let i = 0; i < findIndex; i++) {
+                                const item = columns[i];
+                                if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                    findColumn = item;
+                                    break;
+                                }
+                            }
+                        }
+                        if (findColumn) {
+                            setFocusColumnName(findColumn.name);
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
     useEffect(() => {
         initOuterDataSource();
     }, [dataSource]);
@@ -329,126 +464,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     }, [focusRowIndex, focusColumnName]);
 
     return <ConfigProvider locale={zh_CN}>
-        <div className='apex-table-container' tabIndex={0} onKeyDown={(event: any) => {
-            const key = event.key;
-            const eventValue = event.target.value;
-            const cursorPosition = event.target.selectionStart;
-            switch (key) {
-                case 'ArrowUp':
-                    const indexUp = focusRowIndex - 1;
-                    if (indexUp < 0) {
-                        setFocusRowIndex(0);
-                    } else {
-                        setFocusRowIndex(prev => prev - 1);
-                    }
-                    break;
-                case 'ArrowDown':
-                    const indexDown = focusRowIndex + 1;
-                    if (indexDown > pageDataSource.length - 1) {
-                        setFocusRowIndex(pageDataSource.length - 1);
-                    } else {
-                        setFocusRowIndex(prev => prev + 1);
-                    }
-                    break;
-                case 'ArrowLeft':
-                    if (cursorPosition === 0) {
-                        const findIndex = columns.findIndex(item => item.name === focusColumnName);
-                        if (findIndex > 0) {
-                            let findColumn;
-                            for (let i = findIndex - 1; i > -1; i--) {
-                                const item = columns[i];
-                                if (item.columnType !== 'customer' || !item.columnType) {
-                                    findColumn = item;
-                                    break;
-                                }
-                            }
-                            if (!findColumn) {
-                                for (let i = columns.length - 1; i > findIndex; i--) {
-                                    const item = columns[i];
-                                    if (item.columnType !== 'customer' || !item.columnType) {
-                                        findColumn = item;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (findColumn) {
-                                setFocusColumnName(findColumn.name);
-                            }
-                        } else {
-                            if (focusRowIndex > 0) {
-                                setFocusRowIndex(prev => prev - 1);
-                            }
-                            let findColumn;
-                            for (let i = columns.length - 1; i > findIndex; i--) {
-                                const item = columns[i];
-                                if (item.columnType !== 'customer' || !item.columnType) {
-                                    findColumn = item;
-                                    break;
-                                }
-                            }
-                            if (findColumn) {
-                                setFocusColumnName(findColumn.name);
-                            }
-                        }
-                    }
-                    break;
-                case 'ArrowRight':
-                    if (cursorPosition === eventValue.length) {
-                        const findIndex = columns.findIndex(item => {
-                            return item.name === focusColumnName;
-                        });
-                        // 最后一个可编辑列
-                        let findLastEditIndex = -1;
-                        for (let i = columns.length - 1; i > -1; i--) {
-                            const item = columns[i];
-                            if (item.columnType !== 'customer' || !item.columnType) {
-                                findLastEditIndex = i;
-                                break;
-                            }
-                        }
-                        if (findIndex === findLastEditIndex) {
-                            if (focusRowIndex === pageDataSource.length - 1) {
-                                setFocusRowIndex(0);
-                            } else {
-                                setFocusRowIndex(prev => prev + 1);
-                            }
-                            let findColumn;
-                            for (let i = 0; i < columns.length - 1; i++) {
-                                const item = columns[i];
-                                if (item.columnType !== 'customer' || !item.columnType) {
-                                    findColumn = item;
-                                    break;
-                                }
-                            }
-                            if (findColumn) {
-                                setFocusColumnName(findColumn.name);
-                            }
-                        } else {
-                            let findColumn;
-                            for (let i = findIndex + 1; i < columns.length - 1; i++) {
-                                const item = columns[i];
-                                if (item.columnType !== 'customer' || !item.columnType) {
-                                    findColumn = item;
-                                    break;
-                                }
-                            }
-                            if (!findColumn) {
-                                for (let i = 0; i < findIndex; i++) {
-                                    const item = columns[i];
-                                    if (item.columnType !== 'customer' || !item.columnType) {
-                                        findColumn = item;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (findColumn) {
-                                setFocusColumnName(findColumn.name);
-                            }
-                        }
-                    }
-                    break;
-            }
-        }}>
+        <div className='apex-table-container' tabIndex={0} onKeyDown={onApexTableKeyDown}>
             <div className='apex-table-content'>
                 <table className='apex-table'>
                     <colgroup>
@@ -494,13 +510,16 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                     {
                                         columns.map((columnItem, columnIndex) => {
                                             const { columnType = 'input', showTime = false, onRender } = columnItem;
+                                            const readOnlyResult = columnItem.hasOwnProperty("readOnly") ? columnItem.readOnly : readOnly;
                                             const columnValue = dataSourceItem[columnItem['name']];
                                             const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
                                             const showKey = `${focusRowIndex}-${focusColumnName}`;
                                             if (showKey !== refKey && columnType !== 'customer') {
                                                 return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                     <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
-                                                        handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                        if (!readOnlyResult) {
+                                                            handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                        }
                                                     }}>
                                                         {onRender ? onRender(columnItem, columnValue) : <ApexShowCellChildren columnItem={columnItem} dataSourceItem={dataSourceItem} />}
                                                     </ApexShowCell>
@@ -510,7 +529,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 case 'input':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
-                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
                                                             defaultValue={columnValue}
                                                             onInputChange={inputValue => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
@@ -527,7 +550,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 case 'inputNumber':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
-                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
                                                             defaultValue={columnValue}
                                                             onInputChange={inputValue => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
@@ -541,7 +568,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 case 'select':
                                                     return <ApexTableSelect
                                                         key={`${String(columnItem.name)}-${columnIndex}`}
-                                                        ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                        ref={inputRef => {
+                                                            if (!readOnlyResult) {
+                                                                editRefs.current[refKey] = inputRef;
+                                                            }
+                                                        }}
                                                         columnItem={columnItem}
                                                         dataSourceItem={dataSourceItem}
                                                         onSelectChange={handleSelectChange}
@@ -556,7 +587,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             showTime={showTime}
                                                             defaultValue={dayjs(columnValue)}
                                                             onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)}
-                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
                                                             onFocus={() => {
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'datePicker')
                                                             }}
@@ -567,7 +602,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         <DatePicker.RangePicker
                                                             showTime={showTime}
                                                             defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)}
-                                                            ref={inputRef => editRefs.current[refKey] = inputRef}
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
                                                             onFocus={() => {
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'rangePicker')
                                                             }}
@@ -575,7 +614,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     </ApexTdWrap>
                                                 case 'modal':
                                                     return <ApexModal
-                                                        ref={(modalRef: any) => editRefs.current[refKey] = modalRef}
+                                                        ref={inputRef => {
+                                                            if (!readOnlyResult) {
+                                                                editRefs.current[refKey] = inputRef;
+                                                            }
+                                                        }}
                                                         key={`${String(columnItem.name)}-${columnIndex}`}
                                                         columnItem={columnItem}
                                                         dataSourceItem={dataSourceItem}
@@ -598,6 +641,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                 default:
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <Input
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
                                                             value={columnValue}
                                                             onFocus={() => {
                                                                 editRefs.current?.[refKey]?.select();

@@ -19,7 +19,8 @@ interface ITableListItem {
     brand?: IBrand[],
     createTime?: string,
     option?: any,
-    isOpen?: any
+    isOpen?: any,
+    todo1: string,
 }
 
 interface IBrand {
@@ -62,7 +63,8 @@ const App: React.FC = () => {
                 },
             ],
             createTime: '2024-1-22 17:07:34',
-            isOpen: true
+            isOpen: true,
+            todo1: '测试数据todo1'
         },
         {
             kFullName: "成都01仓",
@@ -92,7 +94,8 @@ const App: React.FC = () => {
                 },
             ],
             createTime: '2024-1-22 17:08:06',
-            isOpen: false
+            isOpen: false,
+            todo1: '测试数据todo2'
         },
         {
             kFullName: "西奥仓库1",
@@ -123,7 +126,8 @@ const App: React.FC = () => {
 
             ],
             createTime: '2024-1-22 17:08:17',
-            isOpen: true
+            isOpen: true,
+            todo1: '测试数据todo3'
         }
     ]);
     // 弹窗点击确定
@@ -138,6 +142,11 @@ const App: React.FC = () => {
             onRender: (row, value) => {
                 return <div style={{ color: 'red' }}>{value}</div>
             }
+        },
+        {
+            title: '只读',
+            name: 'todo1',
+            readOnly: true
         },
         {
             title: '普通输入框1',
