@@ -9,6 +9,7 @@ export interface ApexTableSelectProps<T> {
     ref?: React.Ref<any>;
     onSelectChange: (row: any, columnName: any, value: any, option: any, options: any, onChange?: (value: any, option?: any, options?: any) => void) => void;
     onFocus?: React.FocusEventHandler<HTMLElement>;
+    onBlur?: React.FocusEventHandler<HTMLElement>;
 }
 
 /**
@@ -17,7 +18,7 @@ export interface ApexTableSelectProps<T> {
  * @returns 
  */
 const ApexTableSelect: React.FC<ApexTableSelectProps<any>> = forwardRef((props, ref) => {
-    const { columnItem, dataSourceItem, onSelectChange, onFocus } = props;
+    const { columnItem, dataSourceItem, onSelectChange, onFocus, onBlur } = props;
     const { options, defaultValue, onChange } = columnItem;
     let selectOption = [];
     if (typeof options === 'object') {
@@ -34,6 +35,7 @@ const ApexTableSelect: React.FC<ApexTableSelectProps<any>> = forwardRef((props, 
             allowClear
             ref={ref}
             onFocus={onFocus}
+            onBlur={onBlur}
         />
     </ApexTdWrap>
 })

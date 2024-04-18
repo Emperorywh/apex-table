@@ -6,7 +6,7 @@ export interface IApexTableRenderProps {
     ref?: Ref<InputRef>;
     onInputChange?: (value: string) => void;
     onFocus?: React.FocusEventHandler<HTMLInputElement>;
-    onBlur?: React.FocusEventHandler<HTMLInputElement>
+    onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
 /**

@@ -319,7 +319,19 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      * @param columnType 
      */
     const handleBlur = (rowInfo: IRow, columnType: IColumnType) => {
+        onCheckAllLoseFocus();
+    }
 
+    /**
+     * 检查是否所有组件都失去焦点
+     */
+    const onCheckAllLoseFocus = () => {
+        const activeElement = document.activeElement;
+        const findFocus = Object.keys(editRefs.current).find(item => editRefs.current[item] === activeElement);
+        if (!findFocus) {
+            setFocusRowIndex(-1);
+            setFocusColumnName("");
+        }
     }
 
     /**
@@ -563,6 +575,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                                 editRefs.current?.[refKey]?.select();
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'inputNumber')
                                                             }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
                                                         />
                                                     </ApexTdWrap>;
                                                 case 'select':
@@ -580,6 +595,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             // editRefs.current?.[refKey]?.select();
                                                             handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'select')
                                                         }}
+                                                        onBlur={() => {
+                                                            handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                        }}
                                                     />
                                                 case 'datePicker':
                                                     return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
@@ -595,6 +613,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             onFocus={() => {
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'datePicker')
                                                             }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
                                                         />
                                                     </ApexTdWrap>
                                                 case 'rangePicker':
@@ -609,6 +630,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             }}
                                                             onFocus={() => {
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'rangePicker')
+                                                            }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
                                                             }}
                                                         />
                                                     </ApexTdWrap>
@@ -630,6 +654,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             editRefs.current?.[refKey]?.select();
                                                             handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'modal')
                                                         }}
+                                                        onBlur={() => {
+                                                            handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                        }}
                                                     />
                                                 case 'customer':
                                                     const { onFormatter } = columnItem;
@@ -650,6 +677,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             onFocus={() => {
                                                                 editRefs.current?.[refKey]?.select();
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
                                                             }}
                                                         />
                                                     </ApexTdWrap>

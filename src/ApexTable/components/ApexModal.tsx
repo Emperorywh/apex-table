@@ -12,10 +12,11 @@ export interface IApexModalProps<T> {
     onInputChange: (value: string) => void;
     ref?: React.Ref<InputRef>;
     onFocus?: React.FocusEventHandler<HTMLInputElement>;
+    onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
 const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
-    const { columnItem, dataSourceItem, columnValue, onInputChange, onFocus } = props;
+    const { columnItem, dataSourceItem, columnValue, onInputChange, onFocus, onBlur } = props;
     const { modalOptions } = columnItem;
     const modalRef = useRef<ApexModalRef>();
     if (modalOptions) {
@@ -35,6 +36,7 @@ const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
             <Input
                 defaultValue={columnValue}
                 onBlur={inputEvent => {
+                    onBlur && onBlur(inputEvent);
                     const inputValue = inputEvent.target.value;
                     onInputChange && onInputChange(inputValue);
                 }}
@@ -62,6 +64,7 @@ const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
             <Input
                 defaultValue={columnValue}
                 onBlur={inputEvent => {
+                    onBlur && onBlur(inputEvent);
                     const inputValue = inputEvent.target.value;
                     onInputChange && onInputChange(inputValue);
                 }}

@@ -5,6 +5,7 @@ export interface IApexTableRenderProps {
     defaultValue?: string;
     onInputChange?: (value: number) => void;
     onFocus?: React.FocusEventHandler<HTMLInputElement>;
+    onBlur?: React.FocusEventHandler<HTMLInputElement>;
     ref?: React.Ref<HTMLInputElement>
 }
 
@@ -14,10 +15,11 @@ export interface IApexTableRenderProps {
  * @returns 
  */
 const ApexTableInputNumber: React.FC<IApexTableRenderProps> = forwardRef((props, ref) => {
-    const { defaultValue, onInputChange, onFocus } = props;
+    const { defaultValue, onInputChange, onFocus, onBlur } = props;
     return <InputNumber
         defaultValue={defaultValue}
         onBlur={inputEvent => {
+            onBlur && onBlur(inputEvent);
             const inputValue = Number.parseFloat(inputEvent.target.value);
             const realVal = Number.isNaN(inputValue) ? 0 : inputValue;
             onInputChange && onInputChange(realVal);
