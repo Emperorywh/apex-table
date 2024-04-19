@@ -15,7 +15,8 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 - 当需要对数据进行排序、搜索、分页、自定义操作等复杂行为时。
 
 ## 代码演示
-<code src="./demo/basic.tsx">基本用法</code>
+<code src="./demo/simple.tsx">简单用法</code>
+<code src="./demo/basic.tsx">综合用法</code>
 
 <!-- ### ApexTable API
 

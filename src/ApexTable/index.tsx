@@ -15,6 +15,11 @@ import ApexShowCellChildren from './components/ApexShowCellChildren';
 
 export interface ApexTableProps<T> {
     /**
+     * 高度
+     */
+    height?: number;
+
+    /**
     * 是否允许勾选
     */
     allowSelect?: boolean;
@@ -98,7 +103,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         tableTitle = false,
         showPagination = false,
         pagination = {},
-        readOnly = false
+        readOnly = false,
+        height = 450
     } = props;
 
     /**
@@ -476,7 +482,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     }, [focusRowIndex, focusColumnName]);
 
     return <ConfigProvider locale={zh_CN}>
-        <div className='apex-table-container' tabIndex={0} onKeyDown={onApexTableKeyDown}>
+        <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
             <div className='apex-table-content'>
                 <table className='apex-table'>
                     <colgroup>
@@ -497,9 +503,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                             {
                                 showHeaderCheckBox ? <th className='apex-table-thead-th'>
                                     <Checkbox checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
-                                </th> : <th>
-
-                                </th>
+                                </th> : null
                             }
                             {
                                 columns.map((item, index) => {

@@ -10,9 +10,12 @@
 @focusBackgroundColor: #FDF5E6;
 
 .apex-table-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
     .apex-table-content {
+        flex-grow: 1;
         overflow: auto;
-
         .apex-table {
             table-layout: fixed;
             width: 100%;
@@ -20,6 +23,9 @@
             border-collapse: collapse;
 
             .apex-table-thead {
+                position: sticky;
+                top: 0;
+                z-index: 10;
                 background: rgb(250, 250, 250);
                 font-size: 14px;
 
@@ -32,6 +38,8 @@
             }
 
             .apex-table-tbody {
+                overflow: auto;
+
                 .apex-table-tbody-tr {
 
                     .apex-table-tbody-td-checkbox {
@@ -141,6 +149,7 @@
     }
 
     .apex-table-pagination {
+        flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: flex-end;
