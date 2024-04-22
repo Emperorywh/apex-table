@@ -412,6 +412,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     const findIndex = columns.findIndex(item => {
                         return item.name === focusColumnName;
                     });
+
                     // 最后一个可编辑列
                     let findLastEditIndex = -1;
                     for (let i = columns.length - 1; i > -1; i--) {
@@ -440,7 +441,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                         }
                     } else {
                         let findColumn;
-                        for (let i = findIndex + 1; i < columns.length - 1; i++) {
+                        for (let i = findIndex + 1; i < columns.length; i++) {
                             const item = columns[i];
                             if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                                 findColumn = item;
