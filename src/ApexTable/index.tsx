@@ -112,6 +112,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      */
     const editRefs = useRef<any>({});
 
+    const tableDivRef = useRef<HTMLDivElement>(null);
+
     /**
      * 当前聚焦的行
      */
@@ -303,9 +305,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         const name = `${rowInfo.rowIndex}-${rowInfo.columnName}`;
         const findRefName = Object.keys(editRefs.current).find(key => key === name);
         if (findRefName) {
-            requestAnimationFrame(() => {
-                editRefs.current?.[findRefName]?.focus();
-            })
+            editRefs.current?.[findRefName]?.input?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            editRefs.current?.[findRefName]?.focus({ preventScroll: true });
         }
     }
 
@@ -484,7 +485,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
 
     return <ConfigProvider locale={zh_CN}>
         <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
-            <div className='apex-table-content'>
+            <div className='apex-table-content' ref={tableDivRef}>
                 <table className='apex-table'>
                     <colgroup>
                         {
@@ -556,7 +557,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                             }}
                                                             onFocus={() => {
-                                                                editRefs.current?.[refKey]?.select();
+                                                                requestAnimationFrame(() => {
+                                                                    editRefs.current?.[refKey]?.select();
+                                                                })
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
                                                             }}
                                                             onBlur={() => {
