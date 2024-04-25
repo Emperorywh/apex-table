@@ -307,6 +307,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         if (findRefName) {
             editRefs.current?.[findRefName]?.input?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             editRefs.current?.[findRefName]?.focus({ preventScroll: true });
+            const tableTop = tableDivRef.current?.getBoundingClientRect().top;
+            const inputTop = editRefs.current?.[findRefName]?.input?.getBoundingClientRect().top;
+            if (tableTop && inputTop && inputTop - tableTop < 50) {
+                tableDivRef.current.scrollTop = tableDivRef.current.scrollTop - 50;
+            }
         }
     }
 
