@@ -607,7 +607,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                                 handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                             }}
                                                             onFocus={() => {
-                                                                editRefs.current?.[refKey]?.select();
+                                                                requestAnimationFrame(() => {
+                                                                    editRefs.current?.[refKey]?.select();
+                                                                })
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'inputNumber')
                                                             }}
                                                             onBlur={() => {

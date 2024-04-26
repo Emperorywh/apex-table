@@ -242,7 +242,8 @@ const App: React.FC = () => {
         columns={columns}
         dataSource={dataSource}
         showHeaderCheckBox
-        isSingle
+        showPagination
+        pagination={{ pageSize: 10 }}
     />
 };
 
