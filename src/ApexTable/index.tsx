@@ -1,6 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, DatePicker, Input, ModalFuncProps, Pagination, PaginationProps, message } from 'antd';
+import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps, message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -59,6 +59,11 @@ export interface ApexTableProps<T> {
      */
     readOnly?: boolean;
 
+    /**
+     * 是否单选
+     */
+    isSingle?: boolean;
+
 }
 
 /**
@@ -104,7 +109,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         showPagination = false,
         pagination = {},
         readOnly = false,
-        height = 450
+        height = 450,
+        isSingle = false
     } = props;
 
     /**
@@ -188,24 +194,40 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      */
     const handleRowSelected = (event: CheckboxChangeEvent, row: any) => {
         const eventValue = event.target.checked;
-        const tempCheck: any[] = [...checkedData];
-        const tempTableDataSource: any[] = [...tableDataSource];
+        const tempCheck: any[] = structuredClone(checkedData);
+        const tempTableDataSource: any[] = structuredClone(tableDataSource);
         const findRowIndex = tempCheck.findIndex(item => item['apexTableId'] === row['apexTableId']);
         const findTableIndex = tempTableDataSource.findIndex(item => item['apexTableId'] === row['apexTableId']);
-        if (eventValue) {
-            if (findRowIndex < 0) {
-                tempCheck.push(row);
-                setCheckedData(tempCheck);
+        if (isSingle) {
+            if (eventValue) {
+                setCheckedData([row]);
+            } else {
+                setCheckedData([]);
             }
-        } else {
-            if (findRowIndex > -1) {
-                tempCheck.splice(findRowIndex, 1);
-                setCheckedData(tempCheck);
-            }
-        }
-        if (findTableIndex > -1) {
-            tempTableDataSource[findTableIndex]['apexTableChecked'] = eventValue;
+            tempTableDataSource.forEach((item, index) => {
+                if (findTableIndex === index) {
+                    tempTableDataSource[index]['apexTableChecked'] = eventValue;
+                } else {
+                    tempTableDataSource[index]['apexTableChecked'] = false;
+                }
+            });
             setTableDataSource(tempTableDataSource);
+        } else {
+            if (eventValue) {
+                if (findRowIndex < 0) {
+                    tempCheck.push(row);
+                    setCheckedData(tempCheck);
+                }
+            } else {
+                if (findRowIndex > -1) {
+                    tempCheck.splice(findRowIndex, 1);
+                    setCheckedData(tempCheck);
+                }
+            }
+            if (findTableIndex > -1) {
+                tempTableDataSource[findTableIndex]['apexTableChecked'] = eventValue;
+                setTableDataSource(tempTableDataSource);
+            }
         }
     }
 
@@ -509,7 +531,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                         <tr>
                             {
                                 showHeaderCheckBox ? <th className='apex-table-thead-th'>
-                                    <Checkbox checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
+                                    <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
                                 </th> : null
                             }
                             {
@@ -523,7 +545,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     </thead>
                     <tbody className='apex-table-tbody'>
                         {
-                            pageDataSource.map((dataSourceItem, dataSourceIndex) => {
+                            pageDataSource.length > 0 ? pageDataSource.map((dataSourceItem, dataSourceIndex) => {
                                 return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
                                     {
                                         allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
@@ -700,7 +722,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                         })
                                     }
                                 </tr>
-                            })
+                            }) : <tr>
+                                <td colSpan={columns.length}>
+                                    <Empty />
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>

@@ -9,7 +9,6 @@ interface IProduct {
     unitName: string;
     sellPrice: number;
 }
-
 const App: React.FC = () => {
 
     /**
@@ -62,8 +61,6 @@ const App: React.FC = () => {
         <ApexTable
             columns={columns}
             dataSource={dataSource}
-            showPagination
-            pagination={{ pageSize: 100 }}
         />
     </>
 };
