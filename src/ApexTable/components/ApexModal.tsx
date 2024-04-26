@@ -1,11 +1,12 @@
 import React, { forwardRef, useRef } from "react";
-import { IApexTableColumns } from "..";
+import { ApexTableProps, IApexTableColumns } from "..";
 import { ApexModalRef } from "../types/ApexModal";
 import ApexTdWrap from "./ApexTdWrap";
 import { Input, InputRef, Modal } from "antd";
 import { MoreOutlined } from '@ant-design/icons';
 
 export interface IApexModalProps<T> {
+    apexTableProps: ApexTableProps<any>;
     columnItem: IApexTableColumns<T>;
     dataSourceItem: any;
     columnValue: string;
@@ -32,7 +33,7 @@ const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
             onCancel,
             ...modalProps
         } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name], modalRef as unknown as any);
-        return <ApexTdWrap>
+        return <ApexTdWrap apexTableProps={props.apexTableProps} apexColumn={columnItem}>
             <Input
                 defaultValue={columnValue}
                 onBlur={inputEvent => {
@@ -60,7 +61,7 @@ const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
             />
         </ApexTdWrap>
     } else {
-        return <ApexTdWrap >
+        return <ApexTdWrap apexTableProps={props.apexTableProps} apexColumn={columnItem}>
             <Input
                 defaultValue={columnValue}
                 onBlur={inputEvent => {

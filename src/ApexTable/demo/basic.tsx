@@ -70,6 +70,7 @@ const App: React.FC = () => {
         {
             title: '输入框_2（只读）',
             name: 'input_2',
+            fixed: 'left',
             readOnly: true
         },
         {
@@ -148,6 +149,7 @@ const App: React.FC = () => {
             title: '下拉列_3',
             name: 'select_3',
             columnType: 'select',
+            fixed: 'right',
             options: (row) => {
                 return [
                     { label: '选项1', value: 1 },
@@ -244,6 +246,7 @@ const App: React.FC = () => {
         showHeaderCheckBox
         showPagination
         pagination={{ pageSize: 10 }}
+        allowFixed
     />
 };
 

@@ -32,15 +32,34 @@
 
                 tr {
                     height: @rowHeight;
-                    // white-space: nowrap;
-                    // box-sizing: border-box;
-                    // border-top: 1px solid @borderColor;
 
                     .apex-table-thead-th {
-                        // border: 1px solid @borderColor;
-                        // height: @rowHeight;
-                        // white-space: nowrap;
-                        // box-sizing: border-box;
+                        
+                    }
+
+                    .apex-table-thead-th-checkbox {
+                        position: sticky;
+                        left: 0;
+                        z-index: 99;
+                        background-color: #FFF;
+                    }
+
+                    .apex-table-thead-fixed-left {
+                        position: sticky;
+                        left: 45px;
+                        z-index: 99;
+                        box-shadow: inset -10px 0 8px -8px #00000026;
+                        background-color: #FFF;
+                    }
+
+                    .apex-table-thead-fixed-right {
+                        position: sticky;
+                        right: 0;
+                        z-index: 99;
+                        border-left: 1px solid rgba(5, 5, 5, .06);
+                        border-color: #0505050f;
+                        background-color: #FFF;
+                        box-shadow: inset 10px 0 8px -8px #00000026;
                     }
                 }
 
@@ -53,6 +72,10 @@
 
                     .apex-table-tbody-td-checkbox {
                         text-align: center !important;
+                        position: sticky;
+                        left: 0;
+                        z-index: 99;
+                        background-color: #FFF;
                     }
 
                     .apex-table-tbody-td {
@@ -126,6 +149,22 @@
                             border: 1px solid @primaryColor;
                             box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
                         }
+                    }
+
+                    .apex-table-tbody-fixed-left {
+                        position: sticky;
+                        left: 45px;
+                        z-index: 99;
+                        box-shadow: inset -10px 0 8px -8px #00000026;
+                        background-color: #FFF;
+                    }
+
+                    .apex-table-tbody-fixed-right {
+                        position: sticky;
+                        right: 0;
+                        z-index: 99;
+                        background-color: #FFF;
+                        box-shadow: inset 10px 0 8px -8px #00000026;
                     }
 
                     .apex-table-tbody-td:focus-within {

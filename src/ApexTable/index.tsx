@@ -64,6 +64,11 @@ export interface ApexTableProps<T> {
      */
     isSingle?: boolean;
 
+    /**
+     * 是否开起固定
+     */
+    allowFixed?: boolean;
+
 }
 
 /**
@@ -81,6 +86,7 @@ export interface IApexTableColumns<T> {
      * 是否只读，优先级高于列表
      */
     readOnly?: boolean;
+    fixed?: 'left' | 'right';
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
     onRender?: (row?: any, value?: any) => React.ReactNode;
@@ -110,7 +116,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         pagination = {},
         readOnly = false,
         height = 450,
-        isSingle = false
+        isSingle = false,
+        allowFixed = false
     } = props;
 
     /**
@@ -530,13 +537,13 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     <thead className='apex-table-thead'>
                         <tr>
                             {
-                                showHeaderCheckBox ? <th className='apex-table-thead-th'>
+                                showHeaderCheckBox ? <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
                                     <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
                                 </th> : null
                             }
                             {
                                 columns.map((item, index) => {
-                                    return <th key={`${String(item.name)}-${index}`} className='apex-table-thead-th'>
+                                    return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th ${allowFixed && item.fixed ? 'apex-table-thead-fixed-' + item.fixed : ''}`}>
                                         {item['title']}
                                     </th>
                                 })
@@ -560,7 +567,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
                                             const showKey = `${focusRowIndex}-${focusColumnName}`;
                                             if (showKey !== refKey && columnType !== 'customer') {
-                                                return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                     <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
                                                         if (!readOnlyResult) {
                                                             handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
@@ -572,7 +579,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             }
                                             switch (columnType) {
                                                 case 'input':
-                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
                                                             ref={inputRef => {
                                                                 if (!readOnlyResult) {
@@ -595,7 +602,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         />
                                                     </ApexTdWrap>
                                                 case 'inputNumber':
-                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
                                                             ref={inputRef => {
                                                                 if (!readOnlyResult) {
@@ -626,6 +633,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             }
                                                         }}
                                                         columnItem={columnItem}
+                                                        apexTableProps={props}
                                                         dataSourceItem={dataSourceItem}
                                                         onSelectChange={handleSelectChange}
                                                         onFocus={() => {
@@ -637,7 +645,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         }}
                                                     />
                                                 case 'datePicker':
-                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <DatePicker
                                                             showTime={showTime}
                                                             defaultValue={dayjs(columnValue)}
@@ -656,7 +664,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         />
                                                     </ApexTdWrap>
                                                 case 'rangePicker':
-                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`} >
+                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`} >
                                                         <DatePicker.RangePicker
                                                             showTime={showTime}
                                                             defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)}
@@ -682,6 +690,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         }}
                                                         key={`${String(columnItem.name)}-${columnIndex}`}
                                                         columnItem={columnItem}
+                                                        apexTableProps={props}
                                                         dataSourceItem={dataSourceItem}
                                                         columnValue={columnValue}
                                                         onInputChange={inputValue => {
@@ -697,13 +706,13 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     />
                                                 case 'customer':
                                                     const { onFormatter } = columnItem;
-                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         {
                                                             onFormatter?.(dataSourceItem, dataSourceItem[columnItem.name])
                                                         }
                                                     </ApexTdWrap>
                                                 default:
-                                                    return <ApexTdWrap key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <Input
                                                             ref={inputRef => {
                                                                 if (!readOnlyResult) {

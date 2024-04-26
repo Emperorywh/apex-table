@@ -1,9 +1,10 @@
 import React, { forwardRef } from "react";
-import { IApexTableColumns } from "..";
+import { ApexTableProps, IApexTableColumns } from "..";
 import ApexTdWrap from "./ApexTdWrap";
 import { Select } from "antd";
 
 export interface ApexTableSelectProps<T> {
+    apexTableProps: ApexTableProps<any>;
     columnItem: IApexTableColumns<T>;
     dataSourceItem: any;
     ref?: React.Ref<any>;
@@ -26,7 +27,7 @@ const ApexTableSelect: React.FC<ApexTableSelectProps<any>> = forwardRef((props, 
     } else if (typeof options === 'function') {
         selectOption = options(dataSourceItem[columnItem.name], dataSourceItem)
     }
-    return <ApexTdWrap>
+    return <ApexTdWrap apexTableProps={props.apexTableProps} apexColumn={columnItem}>
         <Select
             defaultValue={defaultValue}
             value={dataSourceItem[columnItem.name]}
