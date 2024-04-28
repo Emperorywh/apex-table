@@ -637,7 +637,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         dataSourceItem={dataSourceItem}
                                                         onSelectChange={handleSelectChange}
                                                         onFocus={() => {
-                                                            // editRefs.current?.[refKey]?.select();
+                                                            requestAnimationFrame(() => {
+                                                                document.execCommand('selectAll', false, undefined);
+                                                            })
                                                             handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'select')
                                                         }}
                                                         onBlur={() => {
@@ -656,6 +658,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                                 }
                                                             }}
                                                             onFocus={() => {
+                                                                requestAnimationFrame(() => {
+                                                                    document.execCommand('selectAll', false, undefined);
+                                                                })
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'datePicker')
                                                             }}
                                                             onBlur={() => {
@@ -674,6 +679,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                                 }
                                                             }}
                                                             onFocus={() => {
+                                                                requestAnimationFrame(() => {
+                                                                    document.execCommand('selectAll', false, undefined);
+                                                                })
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'rangePicker')
                                                             }}
                                                             onBlur={() => {
@@ -697,7 +705,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
                                                         }}
                                                         onFocus={() => {
-                                                            editRefs.current?.[refKey]?.select();
+                                                            requestAnimationFrame(() => {
+                                                                editRefs.current?.[refKey]?.select();
+                                                            })
                                                             handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'modal')
                                                         }}
                                                         onBlur={() => {
@@ -721,7 +731,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                             }}
                                                             value={columnValue}
                                                             onFocus={() => {
-                                                                editRefs.current?.[refKey]?.select();
+                                                                requestAnimationFrame(() => {
+                                                                    editRefs.current?.[refKey]?.select();
+                                                                })
                                                                 handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
                                                             }}
                                                             onBlur={() => {
