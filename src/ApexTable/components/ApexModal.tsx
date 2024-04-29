@@ -6,6 +6,7 @@ import { Input, InputRef, Modal } from "antd";
 import { MoreOutlined } from '@ant-design/icons';
 
 export interface IApexModalProps<T> {
+    tdId?: string;
     apexTableProps: ApexTableProps<any>;
     columnItem: IApexTableColumns<T>;
     dataSourceItem: any;
@@ -17,7 +18,7 @@ export interface IApexModalProps<T> {
 }
 
 const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
-    const { columnItem, dataSourceItem, columnValue, onInputChange, onFocus, onBlur } = props;
+    const { columnItem, dataSourceItem, columnValue, tdId, onInputChange, onFocus, onBlur } = props;
     const { modalOptions } = columnItem;
     const modalRef = useRef<ApexModalRef>();
     if (modalOptions) {
@@ -33,7 +34,7 @@ const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
             onCancel,
             ...modalProps
         } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name], modalRef as unknown as any);
-        return <ApexTdWrap apexTableProps={props.apexTableProps} apexColumn={columnItem}>
+        return <ApexTdWrap id={tdId} apexTableProps={props.apexTableProps} apexColumn={columnItem}>
             <Input
                 defaultValue={columnValue}
                 onBlur={inputEvent => {
@@ -61,7 +62,7 @@ const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
             />
         </ApexTdWrap>
     } else {
-        return <ApexTdWrap apexTableProps={props.apexTableProps} apexColumn={columnItem}>
+        return <ApexTdWrap id={tdId} apexTableProps={props.apexTableProps} apexColumn={columnItem}>
             <Input
                 defaultValue={columnValue}
                 onBlur={inputEvent => {

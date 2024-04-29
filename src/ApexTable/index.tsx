@@ -337,9 +337,12 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
             editRefs.current?.[findRefName]?.input?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             editRefs.current?.[findRefName]?.focus({ preventScroll: true });
             const tableTop = tableDivRef.current?.getBoundingClientRect().top;
-            const inputTop = editRefs.current?.[findRefName]?.input?.getBoundingClientRect().top;
-            if (tableTop && inputTop && inputTop - tableTop < 50) {
-                tableDivRef.current.scrollTop = tableDivRef.current.scrollTop - 50;
+            const td = document.getElementById(`td-${findRefName}`);
+            const tdHeight = td?.getBoundingClientRect().height || 0;
+            const tdTop = td?.getBoundingClientRect().top || 0;
+            if (tableTop && td && tdTop - tableTop < tdHeight) {
+                debugger;
+                tableDivRef.current.scrollTop = tableDivRef.current.scrollTop - tdHeight;
             }
         }
     }
@@ -567,7 +570,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
                                             const showKey = `${focusRowIndex}-${focusColumnName}`;
                                             if (showKey !== refKey && columnType !== 'customer') {
-                                                return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                     <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
                                                         if (!readOnlyResult) {
                                                             handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
@@ -579,7 +582,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                             }
                                             switch (columnType) {
                                                 case 'input':
-                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
                                                             ref={inputRef => {
                                                                 if (!readOnlyResult) {
@@ -602,7 +605,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         />
                                                     </ApexTdWrap>
                                                 case 'inputNumber':
-                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <ApexTableInput
                                                             ref={inputRef => {
                                                                 if (!readOnlyResult) {
@@ -626,6 +629,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     </ApexTdWrap>;
                                                 case 'select':
                                                     return <ApexTableSelect
+                                                        tdId={`td-${refKey}`}
                                                         key={`${String(columnItem.name)}-${columnIndex}`}
                                                         ref={inputRef => {
                                                             if (!readOnlyResult) {
@@ -647,7 +651,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         }}
                                                     />
                                                 case 'datePicker':
-                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <DatePicker
                                                             showTime={showTime}
                                                             defaultValue={dayjs(columnValue)}
@@ -669,7 +673,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                         />
                                                     </ApexTdWrap>
                                                 case 'rangePicker':
-                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`} >
+                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`} >
                                                         <DatePicker.RangePicker
                                                             showTime={showTime}
                                                             defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)}
@@ -691,6 +695,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     </ApexTdWrap>
                                                 case 'modal':
                                                     return <ApexModal
+                                                        tdId={`td-${refKey}`}
                                                         ref={inputRef => {
                                                             if (!readOnlyResult) {
                                                                 editRefs.current[refKey] = inputRef;
@@ -716,13 +721,13 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                                     />
                                                 case 'customer':
                                                     const { onFormatter } = columnItem;
-                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         {
                                                             onFormatter?.(dataSourceItem, dataSourceItem[columnItem.name])
                                                         }
                                                     </ApexTdWrap>
                                                 default:
-                                                    return <ApexTdWrap apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                         <Input
                                                             ref={inputRef => {
                                                                 if (!readOnlyResult) {

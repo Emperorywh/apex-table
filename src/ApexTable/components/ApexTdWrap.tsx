@@ -3,6 +3,7 @@ import { ApexTableProps, IApexTableColumns } from "..";
 
 
 export interface IApexTdWrap {
+    id?: string;
     apexTableProps: ApexTableProps<any>;
     apexColumn: IApexTableColumns<any>
     children?: React.ReactNode
@@ -14,9 +15,9 @@ export interface IApexTdWrap {
  * @returns 
  */
 const ApexTdWrap: React.FC<IApexTdWrap> = (props) => {
-    const { apexTableProps, apexColumn } = props;
+    const { apexTableProps, apexColumn, id } = props;
     const { allowFixed } = apexTableProps;
-    return <td className={`apex-table-tbody-td ${allowFixed && apexColumn.fixed ? 'apex-table-tbody-fixed-' + apexColumn.fixed : ''}`}>
+    return <td id={id} className={`apex-table-tbody-td ${allowFixed && apexColumn.fixed ? 'apex-table-tbody-fixed-' + apexColumn.fixed : ''}`}>
         {props.children}
     </td>
 };
