@@ -69,6 +69,11 @@ export interface ApexTableProps<T> {
      */
     allowFixed?: boolean;
 
+    /**
+     * 是否展示行号
+     */
+    showLineNumber?: boolean;
+
 }
 
 /**
@@ -117,7 +122,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         readOnly = false,
         height = 450,
         isSingle = false,
-        allowFixed = false
+        allowFixed = false,
+        showLineNumber = true
     } = props;
 
     /**
@@ -570,6 +576,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                 <table className='apex-table'>
                     <colgroup>
                         {
+                            showLineNumber && <col style={{ width: 50 }}></col>
+                        }
+                        {
                             allowSelect && <col style={{ width: 50 }}></col>
                         }
                         {
@@ -583,6 +592,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     }
                     <thead className='apex-table-thead'>
                         <tr>
+                            {
+                                showLineNumber ? <th className='apex-table-thead-th apex-table-thead-th-line-number-head'>
+                                    <span>行号</span>
+                                </th> : null
+                            }
                             {
                                 showHeaderCheckBox ? <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
                                     <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
@@ -601,6 +615,11 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                         {
                             pageDataSource.length > 0 ? pageDataSource.map((dataSourceItem, dataSourceIndex) => {
                                 return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
+                                    {
+                                        showLineNumber && <td className='apex-table-tbody-td apex-table-tbody-td-line-number'>
+                                            <div className={`number ${dataSourceIndex > 2 ? 'number-low' : ''}`}>{dataSourceIndex + 1}</div>
+                                        </td>
+                                    }
                                     {
                                         allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
                                             <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => handleRowSelected(event, dataSourceItem)} />

@@ -33,9 +33,7 @@
                 tr {
                     height: @rowHeight;
 
-                    .apex-table-thead-th {
-                        
-                    }
+                    .apex-table-thead-th {}
 
                     .apex-table-thead-th-checkbox {
                         position: sticky;
@@ -169,6 +167,29 @@
 
                     .apex-table-tbody-td:focus-within {
                         background-color: #FFF;
+                    }
+
+                    .apex-table-tbody-td-line-number {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .number {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 12px;
+                            background-color: #314659;
+                            border-radius: 50%;
+                            min-width: 18px;
+                            min-height: 18px;
+                            padding: 4px;
+                        }
+
+                        .number-low {
+                            background-color: #979797;
+                        }
                     }
                 }
 
