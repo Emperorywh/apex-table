@@ -243,7 +243,7 @@ const App: React.FC = () => {
         dataSource={dataSource}
         showHeaderCheckBox
         showPagination
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 50 }}
     />
 };
 

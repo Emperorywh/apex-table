@@ -341,7 +341,6 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
             const tdHeight = td?.getBoundingClientRect().height || 0;
             const tdTop = td?.getBoundingClientRect().top || 0;
             if (tableTop && td && tdTop - tableTop < tdHeight) {
-                debugger;
                 tableDivRef.current.scrollTop = tableDivRef.current.scrollTop - tdHeight;
             }
         }
@@ -388,121 +387,166 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         const cursorPosition = event.target.selectionStart;
         switch (key) {
             case 'ArrowUp':
-                const indexUp = focusRowIndex - 1;
-                if (indexUp < 0) {
-                    setFocusRowIndex(0);
-                } else {
-                    setFocusRowIndex(prev => prev - 1);
-                }
+                onArrowUp();
                 break;
             case 'ArrowDown':
-                const indexDown = focusRowIndex + 1;
-                if (indexDown > pageDataSource.length - 1) {
-                    setFocusRowIndex(pageDataSource.length - 1);
-                } else {
-                    setFocusRowIndex(prev => prev + 1);
-                }
+                onArrowDown();
                 break;
             case 'ArrowLeft':
-                if (cursorPosition === 0) {
-                    const findIndex = columns.findIndex(item => item.name === focusColumnName);
-                    if (findIndex > 0) {
-                        let findColumn;
-                        for (let i = findIndex - 1; i > -1; i--) {
-                            const item = columns[i];
-                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                                findColumn = item;
-                                break;
-                            }
-                        }
-                        if (!findColumn) {
-                            for (let i = columns.length - 1; i > findIndex; i--) {
-                                const item = columns[i];
-                                if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                                    findColumn = item;
-                                    break;
-                                }
-                            }
-                        }
-                        if (findColumn) {
-                            setFocusColumnName(findColumn.name);
-                        }
-                    } else {
-                        if (focusRowIndex > 0) {
-                            setFocusRowIndex(prev => prev - 1);
-                        }
-                        let findColumn;
-                        for (let i = columns.length - 1; i > findIndex; i--) {
-                            const item = columns[i];
-                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                                findColumn = item;
-                                break;
-                            }
-                        }
-                        if (findColumn) {
-                            setFocusColumnName(findColumn.name);
-                        }
-                    }
-                }
+                onArrowLeft(cursorPosition);
                 break;
             case 'ArrowRight':
-                if (cursorPosition === eventValue.length) {
-                    const findIndex = columns.findIndex(item => {
-                        return item.name === focusColumnName;
-                    });
-
-                    // 最后一个可编辑列
-                    let findLastEditIndex = -1;
-                    for (let i = columns.length - 1; i > -1; i--) {
-                        const item = columns[i];
-                        if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                            findLastEditIndex = i;
-                            break;
-                        }
-                    }
-                    if (findIndex === findLastEditIndex) {
-                        if (focusRowIndex === pageDataSource.length - 1) {
-                            setFocusRowIndex(0);
-                        } else {
-                            setFocusRowIndex(prev => prev + 1);
-                        }
-                        let findColumn;
-                        for (let i = 0; i < columns.length - 1; i++) {
-                            const item = columns[i];
-                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                                findColumn = item;
-                                break;
-                            }
-                        }
-                        if (findColumn) {
-                            setFocusColumnName(findColumn.name);
-                        }
-                    } else {
-                        let findColumn;
-                        for (let i = findIndex + 1; i < columns.length; i++) {
-                            const item = columns[i];
-                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                                findColumn = item;
-                                break;
-                            }
-                        }
-                        if (!findColumn) {
-                            for (let i = 0; i < findIndex; i++) {
-                                const item = columns[i];
-                                if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                                    findColumn = item;
-                                    break;
-                                }
-                            }
-                        }
-                        if (findColumn) {
-                            setFocusColumnName(findColumn.name);
-                        }
-                    }
-                }
+                onArrowRight(cursorPosition, eventValue);
                 break;
         }
     }
+
+    /**
+     * 监听键盘按键 ↑
+     */
+    const onArrowUp = () => {
+        const indexUp = focusRowIndex - 1;
+        if (indexUp < 0) {
+            setFocusRowIndex(0);
+        } else {
+            setFocusRowIndex(prev => prev - 1);
+        }
+    }
+
+    /**
+     * 监听键盘按键 ↓
+     */
+    const onArrowDown = () => {
+        const indexDown = focusRowIndex + 1;
+        if (indexDown > pageDataSource.length - 1) {
+            setFocusRowIndex(pageDataSource.length - 1);
+        } else {
+            setFocusRowIndex(prev => prev + 1);
+        }
+    }
+
+    /**
+     * 监听键盘按键 ←
+     * @param cursorPosition 光标位置
+     */
+    const onArrowLeft = (cursorPosition: number) => {
+        if (cursorPosition === 0) {
+            const findIndex = columns.findIndex(item => item.name === focusColumnName);
+            if (findIndex > 0) {
+                let findColumn;
+                for (let i = findIndex - 1; i > -1; i--) {
+                    const item = columns[i];
+                    if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                        findColumn = item;
+                        break;
+                    }
+                }
+                if (!findColumn) {
+                    for (let i = columns.length - 1; i > findIndex; i--) {
+                        const item = columns[i];
+                        if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                            findColumn = item;
+                            break;
+                        }
+                    }
+                }
+                if (findColumn) {
+                    setFocusColumnName(findColumn.name);
+                }
+            } else {
+                if (focusRowIndex > 0) {
+                    setFocusRowIndex(prev => prev - 1);
+                }
+                let findColumn;
+                for (let i = columns.length - 1; i > findIndex; i--) {
+                    const item = columns[i];
+                    if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                        findColumn = item;
+                        break;
+                    }
+                }
+                if (findColumn) {
+                    setFocusColumnName(findColumn.name);
+                }
+            }
+        }
+    }
+
+    /**
+     * 监听键盘按键 →
+     * @param cursorPosition    光标位置
+     * @param eventValue        输入框的值
+     */
+    const onArrowRight = (cursorPosition: number, eventValue: any) => {
+        if (cursorPosition === eventValue.length) {
+            const findIndex = columns.findIndex(item => {
+                return item.name === focusColumnName;
+            });
+
+            // 最后一个可编辑列
+            let findLastEditIndex = -1;
+            for (let i = columns.length - 1; i > -1; i--) {
+                const item = columns[i];
+                if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                    findLastEditIndex = i;
+                    break;
+                }
+            }
+            if (findIndex === findLastEditIndex) {
+                if (focusRowIndex === pageDataSource.length - 1) {
+                    setFocusRowIndex(0);
+                } else {
+                    setFocusRowIndex(prev => prev + 1);
+                }
+                let findColumn;
+                for (let i = 0; i < columns.length - 1; i++) {
+                    const item = columns[i];
+                    if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                        findColumn = item;
+                        break;
+                    }
+                }
+                if (findColumn) {
+                    setFocusColumnName(findColumn.name);
+                }
+            } else {
+                let findColumn;
+                for (let i = findIndex + 1; i < columns.length; i++) {
+                    const item = columns[i];
+                    if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                        findColumn = item;
+                        break;
+                    }
+                }
+                if (!findColumn) {
+                    for (let i = 0; i < findIndex; i++) {
+                        const item = columns[i];
+                        if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                            findColumn = item;
+                            break;
+                        }
+                    }
+                }
+                if (findColumn) {
+                    setFocusColumnName(findColumn.name);
+                }
+            }
+        }
+    }
+
+    /**
+     * 监听鼠标滚轮
+     * @param event 
+     */
+    const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+        const direction = event.deltaY > 0 ? 'ArrowDown' : 'ArrowUp';
+        if (direction === 'ArrowUp') {
+            onArrowUp();
+        } else {
+            onArrowDown();
+        }
+    }
+
 
     useEffect(() => {
         initOuterDataSource();
@@ -521,7 +565,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     }, [focusRowIndex, focusColumnName]);
 
     return <ConfigProvider locale={zh_CN}>
-        <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
+        <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} onWheel={onWheel}>
             <div className='apex-table-content' ref={tableDivRef}>
                 <table className='apex-table'>
                     <colgroup>
