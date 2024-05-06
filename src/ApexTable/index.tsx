@@ -1,6 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps, message } from 'antd';
+import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps, Popover, Tooltip, message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -12,6 +12,10 @@ import ApexTableSelect from './components/ApexTableSelect';
 import ApexModal from './components/ApexModal';
 import ApexShowCell from './components/ApexShowCell';
 import ApexShowCellChildren from './components/ApexShowCellChildren';
+import {
+    SettingOutlined
+} from '@ant-design/icons';
+import ColumnSetting from './components/ColumnSetting';
 
 export interface ApexTableProps<T> {
     /**
@@ -572,6 +576,9 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
 
     return <ConfigProvider locale={zh_CN}>
         <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} onWheel={onWheel}>
+            <div className='apex-table-toolbar'>
+                <ColumnSetting></ColumnSetting>
+            </div>
             <div className='apex-table-content' ref={tableDivRef}>
                 <table className='apex-table'>
                     <colgroup>
