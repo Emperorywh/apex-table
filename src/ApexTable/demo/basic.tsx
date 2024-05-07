@@ -35,7 +35,7 @@ const App: React.FC = () => {
      */
     const initDataSource = () => {
         const array: ITableListItem[] = [];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 1000; i++) {
             const data: ITableListItem = {
                 input_1: `输入框${i + 1}`,
                 input_2: `输入框${i + 2}`,

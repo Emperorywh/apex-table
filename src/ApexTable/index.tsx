@@ -1,6 +1,6 @@
 import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps, Popover, Tooltip, message } from 'antd';
+import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -12,9 +12,6 @@ import ApexTableSelect from './components/ApexTableSelect';
 import ApexModal from './components/ApexModal';
 import ApexShowCell from './components/ApexShowCell';
 import ApexShowCellChildren from './components/ApexShowCellChildren';
-import {
-    SettingOutlined
-} from '@ant-design/icons';
 import ColumnSetting from './components/ColumnSetting';
 
 export interface ApexTableProps<T> {
@@ -91,6 +88,8 @@ export interface IApexTableColumns<T> {
     defaultValue?: any;
     width?: number;
     showTime?: boolean;
+    // 是否显示
+    visible?: boolean;
     /**
      * 是否只读，优先级高于列表
      */
@@ -136,6 +135,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     const editRefs = useRef<any>({});
 
     const tableDivRef = useRef<HTMLDivElement>(null);
+
+    const [apexColumns, setApexColumns] = useState(columns);
 
     /**
      * 当前聚焦的行
@@ -441,19 +442,19 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      */
     const onArrowLeft = (cursorPosition: number) => {
         if (cursorPosition === 0) {
-            const findIndex = columns.findIndex(item => item.name === focusColumnName);
+            const findIndex = apexColumns.findIndex(item => item.name === focusColumnName);
             if (findIndex > 0) {
                 let findColumn;
                 for (let i = findIndex - 1; i > -1; i--) {
-                    const item = columns[i];
+                    const item = apexColumns[i];
                     if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                         findColumn = item;
                         break;
                     }
                 }
                 if (!findColumn) {
-                    for (let i = columns.length - 1; i > findIndex; i--) {
-                        const item = columns[i];
+                    for (let i = apexColumns.length - 1; i > findIndex; i--) {
+                        const item = apexColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                             findColumn = item;
                             break;
@@ -468,8 +469,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     setFocusRowIndex(prev => prev - 1);
                 }
                 let findColumn;
-                for (let i = columns.length - 1; i > findIndex; i--) {
-                    const item = columns[i];
+                for (let i = apexColumns.length - 1; i > findIndex; i--) {
+                    const item = apexColumns[i];
                     if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                         findColumn = item;
                         break;
@@ -489,14 +490,14 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
      */
     const onArrowRight = (cursorPosition: number, eventValue: any) => {
         if (cursorPosition === eventValue.length) {
-            const findIndex = columns.findIndex(item => {
+            const findIndex = apexColumns.findIndex(item => {
                 return item.name === focusColumnName;
             });
 
             // 最后一个可编辑列
             let findLastEditIndex = -1;
-            for (let i = columns.length - 1; i > -1; i--) {
-                const item = columns[i];
+            for (let i = apexColumns.length - 1; i > -1; i--) {
+                const item = apexColumns[i];
                 if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                     findLastEditIndex = i;
                     break;
@@ -509,8 +510,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                     setFocusRowIndex(prev => prev + 1);
                 }
                 let findColumn;
-                for (let i = 0; i < columns.length - 1; i++) {
-                    const item = columns[i];
+                for (let i = 0; i < apexColumns.length - 1; i++) {
+                    const item = apexColumns[i];
                     if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                         findColumn = item;
                         break;
@@ -521,8 +522,8 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                 }
             } else {
                 let findColumn;
-                for (let i = findIndex + 1; i < columns.length; i++) {
-                    const item = columns[i];
+                for (let i = findIndex + 1; i < apexColumns.length; i++) {
+                    const item = apexColumns[i];
                     if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                         findColumn = item;
                         break;
@@ -530,7 +531,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                 }
                 if (!findColumn) {
                     for (let i = 0; i < findIndex; i++) {
-                        const item = columns[i];
+                        const item = apexColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                             findColumn = item;
                             break;
@@ -577,7 +578,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
     return <ConfigProvider locale={zh_CN}>
         <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} onWheel={onWheel}>
             <div className='apex-table-toolbar'>
-                <ColumnSetting></ColumnSetting>
+                <ColumnSetting columns={apexColumns}></ColumnSetting>
             </div>
             <div className='apex-table-content' ref={tableDivRef}>
                 <table className='apex-table'>
@@ -589,7 +590,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                             allowSelect && <col style={{ width: 50 }}></col>
                         }
                         {
-                            columns.map((item, index) => {
+                            apexColumns.map((item, index) => {
                                 return <col key={`colgroup-${index}`} style={{ width: item.width || 120 }}></col>
                             })
                         }
@@ -610,7 +611,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                 </th> : null
                             }
                             {
-                                columns.map((item, index) => {
+                                apexColumns.map((item, index) => {
                                     return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th ${allowFixed && item.fixed ? 'apex-table-thead-fixed-' + item.fixed : ''}`}>
                                         {item['title']}
                                     </th>
@@ -633,7 +634,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                         </td>
                                     }
                                     {
-                                        columns.map((columnItem, columnIndex) => {
+                                        apexColumns.map((columnItem, columnIndex) => {
                                             const { columnType = 'input', showTime = false, onRender } = columnItem;
                                             const readOnlyResult = columnItem.hasOwnProperty("readOnly") ? columnItem.readOnly : readOnly;
                                             const columnValue = dataSourceItem[columnItem['name']];
@@ -821,7 +822,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                     }
                                 </tr>
                             }) : <tr>
-                                <td colSpan={columns.length}>
+                                <td colSpan={apexColumns.length}>
                                     <Empty />
                                 </td>
                             </tr>
