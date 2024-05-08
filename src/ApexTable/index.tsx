@@ -123,6 +123,7 @@ export interface ApexTableRef {
     resetColumns: () => void;
     pushRows: (dataSource: any[]) => any[];
     insertRows: (apexRowId: string, dataSource: any[]) => void;
+    updateRow: (apexRowId: string, dataSource: any) => void
 }
 
 const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
@@ -623,6 +624,11 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         return result;
     }
 
+    /**
+     * 在指定的行ID后，批量插入数据。
+     * @param apexRowId 行ID
+     * @param rows      插入数据
+     */
     const insertRows = (apexRowId: string, rows: any[]) => {
         const rowList = Array.isArray(rows) ? rows : [rows];
         const findIndex = tableDataSource.findIndex((item) => item.apexRowId === apexRowId);
@@ -636,6 +642,24 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         }
     }
 
+    /**
+     * 更新指定行的数据
+     * @param apexRowId 
+     * @param row 
+     */
+    const updateRow = (apexRowId: string, row: any) => {
+        const cloneTable = structuredClone(tableDataSource);
+        let findRow = cloneTable.find((item) => item.apexRowId === apexRowId);
+        if (findRow) {
+            findRow = {
+                ...findRow,
+                ...row,
+                apexRowId
+            }
+            setTableDataSource(cloneTable);
+        }
+    }
+
     useImperativeHandle(ref, () => {
         return {
             getColumns,
@@ -643,7 +667,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             resetColumns,
             getDataSource,
             pushRows,
-            insertRows
+            insertRows,
+            updateRow
         }
     }, [apexColumns, tableDataSource]);
 
