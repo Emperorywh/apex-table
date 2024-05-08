@@ -13,7 +13,7 @@ import ApexModal from './components/ApexModal';
 import ApexShowCell from './components/ApexShowCell';
 import ApexShowCellChildren from './components/ApexShowCellChildren';
 
-export interface ApexTableProps<T> extends React.RefAttributes<ApexTableRef> {
+export interface ApexTableProps<T, V> {
     /**
      * 表格实例
      */
@@ -37,7 +37,7 @@ export interface ApexTableProps<T> extends React.RefAttributes<ApexTableRef> {
     /**
      * 表格数据源(静态)
      */
-    dataSource: T[];
+    dataSource: V[];
 
     /**
      * 是否展示表头复选框
@@ -117,12 +117,13 @@ export interface IRow {
 
 export interface ApexTableRef {
     getColumns: () => IApexTableColumns<any>[];
+    getDataSource: () => any[];
     setColumns: (columns: IApexTableColumns<any>[]) => void;
     resetColumns: () => void;
+    pushRows: (dataSource: any[]) => any[];
 }
 
-const ApexTable = forwardRef((props: ApexTableProps<any>, ref) => {
-
+const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     const {
         allowSelect = false,
@@ -326,14 +327,21 @@ const ApexTable = forwardRef((props: ApexTableProps<any>, ref) => {
             item['apexTableId'] = index;
             item['apexTableChecked'] = false;
         });
+        initPagenation(data);
+        setTableDataSource(data);
+    }
+
+    /**
+     * 初始化分页数据
+     */
+    const initPagenation = (dataSource: any) => {
         setCurrentPage(1);
         if (showPagination) {
-            setTotal(data.length);
+            setTotal(dataSource.length);
             setPageSize(pagination?.pageSize ? pagination.pageSize : 10);
         } else {
-            setPageSize(data.length);
+            setPageSize(dataSource.length);
         }
-        setTableDataSource(data);
     }
 
     /**
@@ -374,7 +382,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any>, ref) => {
      */
     const handleFocus = (rowInfo: IRow, columnType: IColumnType) => {
         setFocusRowIndex(rowInfo.rowIndex)
-        setFocusColumnName(rowInfo.columnName);
+        setFocusColumnName(rowInfo.columnName as string);
     }
 
     /**
@@ -568,7 +576,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any>, ref) => {
         }
     }
 
-    /***** Start  表格向子组件所暴露的事件 Start *****/
+    /***** Start  表格向外暴露的事件 Start *****/
     /**
      * 获取列集合
      */
@@ -591,20 +599,55 @@ const ApexTable = forwardRef((props: ApexTableProps<any>, ref) => {
         setApexColumns([...columns]);
     }
 
+    /**
+     * 获取表格数据源
+     * @returns 
+     */
+    const getDataSource = () => {
+        return tableDataSource;
+    }
+
+    /**
+     * 在表尾新增N行，并返回所有数据
+     * @param rows 
+     */
+    const pushRows = (rows: any[]) => {
+        const rowList = Array.isArray(rows) ? rows : [rows];
+        const maxId = findMaxId(tableDataSource);
+        rowList.forEach((item, index) => {
+            item['apexTableId'] = maxId + index + 1;
+        });
+        const result = [...tableDataSource, ...rowList];
+        setTableDataSource(result);
+        return result;
+    }
+
     useImperativeHandle(ref, () => {
         return {
             getColumns,
             setColumns,
-            resetColumns
+            resetColumns,
+            getDataSource,
+            pushRows
         }
-    }, [apexColumns]);
+    }, [apexColumns, tableDataSource]);
 
     /***** End  ========================= End *****/
+
+    const findMaxId = (array: any[]) => {
+        return array.reduce((max, item) => {
+            return item.apexTableId > max ? item.apexTableId : max;
+        }, 0)
+    }
 
 
     useEffect(() => {
         initOuterDataSource();
     }, [dataSource]);
+
+    useEffect(() => {
+        initPagenation(tableDataSource);
+    }, [tableDataSource]);
 
     useEffect(() => {
         initPageDadaSource();
