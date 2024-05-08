@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { ApexTableRef, IApexTableColumns } from 'apex-table/ApexTable';
 import { Button, Space } from 'antd';
-
 interface IProduct {
     productNumber: string;
     productName: string;
@@ -99,6 +98,31 @@ const App: React.FC = () => {
                 ])
                 console.log("获取数据源:", news)
             }}>新增数据</Button>
+
+            <Button onClick={() => {
+                const dataSource = apexTableRef.current?.getDataSource();
+                apexTableRef.current?.insertRows(dataSource?.[0].apexRowId, [
+                    {
+                        "productNumber": "productNumber-" + Date.now(),
+                        "productName": "商品名称" + Date.now(),
+                        "inStock": 0,
+                        "unitName": "斤",
+                        "sellPrice": 0,
+                        "apexTableId": 0,
+                    },
+                    {
+                        "productNumber": "productNumber-" + Date.now(),
+                        "productName": "商品名称-" + Date.now(),
+                        "inStock": 0,
+                        "unitName": "斤",
+                        "sellPrice": 0,
+                        "apexTableId": 0,
+                    }
+                ])
+                requestAnimationFrame(() => {
+                    console.log("获取数据源:", apexTableRef.current?.getDataSource());
+                })
+            }}>插入数据</Button>
         </Space>
     </>
 };

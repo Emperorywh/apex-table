@@ -12,6 +12,7 @@ import ApexTableSelect from './components/ApexTableSelect';
 import ApexModal from './components/ApexModal';
 import ApexShowCell from './components/ApexShowCell';
 import ApexShowCellChildren from './components/ApexShowCellChildren';
+import { nanoid } from 'nanoid';
 
 export interface ApexTableProps<T, V> {
     /**
@@ -121,6 +122,7 @@ export interface ApexTableRef {
     setColumns: (columns: IApexTableColumns<any>[]) => void;
     resetColumns: () => void;
     pushRows: (dataSource: any[]) => any[];
+    insertRows: (apexRowId: string, dataSource: any[]) => void;
 }
 
 const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
@@ -225,8 +227,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         const eventValue = event.target.checked;
         const tempCheck: any[] = structuredClone(checkedData);
         const tempTableDataSource: any[] = structuredClone(tableDataSource);
-        const findRowIndex = tempCheck.findIndex(item => item['apexTableId'] === row['apexTableId']);
-        const findTableIndex = tempTableDataSource.findIndex(item => item['apexTableId'] === row['apexTableId']);
+        const findRowIndex = tempCheck.findIndex(item => item['apexRowId'] === row['apexRowId']);
+        const findTableIndex = tempTableDataSource.findIndex(item => item['apexRowId'] === row['apexRowId']);
         if (isSingle) {
             if (eventValue) {
                 setCheckedData([row]);
@@ -311,7 +313,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const handleChangeCellValue = (row: any, columnName: any, value: any) => {
         const tempTableDataSource: any[] = [...tableDataSource];
-        const findIndex = tempTableDataSource.findIndex((item: any) => item?.apexTableId === row?.apexTableId);
+        const findIndex = tempTableDataSource.findIndex((item: any) => item?.apexRowId === row?.apexRowId);
         if (findIndex > -1) {
             tempTableDataSource[findIndex][columnName] = value;
             setTableDataSource(tempTableDataSource);
@@ -323,8 +325,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const initOuterDataSource = () => {
         const data: any[] = [...dataSource];
-        data.forEach((item, index) => {
-            item['apexTableId'] = index;
+        data.forEach((item) => {
+            item['apexRowId'] = nanoid();
             item['apexTableChecked'] = false;
         });
         initPagenation(data);
@@ -613,13 +615,25 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const pushRows = (rows: any[]) => {
         const rowList = Array.isArray(rows) ? rows : [rows];
-        const maxId = findMaxId(tableDataSource);
-        rowList.forEach((item, index) => {
-            item['apexTableId'] = maxId + index + 1;
+        rowList.forEach((item) => {
+            item['apexRowId'] = nanoid();
         });
         const result = [...tableDataSource, ...rowList];
         setTableDataSource(result);
         return result;
+    }
+
+    const insertRows = (apexRowId: string, rows: any[]) => {
+        const rowList = Array.isArray(rows) ? rows : [rows];
+        const findIndex = tableDataSource.findIndex((item) => item.apexRowId === apexRowId);
+        if (findIndex > -1) {
+            rowList.forEach(item => {
+                item.apexRowId = nanoid();
+            });
+            const cloneTable = structuredClone(tableDataSource);
+            cloneTable.splice(findIndex + 1, 0, ...rowList);
+            setTableDataSource(cloneTable);
+        }
     }
 
     useImperativeHandle(ref, () => {
@@ -628,17 +642,12 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setColumns,
             resetColumns,
             getDataSource,
-            pushRows
+            pushRows,
+            insertRows
         }
     }, [apexColumns, tableDataSource]);
 
     /***** End  ========================= End *****/
-
-    const findMaxId = (array: any[]) => {
-        return array.reduce((max, item) => {
-            return item.apexTableId > max ? item.apexTableId : max;
-        }, 0)
-    }
 
 
     useEffect(() => {
