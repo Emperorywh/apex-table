@@ -1,4 +1,4 @@
-import React, { ReactNode, type FC, useState, useEffect, useRef } from 'react';
+import React, { ReactNode, useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import "./index.less"
 import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
@@ -12,9 +12,13 @@ import ApexTableSelect from './components/ApexTableSelect';
 import ApexModal from './components/ApexModal';
 import ApexShowCell from './components/ApexShowCell';
 import ApexShowCellChildren from './components/ApexShowCellChildren';
-import ColumnSetting from './components/ColumnSetting';
 
-export interface ApexTableProps<T> {
+export interface ApexTableProps<T> extends React.RefAttributes<ApexTableRef> {
+    /**
+     * 表格实例
+     */
+    ref?: React.Ref<ApexTableRef>;
+
     /**
      * 高度
      */
@@ -111,7 +115,13 @@ export interface IRow {
     columnName: unknown;
 }
 
-const ApexTable: FC<ApexTableProps<any>> = (props) => {
+export interface ApexTableRef {
+    getColumns: () => IApexTableColumns<any>[];
+    setColumns: (columns: IApexTableColumns<any>[]) => void;
+    resetColumns: () => void;
+}
+
+const ApexTable = forwardRef((props: ApexTableProps<any>, ref) => {
 
 
     const {
@@ -558,6 +568,39 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
         }
     }
 
+    /***** Start  表格向子组件所暴露的事件 Start *****/
+    /**
+     * 获取列集合
+     */
+    const getColumns = () => {
+        return apexColumns;
+    }
+
+    /**
+     * 设置列集合
+     * @param columns 
+     */
+    const setColumns = (columns: IApexTableColumns<any>[]) => {
+        setApexColumns(columns);
+    }
+
+    /**
+     * 重置列集合 根据传入的columns进行重置
+     */
+    const resetColumns = () => {
+        setApexColumns([...columns]);
+    }
+
+    useImperativeHandle(ref, () => {
+        return {
+            getColumns,
+            setColumns,
+            resetColumns
+        }
+    }, [apexColumns]);
+
+    /***** End  ========================= End *****/
+
 
     useEffect(() => {
         initOuterDataSource();
@@ -577,9 +620,6 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
 
     return <ConfigProvider locale={zh_CN}>
         <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} onWheel={onWheel}>
-            <div className='apex-table-toolbar'>
-                <ColumnSetting columns={apexColumns}></ColumnSetting>
-            </div>
             <div className='apex-table-content' ref={tableDivRef}>
                 <table className='apex-table'>
                     <colgroup>
@@ -612,9 +652,13 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                             }
                             {
                                 apexColumns.map((item, index) => {
-                                    return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th ${allowFixed && item.fixed ? 'apex-table-thead-fixed-' + item.fixed : ''}`}>
-                                        {item['title']}
-                                    </th>
+                                    if (item?.visible === false) {
+                                        return null
+                                    } else {
+                                        return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th ${allowFixed && item.fixed ? 'apex-table-thead-fixed-' + item.fixed : ''}`}>
+                                            {item['title']}
+                                        </th>;
+                                    }
                                 })
                             }
                         </tr>
@@ -635,6 +679,7 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
                                     }
                                     {
                                         apexColumns.map((columnItem, columnIndex) => {
+                                            if (columnItem?.visible === false) return;
                                             const { columnType = 'input', showTime = false, onRender } = columnItem;
                                             const readOnlyResult = columnItem.hasOwnProperty("readOnly") ? columnItem.readOnly : readOnly;
                                             const columnValue = dataSourceItem[columnItem['name']];
@@ -847,6 +892,6 @@ const ApexTable: FC<ApexTableProps<any>> = (props) => {
             }
         </div>
     </ConfigProvider >
-};
+});
 
 export default ApexTable;

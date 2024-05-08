@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ApexTable } from 'apex-table';
-import type { IApexTableColumns } from 'apex-table/ApexTable';
+import type { ApexTableRef, IApexTableColumns } from 'apex-table/ApexTable';
+import { Button, Space } from 'antd';
 
 interface IProduct {
     productNumber: string;
@@ -10,6 +11,8 @@ interface IProduct {
     sellPrice: number;
 }
 const App: React.FC = () => {
+
+    const apexTableRef = useRef<ApexTableRef>(null);
 
     /**
      * 数据源
@@ -59,9 +62,20 @@ const App: React.FC = () => {
 
     return <>
         <ApexTable
+            ref={apexTableRef}
             columns={columns}
             dataSource={dataSource}
         />
+        <Space style={{ marginTop: 10 }}>
+            <Button onClick={() => {
+                const cloneColumns = structuredClone(columns);
+                cloneColumns[1].visible = false;
+                apexTableRef.current?.setColumns(cloneColumns);
+            }}>隐藏</Button>
+            <Button onClick={() => {
+               apexTableRef.current?.resetColumns();
+            }}>重置</Button>
+        </Space>
     </>
 };
 
