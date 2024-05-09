@@ -125,11 +125,9 @@ const App: React.FC = () => {
             }}>插入数据</Button>
             <Button onClick={() => {
                 const dataSource = apexTableRef.current?.getDataSource();
-                apexTableRef.current?.updateRow(dataSource?.[0].apexRowId, [
-                    {
-                        "productName": "商品名称" + Date.now(),
-                    }
-                ])
+                apexTableRef.current?.updateRow(dataSource?.[0].apexRowId, {
+                    "productName": "商品名称" + Date.now(),
+                })
                 requestAnimationFrame(() => {
                     console.log("获取数据源:", apexTableRef.current?.getDataSource());
                 })

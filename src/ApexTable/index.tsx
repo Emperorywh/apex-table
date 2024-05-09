@@ -649,10 +649,10 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const updateRow = (apexRowId: string, row: any) => {
         const cloneTable = structuredClone(tableDataSource);
-        let findRow = cloneTable.find((item) => item.apexRowId === apexRowId);
-        if (findRow) {
-            findRow = {
-                ...findRow,
+        let findIndex = cloneTable.findIndex((item) => item.apexRowId === apexRowId);
+        if (findIndex > -1) {
+            cloneTable[findIndex] = {
+                ...cloneTable[findIndex],
                 ...row,
                 apexRowId
             }
