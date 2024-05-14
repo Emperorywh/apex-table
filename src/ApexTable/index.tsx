@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps } from 'antd';
+import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps, Spin } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -38,7 +38,7 @@ export interface ApexTableProps<T, V> {
     /**
      * 表格数据源(静态)
      */
-    dataSource: V[];
+    dataSource?: V[];
 
     /**
      * 是否展示表头复选框
@@ -80,6 +80,16 @@ export interface ApexTableProps<T, V> {
      */
     showLineNumber?: boolean;
 
+    /**
+     * 获取 dataSource 的方法
+     * @param params 
+     * @returns 
+     */
+    request?: (params?: { pageSize: number, currentPage: number }) => Promise<{
+        data: any[],
+        success: boolean,
+        total: number
+    }>
 }
 
 /**
@@ -203,6 +213,11 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const [headerChecked, setHeaderChecked] = useState(false);
 
     /**
+     * 加载中
+     */
+    const [spinning, setSpinning] = useState(false);
+
+    /**
      * 表头复选框改变事件
      * @param event 
      */
@@ -322,16 +337,18 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }
 
     /**
-     * 初始化外部传入的数据源
+     * 初始化外部传入的静态数据源
      */
     const initOuterDataSource = () => {
-        const data: any[] = [...dataSource];
-        data.forEach((item) => {
-            item['apexRowId'] = nanoid();
-            item['apexTableChecked'] = false;
-        });
-        initPagenation(data);
-        setTableDataSource(data);
+        if (Array.isArray(dataSource) && dataSource.length > 0) {
+            const data: any[] = [...dataSource];
+            data.forEach((item) => {
+                item['apexRowId'] = nanoid();
+                item['apexTableChecked'] = false;
+            });
+            initPagenation(data);
+            setTableDataSource(data);
+        }
     }
 
     /**
@@ -348,13 +365,37 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }
 
     /**
-     * 初始化分页数据
+     * 根据表格数据、当前页码、每页条数的变化，重新切片
      */
     const initPageDadaSource = () => {
-        const startIndex = (currentPage - 1) * pageSize;
-        const endIndex = currentPage * pageSize;
-        const newArray: any[] = tableDataSource.slice(startIndex, endIndex);
-        setPageDataSource(newArray);
+        if (Array.isArray(dataSource) && dataSource.length > 0) {
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = currentPage * pageSize;
+            const newArray: any[] = tableDataSource.slice(startIndex, endIndex);
+            setPageDataSource([...newArray]);
+        }
+        if (props.request && typeof props.request === 'function') {
+            setPageDataSource([...tableDataSource]);
+        }
+    }
+
+    /**
+     * 处理 request 的数据
+     */
+    const handleRequestData = async () => {
+        if (props.request && typeof props.request === 'function') {
+            setSpinning(true);
+            const { data, success, total } = await props.request({ pageSize, currentPage });
+            if (success && Array.isArray(data) && data.length > 0) {
+                data.forEach((item) => {
+                    item['apexRowId'] = nanoid();
+                    item['apexTableChecked'] = false;
+                });
+                setTableDataSource(data);
+            }
+            setTotal(total);
+            setSpinning(false);
+        }
     }
 
     /**
@@ -674,14 +715,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     /***** End  ========================= End *****/
 
+    useEffect(() => {
+        handleRequestData();
+    }, [currentPage, pageSize]);
 
     useEffect(() => {
         initOuterDataSource();
     }, [dataSource]);
-
-    useEffect(() => {
-        initPagenation(tableDataSource);
-    }, [tableDataSource]);
 
     useEffect(() => {
         initPageDadaSource();
@@ -696,278 +736,280 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }, [focusRowIndex, focusColumnName]);
 
     return <ConfigProvider locale={zh_CN}>
-        <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} onWheel={onWheel}>
-            <div className='apex-table-content' ref={tableDivRef}>
-                <table className='apex-table'>
-                    <colgroup>
-                        {
-                            showLineNumber && <col style={{ width: 50 }}></col>
-                        }
-                        {
-                            allowSelect && <col style={{ width: 50 }}></col>
-                        }
-                        {
-                            apexColumns.map((item, index) => {
-                                return <col key={`colgroup-${index}`} style={{ width: item.width || 120 }}></col>
-                            })
-                        }
-                    </colgroup>
-                    {
-                        tableTitle && <caption>{tableTitle}</caption>
-                    }
-                    <thead className='apex-table-thead'>
-                        <tr>
+        <Spin size="large" spinning={spinning}>
+            <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} onWheel={onWheel}>
+                <div className='apex-table-content' ref={tableDivRef}>
+                    <table className='apex-table'>
+                        <colgroup>
                             {
-                                showLineNumber ? <th className='apex-table-thead-th apex-table-thead-th-line-number-head'>
-                                    <span>行号</span>
-                                </th> : null
+                                showLineNumber && <col style={{ width: 50 }}></col>
                             }
                             {
-                                showHeaderCheckBox ? <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
-                                    <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
-                                </th> : null
+                                allowSelect && <col style={{ width: 50 }}></col>
                             }
                             {
                                 apexColumns.map((item, index) => {
-                                    if (item?.visible === false) {
-                                        return null
-                                    } else {
-                                        return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th ${allowFixed && item.fixed ? 'apex-table-thead-fixed-' + item.fixed : ''}`}>
-                                            {item['title']}
-                                        </th>;
-                                    }
+                                    return <col key={`colgroup-${index}`} style={{ width: item.width || 120 }}></col>
                                 })
                             }
-                        </tr>
-                    </thead>
-                    <tbody className='apex-table-tbody'>
+                        </colgroup>
                         {
-                            pageDataSource.length > 0 ? pageDataSource.map((dataSourceItem, dataSourceIndex) => {
-                                return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
-                                    {
-                                        showLineNumber && <td className='apex-table-tbody-td apex-table-tbody-td-line-number'>
-                                            <div className={`number ${dataSourceIndex > 2 ? 'number-low' : ''}`}>{dataSourceIndex + 1}</div>
-                                        </td>
-                                    }
-                                    {
-                                        allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
-                                            <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => handleRowSelected(event, dataSourceItem)} />
-                                        </td>
-                                    }
-                                    {
-                                        apexColumns.map((columnItem, columnIndex) => {
-                                            if (columnItem?.visible === false) return;
-                                            const { columnType = 'input', showTime = false, onRender } = columnItem;
-                                            const readOnlyResult = columnItem.hasOwnProperty("readOnly") ? columnItem.readOnly : readOnly;
-                                            const columnValue = dataSourceItem[columnItem['name']];
-                                            const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
-                                            const showKey = `${focusRowIndex}-${focusColumnName}`;
-                                            if (showKey !== refKey && columnType !== 'customer') {
-                                                return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                    <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
-                                                        if (!readOnlyResult) {
-                                                            handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                        }
-                                                    }}>
-                                                        {onRender ? onRender(columnItem, columnValue) : <ApexShowCellChildren columnItem={columnItem} dataSourceItem={dataSourceItem} />}
-                                                    </ApexShowCell>
-                                                </ApexTdWrap>
-                                            }
-                                            switch (columnType) {
-                                                case 'input':
-                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        <ApexTableInput
-                                                            ref={inputRef => {
-                                                                if (!readOnlyResult) {
-                                                                    editRefs.current[refKey] = inputRef;
-                                                                }
-                                                            }}
-                                                            defaultValue={columnValue}
-                                                            onInputChange={inputValue => {
-                                                                handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
-                                                            }}
-                                                            onFocus={() => {
-                                                                requestAnimationFrame(() => {
-                                                                    editRefs.current?.[refKey]?.select();
-                                                                })
-                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }}
-                                                            onBlur={() => {
-                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }}
-                                                        />
-                                                    </ApexTdWrap>
-                                                case 'inputNumber':
-                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        <ApexTableInput
-                                                            ref={inputRef => {
-                                                                if (!readOnlyResult) {
-                                                                    editRefs.current[refKey] = inputRef;
-                                                                }
-                                                            }}
-                                                            defaultValue={columnValue}
-                                                            onInputChange={inputValue => {
-                                                                handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
-                                                            }}
-                                                            onFocus={() => {
-                                                                requestAnimationFrame(() => {
-                                                                    editRefs.current?.[refKey]?.select();
-                                                                })
-                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'inputNumber')
-                                                            }}
-                                                            onBlur={() => {
-                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }}
-                                                        />
-                                                    </ApexTdWrap>;
-                                                case 'select':
-                                                    return <ApexTableSelect
-                                                        tdId={`td-${refKey}`}
-                                                        key={`${String(columnItem.name)}-${columnIndex}`}
-                                                        ref={inputRef => {
-                                                            if (!readOnlyResult) {
-                                                                editRefs.current[refKey] = inputRef;
-                                                            }
-                                                        }}
-                                                        columnItem={columnItem}
-                                                        apexTableProps={props}
-                                                        dataSourceItem={dataSourceItem}
-                                                        onSelectChange={handleSelectChange}
-                                                        onFocus={() => {
-                                                            requestAnimationFrame(() => {
-                                                                document.execCommand('selectAll', false, undefined);
-                                                            })
-                                                            handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'select')
-                                                        }}
-                                                        onBlur={() => {
-                                                            handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                        }}
-                                                    />
-                                                case 'datePicker':
-                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        <DatePicker
-                                                            showTime={showTime}
-                                                            defaultValue={dayjs(columnValue)}
-                                                            onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)}
-                                                            ref={inputRef => {
-                                                                if (!readOnlyResult) {
-                                                                    editRefs.current[refKey] = inputRef;
-                                                                }
-                                                            }}
-                                                            onFocus={() => {
-                                                                requestAnimationFrame(() => {
-                                                                    document.execCommand('selectAll', false, undefined);
-                                                                })
-                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'datePicker')
-                                                            }}
-                                                            onBlur={() => {
-                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }}
-                                                        />
-                                                    </ApexTdWrap>
-                                                case 'rangePicker':
-                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`} >
-                                                        <DatePicker.RangePicker
-                                                            showTime={showTime}
-                                                            defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)}
-                                                            ref={inputRef => {
-                                                                if (!readOnlyResult) {
-                                                                    editRefs.current[refKey] = inputRef;
-                                                                }
-                                                            }}
-                                                            onFocus={() => {
-                                                                requestAnimationFrame(() => {
-                                                                    document.execCommand('selectAll', false, undefined);
-                                                                })
-                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'rangePicker')
-                                                            }}
-                                                            onBlur={() => {
-                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }}
-                                                        />
-                                                    </ApexTdWrap>
-                                                case 'modal':
-                                                    return <ApexModal
-                                                        tdId={`td-${refKey}`}
-                                                        ref={inputRef => {
-                                                            if (!readOnlyResult) {
-                                                                editRefs.current[refKey] = inputRef;
-                                                            }
-                                                        }}
-                                                        key={`${String(columnItem.name)}-${columnIndex}`}
-                                                        columnItem={columnItem}
-                                                        apexTableProps={props}
-                                                        dataSourceItem={dataSourceItem}
-                                                        columnValue={columnValue}
-                                                        onInputChange={inputValue => {
-                                                            handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
-                                                        }}
-                                                        onFocus={() => {
-                                                            requestAnimationFrame(() => {
-                                                                editRefs.current?.[refKey]?.select();
-                                                            })
-                                                            handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'modal')
-                                                        }}
-                                                        onBlur={() => {
-                                                            handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                        }}
-                                                    />
-                                                case 'customer':
-                                                    const { onFormatter } = columnItem;
-                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        {
-                                                            onFormatter?.(dataSourceItem, dataSourceItem[columnItem.name])
-                                                        }
-                                                    </ApexTdWrap>
-                                                default:
-                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        <Input
-                                                            ref={inputRef => {
-                                                                if (!readOnlyResult) {
-                                                                    editRefs.current[refKey] = inputRef;
-                                                                }
-                                                            }}
-                                                            value={columnValue}
-                                                            onFocus={() => {
-                                                                requestAnimationFrame(() => {
-                                                                    editRefs.current?.[refKey]?.select();
-                                                                })
-                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }}
-                                                            onBlur={() => {
-                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }}
-                                                        />
-                                                    </ApexTdWrap>
-                                            }
-                                        })
-                                    }
-                                </tr>
-                            }) : <tr>
-                                <td colSpan={apexColumns.length}>
-                                    <Empty />
-                                </td>
-                            </tr>
+                            tableTitle && <caption>{tableTitle}</caption>
                         }
-                    </tbody>
-                </table>
-            </div>
-            {
-                showPagination && <div className='apex-table-pagination'>
-                    <Pagination
-                        {...pagination}
-                        current={currentPage}
-                        pageSize={pageSize}
-                        total={total}
-                        onChange={(page, pageSize) => {
-                            pagination?.onChange && pagination.onChange(page, pageSize)
-                            setCurrentPage(page);
-                            setPageSize(pageSize);
-                        }}
-                    />
+                        <thead className='apex-table-thead'>
+                            <tr>
+                                {
+                                    showLineNumber ? <th className='apex-table-thead-th apex-table-thead-th-line-number-head'>
+                                        <span>行号</span>
+                                    </th> : null
+                                }
+                                {
+                                    showHeaderCheckBox ? <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
+                                        <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
+                                    </th> : null
+                                }
+                                {
+                                    apexColumns.map((item, index) => {
+                                        if (item?.visible === false) {
+                                            return null
+                                        } else {
+                                            return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th ${allowFixed && item.fixed ? 'apex-table-thead-fixed-' + item.fixed : ''}`}>
+                                                {item['title']}
+                                            </th>;
+                                        }
+                                    })
+                                }
+                            </tr>
+                        </thead>
+                        <tbody className='apex-table-tbody'>
+                            {
+                                pageDataSource.length > 0 ? pageDataSource.map((dataSourceItem, dataSourceIndex) => {
+                                    return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
+                                        {
+                                            showLineNumber && <td className='apex-table-tbody-td apex-table-tbody-td-line-number'>
+                                                <div className={`number ${dataSourceIndex > 2 ? 'number-low' : ''}`}>{dataSourceIndex + 1}</div>
+                                            </td>
+                                        }
+                                        {
+                                            allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
+                                                <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => handleRowSelected(event, dataSourceItem)} />
+                                            </td>
+                                        }
+                                        {
+                                            apexColumns.map((columnItem, columnIndex) => {
+                                                if (columnItem?.visible === false) return;
+                                                const { columnType = 'input', showTime = false, onRender } = columnItem;
+                                                const readOnlyResult = columnItem.hasOwnProperty("readOnly") ? columnItem.readOnly : readOnly;
+                                                const columnValue = dataSourceItem[columnItem['name']];
+                                                const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
+                                                const showKey = `${focusRowIndex}-${focusColumnName}`;
+                                                if (showKey !== refKey && columnType !== 'customer') {
+                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                        <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
+                                                            if (!readOnlyResult) {
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }
+                                                        }}>
+                                                            {onRender ? onRender(columnItem, columnValue) : <ApexShowCellChildren columnItem={columnItem} dataSourceItem={dataSourceItem} />}
+                                                        </ApexShowCell>
+                                                    </ApexTdWrap>
+                                                }
+                                                switch (columnType) {
+                                                    case 'input':
+                                                        return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                            <ApexTableInput
+                                                                ref={inputRef => {
+                                                                    if (!readOnlyResult) {
+                                                                        editRefs.current[refKey] = inputRef;
+                                                                    }
+                                                                }}
+                                                                defaultValue={columnValue}
+                                                                onInputChange={inputValue => {
+                                                                    handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                                }}
+                                                                onFocus={() => {
+                                                                    requestAnimationFrame(() => {
+                                                                        editRefs.current?.[refKey]?.select();
+                                                                    })
+                                                                    handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                                }}
+                                                                onBlur={() => {
+                                                                    handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                                }}
+                                                            />
+                                                        </ApexTdWrap>
+                                                    case 'inputNumber':
+                                                        return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                            <ApexTableInput
+                                                                ref={inputRef => {
+                                                                    if (!readOnlyResult) {
+                                                                        editRefs.current[refKey] = inputRef;
+                                                                    }
+                                                                }}
+                                                                defaultValue={columnValue}
+                                                                onInputChange={inputValue => {
+                                                                    handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                                }}
+                                                                onFocus={() => {
+                                                                    requestAnimationFrame(() => {
+                                                                        editRefs.current?.[refKey]?.select();
+                                                                    })
+                                                                    handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'inputNumber')
+                                                                }}
+                                                                onBlur={() => {
+                                                                    handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                                }}
+                                                            />
+                                                        </ApexTdWrap>;
+                                                    case 'select':
+                                                        return <ApexTableSelect
+                                                            tdId={`td-${refKey}`}
+                                                            key={`${String(columnItem.name)}-${columnIndex}`}
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
+                                                            columnItem={columnItem}
+                                                            apexTableProps={props}
+                                                            dataSourceItem={dataSourceItem}
+                                                            onSelectChange={handleSelectChange}
+                                                            onFocus={() => {
+                                                                requestAnimationFrame(() => {
+                                                                    document.execCommand('selectAll', false, undefined);
+                                                                })
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'select')
+                                                            }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
+                                                        />
+                                                    case 'datePicker':
+                                                        return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                            <DatePicker
+                                                                showTime={showTime}
+                                                                defaultValue={dayjs(columnValue)}
+                                                                onChange={(date, dateString) => handleDatePickerChange(dataSourceItem, columnItem.name, date, dateString)}
+                                                                ref={inputRef => {
+                                                                    if (!readOnlyResult) {
+                                                                        editRefs.current[refKey] = inputRef;
+                                                                    }
+                                                                }}
+                                                                onFocus={() => {
+                                                                    requestAnimationFrame(() => {
+                                                                        document.execCommand('selectAll', false, undefined);
+                                                                    })
+                                                                    handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'datePicker')
+                                                                }}
+                                                                onBlur={() => {
+                                                                    handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                                }}
+                                                            />
+                                                        </ApexTdWrap>
+                                                    case 'rangePicker':
+                                                        return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`} >
+                                                            <DatePicker.RangePicker
+                                                                showTime={showTime}
+                                                                defaultValue={[dayjs(columnValue[0]), dayjs(columnValue[1])]} onChange={(date, dateString) => handleRangePickerChange(dataSourceItem, columnItem.name, date, dateString)}
+                                                                ref={inputRef => {
+                                                                    if (!readOnlyResult) {
+                                                                        editRefs.current[refKey] = inputRef;
+                                                                    }
+                                                                }}
+                                                                onFocus={() => {
+                                                                    requestAnimationFrame(() => {
+                                                                        document.execCommand('selectAll', false, undefined);
+                                                                    })
+                                                                    handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'rangePicker')
+                                                                }}
+                                                                onBlur={() => {
+                                                                    handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                                }}
+                                                            />
+                                                        </ApexTdWrap>
+                                                    case 'modal':
+                                                        return <ApexModal
+                                                            tdId={`td-${refKey}`}
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
+                                                            key={`${String(columnItem.name)}-${columnIndex}`}
+                                                            columnItem={columnItem}
+                                                            apexTableProps={props}
+                                                            dataSourceItem={dataSourceItem}
+                                                            columnValue={columnValue}
+                                                            onInputChange={inputValue => {
+                                                                handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                            }}
+                                                            onFocus={() => {
+                                                                requestAnimationFrame(() => {
+                                                                    editRefs.current?.[refKey]?.select();
+                                                                })
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'modal')
+                                                            }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
+                                                        />
+                                                    case 'customer':
+                                                        const { onFormatter } = columnItem;
+                                                        return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                            {
+                                                                onFormatter?.(dataSourceItem, dataSourceItem[columnItem.name])
+                                                            }
+                                                        </ApexTdWrap>
+                                                    default:
+                                                        return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                            <Input
+                                                                ref={inputRef => {
+                                                                    if (!readOnlyResult) {
+                                                                        editRefs.current[refKey] = inputRef;
+                                                                    }
+                                                                }}
+                                                                value={columnValue}
+                                                                onFocus={() => {
+                                                                    requestAnimationFrame(() => {
+                                                                        editRefs.current?.[refKey]?.select();
+                                                                    })
+                                                                    handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                                }}
+                                                                onBlur={() => {
+                                                                    handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                                }}
+                                                            />
+                                                        </ApexTdWrap>
+                                                }
+                                            })
+                                        }
+                                    </tr>
+                                }) : <tr>
+                                    <td colSpan={apexColumns.length}>
+                                        <Empty />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-            }
-        </div>
+                {
+                    showPagination && <div className='apex-table-pagination'>
+                        <Pagination
+                            {...pagination}
+                            current={currentPage}
+                            pageSize={pageSize}
+                            total={total}
+                            onChange={(page, pageSize) => {
+                                pagination?.onChange && pagination.onChange(page, pageSize)
+                                setCurrentPage(page);
+                                setPageSize(pageSize);
+                            }}
+                        />
+                    </div>
+                }
+            </div>
+        </Spin>
     </ConfigProvider >
 });
 
