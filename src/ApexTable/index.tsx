@@ -312,12 +312,12 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * @param dateString 
      */
     const handleDatePickerChange = (row: any, columnName: any, date: dayjs.Dayjs | null, dateString: string, onChange?: (date: dayjs.Dayjs | null, dateString: string) => void) => {
-        handleChangeCellValue(row, columnName, date);
+        handleChangeCellValue(row, columnName, dayjs(date));
         onChange && onChange(date, dateString);
     }
 
     const handleRangePickerChange = (row: any, columnName: any, date: any, dateString: [string, string], onChange?: (date: dayjs.Dayjs | null, dateString: [string, string]) => void) => {
-        handleChangeCellValue(row, columnName, date);
+        handleChangeCellValue(row, columnName, dayjs(date));
         onChange && onChange(date, dateString);
     }
 

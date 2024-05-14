@@ -1,5 +1,6 @@
 import React from "react";
 import { IApexTableColumns, IColumnType } from "..";
+import dayjs from "dayjs";
 
 interface IProps<T> {
     columnItem: IApexTableColumns<T>;
@@ -37,7 +38,7 @@ const ApexShowCellChildren: React.FC<IProps<any>> = (props) => {
             </>
         case 'datePicker':
             return <>
-                {value}
+                {dayjs(value).format("YYYY-MM-DD")}
             </>
         case 'rangePicker':
             return <>

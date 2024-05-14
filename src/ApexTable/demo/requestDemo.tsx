@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import ApexTable, { ApexTableRef } from "..";
+import { ApexTable } from 'apex-table';
+import type { ApexTableRef } from 'apex-table/ApexTable';
 
 const App: React.FC = () => {
     const apexTableRef = useRef<ApexTableRef>(null);
