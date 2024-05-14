@@ -81,6 +81,11 @@ export interface ApexTableProps<T, V> {
     showLineNumber?: boolean;
 
     /**
+     * 唯一行号字段名
+     */
+    rowKey: string;
+
+    /**
      * 获取 dataSource 的方法
      * @param params 
      * @returns 
@@ -132,8 +137,8 @@ export interface ApexTableRef {
     setColumns: (columns: IApexTableColumns<any>[]) => void;
     resetColumns: () => void;
     pushRows: (dataSource: any[]) => any[];
-    insertRows: (apexRowId: string, dataSource: any[]) => void;
-    updateRow: (apexRowId: string, dataSource: any) => void
+    insertRows: (rowKey: string, dataSource: any[]) => void;
+    updateRow: (rowKey: string, dataSource: any) => void
 }
 
 const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
@@ -150,7 +155,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         height = 450,
         isSingle = false,
         allowFixed = false,
-        showLineNumber = true
+        showLineNumber = true,
+        rowKey
     } = props;
 
     /**
@@ -243,8 +249,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         const eventValue = event.target.checked;
         const tempCheck: any[] = structuredClone(checkedData);
         const tempTableDataSource: any[] = structuredClone(tableDataSource);
-        const findRowIndex = tempCheck.findIndex(item => item['apexRowId'] === row['apexRowId']);
-        const findTableIndex = tempTableDataSource.findIndex(item => item['apexRowId'] === row['apexRowId']);
+        const findRowIndex = tempCheck.findIndex(item => item[rowKey] === row[rowKey]);
+        const findTableIndex = tempTableDataSource.findIndex(item => item[rowKey] === row[rowKey]);
         if (isSingle) {
             if (eventValue) {
                 setCheckedData([row]);
@@ -284,7 +290,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const onChangeHeaderCheckBoxIndeter = () => {
         if (checkedData.length > 0) {
             setIndeterminate(true);
-            if (checkedData.length === dataSource.length) {
+            if (checkedData.length === total) {
                 setIndeterminate(false);
                 setHeaderChecked(true);
             }
@@ -329,7 +335,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const handleChangeCellValue = (row: any, columnName: any, value: any) => {
         const tempTableDataSource: any[] = [...tableDataSource];
-        const findIndex = tempTableDataSource.findIndex((item: any) => item?.apexRowId === row?.apexRowId);
+        const findIndex = tempTableDataSource.findIndex((item: any) => item[rowKey] === row[rowKey]);
         if (findIndex > -1) {
             tempTableDataSource[findIndex][columnName] = value;
             setTableDataSource(tempTableDataSource);
@@ -343,7 +349,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         if (Array.isArray(dataSource) && dataSource.length > 0) {
             const data: any[] = [...dataSource];
             data.forEach((item) => {
-                item['apexRowId'] = nanoid();
                 item['apexTableChecked'] = false;
             });
             initPagenation(data);
@@ -388,8 +393,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             const { data, success, total } = await props.request({ pageSize, currentPage });
             if (success && Array.isArray(data) && data.length > 0) {
                 data.forEach((item) => {
-                    item['apexRowId'] = nanoid();
-                    item['apexTableChecked'] = false;
+                    const findChecked = checkedData.find(checkItem => checkItem[rowKey] === item[rowKey]);
+                    item['apexTableChecked'] = findChecked ? true : false;
                 });
                 setTableDataSource(data);
             }
@@ -657,9 +662,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const pushRows = (rows: any[]) => {
         const rowList = Array.isArray(rows) ? rows : [rows];
-        rowList.forEach((item) => {
-            item['apexRowId'] = nanoid();
-        });
         const result = [...tableDataSource, ...rowList];
         setTableDataSource(result);
         return result;
@@ -667,16 +669,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     /**
      * 在指定的行ID后，批量插入数据。
-     * @param apexRowId 行ID
+     * @param rowKey 行ID
      * @param rows      插入数据
      */
-    const insertRows = (apexRowId: string, rows: any[]) => {
+    const insertRows = (rowKey: string, rows: any[]) => {
         const rowList = Array.isArray(rows) ? rows : [rows];
-        const findIndex = tableDataSource.findIndex((item) => item.apexRowId === apexRowId);
+        const findIndex = tableDataSource.findIndex((item) => item[rowKey] === rowKey);
         if (findIndex > -1) {
-            rowList.forEach(item => {
-                item.apexRowId = nanoid();
-            });
             const cloneTable = structuredClone(tableDataSource);
             cloneTable.splice(findIndex + 1, 0, ...rowList);
             setTableDataSource(cloneTable);
@@ -685,17 +684,17 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     /**
      * 更新指定行的数据
-     * @param apexRowId 
+     * @param rowKey 
      * @param row 
      */
-    const updateRow = (apexRowId: string, row: any) => {
+    const updateRow = (rowKey: string, row: any) => {
         const cloneTable = structuredClone(tableDataSource);
-        let findIndex = cloneTable.findIndex((item) => item.apexRowId === apexRowId);
+        let findIndex = cloneTable.findIndex((item) => item[rowKey] === rowKey);
         if (findIndex > -1) {
             cloneTable[findIndex] = {
                 ...cloneTable[findIndex],
                 ...row,
-                apexRowId
+                rowKey
             }
             setTableDataSource(cloneTable);
         }

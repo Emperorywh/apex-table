@@ -58,6 +58,9 @@ const App: React.FC = () => {
         }}
         showPagination
         readOnly
+        rowKey="id"
+        showHeaderCheckBox
+        allowSelect
     />
 }
 

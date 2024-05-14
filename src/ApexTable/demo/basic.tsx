@@ -22,6 +22,7 @@ interface ITableListItem {
     modal_1: string;
     modal_2: string;
     modal_3: string;
+    id: number;
 }
 
 
@@ -55,6 +56,7 @@ const App: React.FC = () => {
                 modal_1: `弹窗${i + 1}`,
                 modal_2: `弹窗${i + 1}`,
                 modal_3: `弹窗${i + 1}`,
+                id: i
             }
             array.push(data);
         }
@@ -244,6 +246,7 @@ const App: React.FC = () => {
         showHeaderCheckBox
         showPagination
         pagination={{ pageSize: 50 }}
+        rowKey='id'
     />
 };
 

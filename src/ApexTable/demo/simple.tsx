@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ApexTable } from 'apex-table';
 import type { ApexTableRef, IApexTableColumns } from 'apex-table/ApexTable';
 import { Button, Space } from 'antd';
+import { nanoid } from "nanoid";
 interface IProduct {
     productNumber: string;
     productName: string;
     inStock: number;
     unitName: string;
     sellPrice: number;
+    id: string
 }
 const App: React.FC = () => {
 
@@ -52,7 +54,8 @@ const App: React.FC = () => {
                 productName: '商品名称-' + i,
                 inStock: i,
                 unitName: '斤',
-                sellPrice: 2 * i
+                sellPrice: 2 * i,
+                id: nanoid()
             }
             data.push(product);
         }
@@ -64,6 +67,7 @@ const App: React.FC = () => {
             ref={apexTableRef}
             columns={columns}
             dataSource={dataSource}
+            rowKey='id'
         />
         <Space style={{ marginTop: 10 }}>
             <Button onClick={() => {
@@ -86,6 +90,7 @@ const App: React.FC = () => {
                         "unitName": "斤",
                         "sellPrice": 0,
                         "apexTableId": 0,
+                        "id": nanoid()
                     },
                     {
                         "productNumber": "productNumber-" + Date.now(),
@@ -94,6 +99,7 @@ const App: React.FC = () => {
                         "unitName": "斤",
                         "sellPrice": 0,
                         "apexTableId": 0,
+                        "id": nanoid()
                     }
                 ])
                 console.log("获取数据源:", news)
@@ -109,6 +115,7 @@ const App: React.FC = () => {
                         "unitName": "斤",
                         "sellPrice": 0,
                         "apexTableId": 0,
+                        "id": nanoid()
                     },
                     {
                         "productNumber": "productNumber-" + Date.now(),
@@ -117,6 +124,7 @@ const App: React.FC = () => {
                         "unitName": "斤",
                         "sellPrice": 0,
                         "apexTableId": 0,
+                        "id": nanoid()
                     }
                 ])
                 requestAnimationFrame(() => {
@@ -125,7 +133,7 @@ const App: React.FC = () => {
             }}>插入数据</Button>
             <Button onClick={() => {
                 const dataSource = apexTableRef.current?.getDataSource();
-                apexTableRef.current?.updateRow(dataSource?.[0].apexRowId, {
+                apexTableRef.current?.updateRow(dataSource?.[0].id, {
                     "productName": "商品名称" + Date.now(),
                 })
                 requestAnimationFrame(() => {
@@ -137,4 +145,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
