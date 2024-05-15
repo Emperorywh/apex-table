@@ -133,6 +133,7 @@ const App: React.FC = () => {
             }}>插入数据</Button>
             <Button onClick={() => {
                 const dataSource = apexTableRef.current?.getDataSource();
+                debugger;
                 apexTableRef.current?.updateRow(dataSource?.[0].id, {
                     "productName": "商品名称" + Date.now(),
                 })

@@ -669,12 +669,12 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     /**
      * 在指定的行ID后，批量插入数据。
-     * @param rowKey 行ID
+     * @param uniqueId 行ID
      * @param rows      插入数据
      */
-    const insertRows = (rowKey: string, rows: any[]) => {
+    const insertRows = (uniqueId: string, rows: any[]) => {
         const rowList = Array.isArray(rows) ? rows : [rows];
-        const findIndex = tableDataSource.findIndex((item) => item[rowKey] === rowKey);
+        const findIndex = tableDataSource.findIndex((item) => item[rowKey] === uniqueId);
         if (findIndex > -1) {
             const cloneTable = structuredClone(tableDataSource);
             cloneTable.splice(findIndex + 1, 0, ...rowList);
@@ -684,17 +684,16 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     /**
      * 更新指定行的数据
-     * @param rowKey 
+     * @param uniqueId 
      * @param row 
      */
-    const updateRow = (rowKey: string, row: any) => {
+    const updateRow = (uniqueId: string, row: any) => {
         const cloneTable = structuredClone(tableDataSource);
-        let findIndex = cloneTable.findIndex((item) => item[rowKey] === rowKey);
+        let findIndex = cloneTable.findIndex((item) => item[rowKey] === uniqueId);
         if (findIndex > -1) {
             cloneTable[findIndex] = {
                 ...cloneTable[findIndex],
                 ...row,
-                rowKey
             }
             setTableDataSource(cloneTable);
         }
