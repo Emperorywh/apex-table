@@ -1,5 +1,5 @@
 import React from "react";
-import { IApexTableColumns, IColumnType } from "..";
+import { IApexTableColumns } from "..";
 import dayjs from "dayjs";
 
 interface IProps<T> {

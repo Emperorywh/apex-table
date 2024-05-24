@@ -12,7 +12,7 @@ import ApexTableSelect from './components/ApexTableSelect';
 import ApexModal from './components/ApexModal';
 import ApexShowCell from './components/ApexShowCell';
 import ApexShowCellChildren from './components/ApexShowCellChildren';
-import { nanoid } from 'nanoid';
+import ApexInput from './components/ApexInput';
 
 export interface ApexTableProps<T, V> {
     /**
@@ -800,42 +800,60 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                                                 const readOnlyResult = columnItem.hasOwnProperty("readOnly") ? columnItem.readOnly : readOnly;
                                                 const columnValue = dataSourceItem[columnItem['name']];
                                                 const refKey = `${dataSourceIndex}-${String(columnItem.name)}`;
-                                                const showKey = `${focusRowIndex}-${focusColumnName}`;
-                                                if (showKey !== refKey && columnType !== 'customer') {
-                                                    return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                        <ApexShowCell key={`${String(columnItem.name)}-${columnIndex}`} onClick={() => {
-                                                            if (!readOnlyResult) {
-                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                            }
-                                                        }}>
-                                                            {onRender ? onRender(columnItem, columnValue) : <ApexShowCellChildren columnItem={columnItem} dataSourceItem={dataSourceItem} />}
-                                                        </ApexShowCell>
-                                                    </ApexTdWrap>
-                                                }
                                                 switch (columnType) {
                                                     case 'input':
-                                                        return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
-                                                            <ApexTableInput
-                                                                ref={inputRef => {
-                                                                    if (!readOnlyResult) {
-                                                                        editRefs.current[refKey] = inputRef;
-                                                                    }
-                                                                }}
-                                                                defaultValue={columnValue}
-                                                                onInputChange={inputValue => {
-                                                                    handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
-                                                                }}
-                                                                onFocus={() => {
-                                                                    requestAnimationFrame(() => {
-                                                                        editRefs.current?.[refKey]?.select();
-                                                                    })
+                                                        return <ApexInput
+                                                            key={`${String(refKey)}`}
+                                                            column={columnItem}
+                                                            focusRowIndex={focusRowIndex}
+                                                            focusColumnName={focusColumnName}
+                                                            row={dataSourceItem}
+                                                            rowIndex={dataSourceIndex}
+                                                            ref={inputRef => {
+                                                                if (!readOnlyResult) {
+                                                                    editRefs.current[refKey] = inputRef;
+                                                                }
+                                                            }}
+                                                            onCellClick={() => {
+                                                                if (!readOnlyResult) {
                                                                     handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                                }}
-                                                                onBlur={() => {
-                                                                    handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
-                                                                }}
-                                                            />
-                                                        </ApexTdWrap>
+                                                                }
+                                                            }}
+                                                            onChange={inputValue => {
+                                                                handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue.target.value);
+                                                            }}
+                                                            onFocus={() => {
+                                                                requestAnimationFrame(() => {
+                                                                    editRefs.current?.[refKey]?.select();
+                                                                })
+                                                                handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
+                                                            onBlur={() => {
+                                                                handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                            }}
+                                                        />
+                                                    // return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
+                                                    //     <ApexTableInput
+                                                    //         ref={inputRef => {
+                                                    //             if (!readOnlyResult) {
+                                                    //                 editRefs.current[refKey] = inputRef;
+                                                    //             }
+                                                    //         }}
+                                                    //         defaultValue={columnValue}
+                                                    //         onInputChange={inputValue => {
+                                                    //             handleChangeCellValue(dataSourceItem, columnItem['name'], inputValue);
+                                                    //         }}
+                                                    //         onFocus={() => {
+                                                    //             requestAnimationFrame(() => {
+                                                    //                 editRefs.current?.[refKey]?.select();
+                                                    //             })
+                                                    //             handleFocus({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                    //         }}
+                                                    //         onBlur={() => {
+                                                    //             handleBlur({ rowIndex: dataSourceIndex, columnName: columnItem.name }, 'input')
+                                                    //         }}
+                                                    //     />
+                                                    // </ApexTdWrap>
                                                     case 'inputNumber':
                                                         return <ApexTdWrap id={`td-${refKey}`} apexTableProps={props} apexColumn={columnItem} key={`${String(columnItem.name)}-${columnIndex}`}>
                                                             <ApexTableInput
