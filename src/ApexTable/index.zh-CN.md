@@ -15,9 +15,9 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 - 当需要对数据进行排序、搜索、分页、自定义操作等复杂行为时。
 
 ## 代码演示
-<code src="./demo/basic.tsx" title="综合用法" description="常用属性"></code>
+<!-- <code src="./demo/basic.tsx" title="综合用法" description="常用属性"></code> -->
 <code src="./demo/simple.tsx" title="基本用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>
-<code src="./demo/requestDemo.tsx" title="远程数据请求" description="远程数据请求"></code>
+<!-- <code src="./demo/requestDemo.tsx" title="远程数据请求" description="远程数据请求"></code> -->
 
 
 <!-- ### ApexTable API

@@ -1,7 +1,7 @@
 import { Input, InputRef } from "antd";
-import React, { Ref } from "react";
+import React, { Ref, memo, useCallback } from "react";
 import { forwardRef } from "react";
-import { IApexTableColumns } from "..";
+import { IApexTableColumns, IRow } from "..";
 import ApexShowCellChildren from "./ApexShowCellChildren";
 
 interface IProps {
@@ -12,13 +12,13 @@ interface IProps {
     focusColumnName: string;
     row: any;
     rowIndex: number;
-    onCellClick: () => void;
-    onFocus?: React.FocusEventHandler<HTMLInputElement>;
+    onCellClick: (rowInfo: IRow) => void;
+    onFocus?: (rowInfo: IRow, refKey: string) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-const ApexInput = forwardRef((props: IProps, ref: Ref<InputRef>) => {
+const ApexInput = memo(forwardRef((props: IProps, ref: Ref<InputRef>) => {
     console.log("渲染")
     const {
         column,
@@ -28,13 +28,26 @@ const ApexInput = forwardRef((props: IProps, ref: Ref<InputRef>) => {
         row,
         rowIndex,
         onChange,
-        onFocus,
         onBlur,
         onCellClick
     } = props;
     const { name, onRender } = column;
-    const refKey = `${rowIndex}-${String(name)}`;
+    const refKey = `${rowIndex}-${name as string}`;
     const showKey = `${focusRowIndex}-${focusColumnName}`;
+
+    const hanldeCellClick = useCallback(() => {
+        onCellClick({
+            rowIndex: rowIndex,
+            columnName: name
+        })
+    }, [])
+
+    const handleFocus = useCallback((event: React.FocusEvent<HTMLInputElement, Element>) => {
+        props.onFocus && props.onFocus({
+            rowIndex: rowIndex,
+            columnName: name
+        }, refKey)
+    }, [])
 
     return <td className={`apex-table-tbody-td`} id={`td-${refKey}`}>
         {
@@ -43,15 +56,21 @@ const ApexInput = forwardRef((props: IProps, ref: Ref<InputRef>) => {
                     defaultValue={defaultValue || row[name]}
                     ref={ref}
                     onBlur={onBlur}
-                    onFocus={onFocus}
+                    onFocus={handleFocus}
                     onChange={onChange}
                 />
                 :
-                <div className="apex-show-cell" onClick={onCellClick}>
+                <div className="apex-show-cell" onClick={hanldeCellClick}>
                     {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
                 </div>
         }
     </td>
-});
+}), arePropsEqual)
+
+function arePropsEqual(oldProps: IProps, newProps: IProps) {
+    const refKey = `${oldProps.rowIndex}-${String(oldProps.column.name)}`;
+    const showKey = `${newProps.focusRowIndex}-${newProps.focusColumnName}`;
+    return true;
+}
 
 export default ApexInput;
