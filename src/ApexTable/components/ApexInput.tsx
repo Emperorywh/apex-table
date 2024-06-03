@@ -129,18 +129,18 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
         }
     }, [])
     return <td className={`apex-table-tbody-td`} id={`td-${refKey}`}>
-        <Input
-            defaultValue={defaultValue || row[name]}
-            ref={inputRef}
-            onBlur={handleInputBlur}
-            onFocus={handleInputFocus}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            style={{ display: focusState ? 'block' : 'none' }}
-        />
-        <div className="apex-show-cell" onClick={hanldeCellClick} style={{ display: focusState ? 'none' : 'flex' }}>
-            {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-        </div>
+        {
+            focusState ? <Input
+                defaultValue={defaultValue || row[name]}
+                ref={inputRef}
+                onBlur={handleInputBlur}
+                onFocus={handleInputFocus}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+            /> : <div className="apex-show-cell" onClick={hanldeCellClick} >
+                {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+            </div>
+        }
     </td>
 }))
 

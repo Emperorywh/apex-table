@@ -606,7 +606,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * 监听鼠标滚轮
      * @param event 
      */
-    const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const onWheel = (event: any) => {
         event.preventDefault();
         const direction = event.deltaY > 0 ? 'ArrowDown' : 'ArrowUp';
         if (direction === 'ArrowUp') {
