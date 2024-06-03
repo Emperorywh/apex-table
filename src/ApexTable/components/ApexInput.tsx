@@ -1,5 +1,5 @@
 import { Input, InputRef } from "antd";
-import React, { Ref, memo, useImperativeHandle, useRef, useState } from "react";
+import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
 import { IApexTableColumns, IFocusAxis } from "..";
 import ApexShowCellChildren from "./ApexShowCellChildren";
@@ -13,7 +13,7 @@ interface IProps {
     onCellClick: (rowInfo: IFocusAxis) => void;
     onFocus?: (rowInfo: IFocusAxis) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
-    onChange?: (row: any, columnName: any, event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
 }
 
 export interface IApexInput {
@@ -22,7 +22,7 @@ export interface IApexInput {
 }
 
 const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
-    console.log("渲染")
+
     const {
         column,
         defaultValue,
@@ -41,6 +41,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
 
     const inputRef = useRef<InputRef>(null);
 
+
     /**
      * 点击单元格
      */
@@ -57,6 +58,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      * @param event 
      */
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+        focus();
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
             columnName: name
@@ -77,7 +79,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      * @param event 
      */
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onChange && onChange(row, name, event)
+        onChange && onChange(event, row, name)
     }
 
     const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
@@ -104,16 +106,21 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
 
     const focus = () => {
         setFocusState(true);
-        requestAnimationFrame(() => {
-            inputRef.current?.focus({ preventScroll: true });
-            inputRef.current?.input?.scrollIntoView({ block: 'nearest' });
-            inputRef.current?.select();
-        });
     }
 
     const blur = () => {
         setFocusState(false);
     }
+
+    useEffect(() => {
+        if (focusState) {
+            requestAnimationFrame(() => {
+                inputRef.current?.focus({ preventScroll: true });
+                inputRef.current?.select();
+                inputRef.current?.input?.scrollIntoView({ block: 'nearest' });
+            })
+        }
+    }, [focusState]);
 
     useImperativeHandle(ref, () => {
         return {
@@ -121,20 +128,19 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
             blur
         }
     }, [])
-
     return <td className={`apex-table-tbody-td`} id={`td-${refKey}`}>
-        {
-            focusState ? <Input
-                defaultValue={defaultValue || row[name]}
-                ref={inputRef}
-                onBlur={handleInputBlur}
-                onFocus={handleInputFocus}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-            /> : <div className="apex-show-cell" onClick={hanldeCellClick}>
-                {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-            </div>
-        }
+        <Input
+            defaultValue={defaultValue || row[name]}
+            ref={inputRef}
+            onBlur={handleInputBlur}
+            onFocus={handleInputFocus}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            style={{ display: focusState ? 'block' : 'none' }}
+        />
+        <div className="apex-show-cell" onClick={hanldeCellClick} style={{ display: focusState ? 'none' : 'flex' }}>
+            {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+        </div>
     </td>
 }))
 

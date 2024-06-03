@@ -349,9 +349,9 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         }
     }, [tableDataSource])
 
-    const memoHandleChangeCellValue = useCallback((event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => {
+    const memoHandleChangeCellValue = (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => {
         handleChangeCellValue(row, columnName, event.target.value);
-    }, [handleChangeCellValue])
+    }
 
     /**
      * 初始化外部传入的静态数据源
@@ -437,15 +437,9 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     /**
      * 输入框聚焦时触发
      */
-    const handleInputFocus = useCallback((axis: IFocusAxis) => {
+    const handleInputFocus = (axis: IFocusAxis) => {
         focusAxisRef.current = axis;
-    }, []);
-
-    const setEditRefs = useCallback((refKey: any) => {
-        return (inputRef: any) => {
-            editRefs.current[refKey] = inputRef;
-        }
-    }, [])
+    };
 
     /**
      * 监听键盘按下
@@ -613,6 +607,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * @param event 
      */
     const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+        event.preventDefault();
         const direction = event.deltaY > 0 ? 'ArrowDown' : 'ArrowUp';
         if (direction === 'ArrowUp') {
             onArrowUp();
@@ -711,6 +706,17 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     /***** End  ========================= End *****/
 
     useEffect(() => {
+        const element = tableDivRef.current;
+        if (element) {
+            element.addEventListener('wheel', onWheel, { passive: false });
+
+            return () => {
+                element.removeEventListener('wheel', onWheel);
+            }
+        }
+    }, [pageDataSource]);
+
+    useEffect(() => {
         handleRequestData();
     }, [currentPage, pageSize]);
 
@@ -726,14 +732,10 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         onChangeHeaderCheckBoxIndeter();
     }, [checkedData, dataSource]);
 
-    // useEffect(() => {
-    //     handleFocusEditAbleCell({ rowIndex: focusRowIndex, columnName: focusColumnName });
-    // }, [focusRowIndex, focusColumnName]);
-
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
-            <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} onWheel={onWheel}>
-                <div className='apex-table-content' ref={tableDivRef}>
+            <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} >
+                <div className='apex-table-content' ref={tableDivRef} >
                     <table className='apex-table'>
                         <colgroup>
                             {
@@ -795,14 +797,15 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                                                 if (columnItem?.visible === false) return;
                                                 const refKey: string = `${dataSourceIndex}-${columnItem.name as string}`;
                                                 return <ApexInput
-                                                    key={`${refKey}`}
+                                                    key={refKey}
                                                     column={columnItem}
                                                     row={dataSourceItem}
                                                     rowIndex={dataSourceIndex}
-                                                    ref={setEditRefs(refKey)}
+                                                    ref={inputRef => editRefs.current[refKey] = inputRef}
                                                     onCellClick={handleInputFocus}
                                                     onChange={memoHandleChangeCellValue}
                                                     onFocus={handleInputFocus}
+
                                                 />
                                             })
                                         }
