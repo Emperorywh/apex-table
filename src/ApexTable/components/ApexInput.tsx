@@ -1,7 +1,7 @@
 import { Input, InputRef } from "antd";
 import React, { Ref, memo, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
-import { IApexTableColumns, IRow } from "..";
+import { IApexTableColumns, IFocusAxis } from "..";
 import ApexShowCellChildren from "./ApexShowCellChildren";
 
 interface IProps {
@@ -10,10 +10,10 @@ interface IProps {
     defaultValue?: string;
     row: any;
     rowIndex: number;
-    onCellClick: (rowInfo: IRow) => void;
-    onFocus?: (rowInfo: IRow) => void;
+    onCellClick: (rowInfo: IFocusAxis) => void;
+    onFocus?: (rowInfo: IFocusAxis) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
+    onChange?: (row: any, columnName: any, event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface IApexInput {
@@ -68,8 +68,8 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      * @param event 
      */
     const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
-        blur();
-        props.onBlur && props.onBlur(event)
+        setFocusState(false);
+        props.onBlur && props.onBlur(event);
     }
 
     /**
@@ -77,15 +77,38 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      * @param event 
      */
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onChange && onChange(event, row, name)
+        onChange && onChange(row, name, event)
+    }
+
+    const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
+        const key = event.key;
+        const cursorPosition = event.target.selectionStart;
+        const selectionEnd = event.target.selectionEnd;
+        switch (key) {
+            case 'ArrowUp':
+                break;
+            case 'ArrowDown':
+                break;
+            case 'ArrowLeft':
+                if (cursorPosition !== selectionEnd) {
+                    event.stopPropagation();
+                }
+                break;
+            case 'ArrowRight':
+                if (cursorPosition < selectionEnd) {
+                    event.stopPropagation();
+                }
+                break;
+        }
     }
 
     const focus = () => {
         setFocusState(true);
         requestAnimationFrame(() => {
-            inputRef.current?.focus();
+            inputRef.current?.focus({ preventScroll: true });
+            inputRef.current?.input?.scrollIntoView({ block: 'nearest' });
             inputRef.current?.select();
-        })
+        });
     }
 
     const blur = () => {
@@ -107,6 +130,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
                 onBlur={handleInputBlur}
                 onFocus={handleInputFocus}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
             /> : <div className="apex-show-cell" onClick={hanldeCellClick}>
                 {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
             </div>
