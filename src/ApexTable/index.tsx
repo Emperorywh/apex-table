@@ -165,7 +165,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     const tableDivRef = useRef<HTMLDivElement>(null);
 
-    const [apexColumns, setApexColumns] = useState(columns);
+    const [apexColumns, setApexColumns] = useState<IApexTableColumns<any>[]>([]);
 
     /**
      * 当前聚焦的坐标
@@ -174,16 +174,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         rowIndex: -1,
         columnName: ''
     });
-
-    // /**
-    //  * 当前聚焦的行
-    //  */
-    // const [focusRowIndex, setFocusRowIndex] = useState(-1);
-
-    // /**
-    //  * 当前聚焦的列名
-    //  */
-    // const [focusColumnName, setFocusColumnName] = useState<any>('');
 
     /**
      * 表格数据源
@@ -429,7 +419,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             const tdHeight = td?.getBoundingClientRect().height || 0;
             const tdTop = td?.getBoundingClientRect().top || 0;
             if (tableTop && td && tdTop - tableTop < tdHeight) {
-                tableDivRef.current.scrollTop = tableDivRef.current.scrollTop - tdHeight;
+                tableDivRef.current.scrollTop = tableDivRef.current.scrollTop - tdHeight + (tdTop - tableTop);
             }
         }
     }
@@ -704,6 +694,10 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }, [apexColumns, tableDataSource]);
 
     /***** End  ========================= End *****/
+
+    useEffect(() => {
+        setApexColumns(columns)
+    }, [columns]);
 
     useEffect(() => {
         const element = tableDivRef.current;

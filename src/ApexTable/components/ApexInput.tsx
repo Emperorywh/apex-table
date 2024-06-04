@@ -71,7 +71,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      */
     const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
         setFocusState(false);
-        props.onBlur && props.onBlur(event);
+        onBlur && onBlur(event);
     }
 
     /**
@@ -114,11 +114,10 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
 
     useEffect(() => {
         if (focusState) {
-            requestAnimationFrame(() => {
-                inputRef.current?.focus({ preventScroll: true });
-                inputRef.current?.select();
-                inputRef.current?.input?.scrollIntoView({ block: 'nearest' });
-            })
+            // requestAnimationFrame(() => {
+            inputRef.current?.select();
+            // inputRef.current?.input?.scrollIntoView({ block: 'nearest' });
+            // })
         }
     }, [focusState]);
 
