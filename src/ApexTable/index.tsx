@@ -1,15 +1,11 @@
-import React, { ReactNode, useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
+import React, { ReactNode, useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, DatePicker, Empty, Input, ModalFuncProps, Pagination, PaginationProps, Spin } from 'antd';
+import { Checkbox, ConfigProvider, Empty, ModalFuncProps, Pagination, PaginationProps, Spin } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { ApexModalRef } from './types/ApexModal';
-import ApexTdWrap from './components/ApexTdWrap';
-import ApexTableInput from './components/ApexTableInput';
-import ApexTableSelect from './components/ApexTableSelect';
-import ApexModal from './components/ApexModal';
 import ApexInput from './components/ApexInput';
 
 export interface ApexTableProps<T, V> {
@@ -414,13 +410,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         const findRefName = Object.keys(editRefs.current).find(key => key === name);
         if (findRefName) {
             editRefs.current[findRefName]?.focus();
-            const tableTop = tableDivRef.current?.getBoundingClientRect().top;
-            const td = document.getElementById(`td-${findRefName}`);
-            const tdHeight = td?.getBoundingClientRect().height || 0;
-            const tdTop = td?.getBoundingClientRect().top || 0;
-            if (tableTop && td && tdTop - tableTop < tdHeight) {
-                tableDivRef.current.scrollTop = tableDivRef.current.scrollTop - tdHeight + (tdTop - tableTop);
-            }
         }
     }
 
@@ -465,6 +454,14 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         } else {
             focusAxisRef.current.rowIndex -= 1;
         }
+        const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
+        const tableTop = tableDivRef.current?.getBoundingClientRect().top || 0;
+        const td = document.getElementById(`td-${name}`);
+        const tdHeight = td?.getBoundingClientRect().height || 0;
+        const tdTop = td?.getBoundingClientRect().top || 0;
+        if (tableDivRef.current && td && tdTop - tableTop < tdHeight) {
+            tableDivRef.current.scrollBy(0, - tdHeight + (tdTop - tableTop));
+        }
         handleFocusEditAbleCell(focusAxisRef.current);
     }
 
@@ -478,7 +475,18 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         } else {
             focusAxisRef.current.rowIndex += 1;
         }
+        const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
+        const tableBottom = tableDivRef.current?.getBoundingClientRect().bottom || 0;
+        const td = document.getElementById(`td-${name}`);
+        const tdBottom = td?.getBoundingClientRect().bottom || 0;
+        if (tableDivRef.current && td && tdBottom > tableBottom) {
+            tableDivRef.current.scrollBy({
+                top: tdBottom - tableBottom + 15
+            });
+        }
+        console.log(focusAxisRef.current.rowIndex)
         handleFocusEditAbleCell(focusAxisRef.current);
+
     }
 
     /**
@@ -799,7 +807,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                                                     onCellClick={handleInputFocus}
                                                     onChange={memoHandleChangeCellValue}
                                                     onFocus={handleInputFocus}
-
                                                 />
                                             })
                                         }

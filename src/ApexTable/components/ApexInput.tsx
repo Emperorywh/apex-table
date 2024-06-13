@@ -46,7 +46,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      * 点击单元格
      */
     const hanldeCellClick = () => {
-        focus();
+        setFocusState(true);
         onCellClick({
             rowIndex: rowIndex,
             columnName: name
@@ -58,7 +58,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      * @param event 
      */
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
-        focus();
+        setFocusState(true);
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
             columnName: name
@@ -114,10 +114,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
 
     useEffect(() => {
         if (focusState) {
-            // requestAnimationFrame(() => {
-            inputRef.current?.select();
-            // inputRef.current?.input?.scrollIntoView({ block: 'nearest' });
-            // })
+            inputRef.current?.focus({ preventScroll: true });
         }
     }, [focusState]);
 
@@ -129,14 +126,17 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
     }, [])
     return <td className={`apex-table-tbody-td`} id={`td-${refKey}`}>
         {
-            focusState ? <Input
+            focusState && <Input
                 defaultValue={defaultValue || row[name]}
                 ref={inputRef}
                 onBlur={handleInputBlur}
                 onFocus={handleInputFocus}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-            /> : <div className="apex-show-cell" onClick={hanldeCellClick} >
+            />
+        }
+        {
+            !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
                 {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
             </div>
         }

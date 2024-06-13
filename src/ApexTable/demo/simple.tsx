@@ -26,7 +26,7 @@ const App: React.FC = () => {
                 name: 'column' + i
             });
         }
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 111; i++) {
             const row: any = {
                 id: nanoid()
             };
