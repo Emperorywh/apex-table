@@ -549,8 +549,21 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         focusAxisRef.current.columnName = findColumn.name;
                     }
                 }
+                handleFocusEditAbleCell(focusAxisRef.current);
+                const tableRect = tableDivRef.current?.getBoundingClientRect();
+                const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
+                const td = document.getElementById(`td-${name}`);
+                const tdRect = td?.getBoundingClientRect();
+                if (tableDivRef.current && tableRect && tdRect) {
+                    let offset = 0;
+                    if (tdRect.left - tableRect.left < tdRect.width) {
+                        offset = tdRect.left - tableRect.left - 50;
+                    } else if (tdRect.left - tableRect.left > tableDivRef.current.clientWidth) {
+                        offset = tdRect.left - tableRect.left;
+                    }
+                    tableDivRef.current.scrollBy(offset, 0);
+                }
             }
-            handleFocusEditAbleCell(focusAxisRef.current);
         })
     }
 
@@ -614,8 +627,16 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         focusAxisRef.current.columnName = findColumn.name;
                     }
                 }
+                handleFocusEditAbleCell(focusAxisRef.current);
+                const tableRect = tableDivRef.current?.getBoundingClientRect();
+                const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
+                const td = document.getElementById(`td-${name}`);
+                const tdRect = td?.getBoundingClientRect();
+                if (tableDivRef.current && tableRect && tdRect && tdRect.right - tableRect.right < tdRect.width) {
+                    const offset = tdRect.right - tableRect.right + 15;
+                    tableDivRef.current.scrollBy(offset, 0);
+                }
             }
-            handleFocusEditAbleCell(focusAxisRef.current);
         })
     }
 

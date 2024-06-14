@@ -22,7 +22,6 @@ export interface IApexInput {
 }
 
 const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
-    console.log("渲染")
     const {
         column,
         defaultValue,
