@@ -22,7 +22,7 @@ export interface IApexInput {
 }
 
 const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
-
+    console.log("渲染")
     const {
         column,
         defaultValue,
@@ -58,6 +58,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
      * @param event 
      */
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+        event.preventDefault();
         setFocusState(true);
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
@@ -112,9 +113,12 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
         setFocusState(false);
     }
 
+
     useEffect(() => {
         if (focusState) {
-            inputRef.current?.focus({ preventScroll: true });
+            requestAnimationFrame(() => {
+                inputRef.current?.select();
+            })
         }
     }, [focusState]);
 
@@ -123,7 +127,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
             focus,
             blur
         }
-    }, [])
+    }, [focusState])
     return <td className={`apex-table-tbody-td`} id={`td-${refKey}`}>
         {
             focusState && <Input

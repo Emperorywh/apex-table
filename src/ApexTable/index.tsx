@@ -7,6 +7,7 @@ import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { ApexModalRef } from './types/ApexModal';
 import ApexInput from './components/ApexInput';
+import { flushSync } from 'react-dom';
 
 export interface ApexTableProps<T, V> {
     /**
@@ -414,6 +415,18 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }
 
     /**
+     * 可编辑单元格 全选
+     * @param rowInfo 
+     */
+    const handleFocusEditAbleSelect = (rowInfo: IFocusAxis) => {
+        const name = `${rowInfo.rowIndex}-${rowInfo.columnName}`;
+        const findRefName = Object.keys(editRefs.current).find(key => key === name);
+        if (findRefName) {
+            editRefs.current[findRefName]?.select();
+        }
+    }
+
+    /**
      * 输入框聚焦时触发
      */
     const handleInputFocus = (axis: IFocusAxis) => {
@@ -448,45 +461,47 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * 监听键盘按键 ↑
      */
     const onArrowUp = () => {
-        const indexUp = focusAxisRef.current.rowIndex - 1;
-        if (indexUp < 0) {
-            focusAxisRef.current.rowIndex = 0;
-        } else {
-            focusAxisRef.current.rowIndex -= 1;
-        }
-        const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
-        const tableTop = tableDivRef.current?.getBoundingClientRect().top || 0;
-        const td = document.getElementById(`td-${name}`);
-        const tdHeight = td?.getBoundingClientRect().height || 0;
-        const tdTop = td?.getBoundingClientRect().top || 0;
-        if (tableDivRef.current && td && tdTop - tableTop < tdHeight) {
-            tableDivRef.current.scrollBy(0, - tdHeight + (tdTop - tableTop));
-        }
-        handleFocusEditAbleCell(focusAxisRef.current);
+        flushSync(() => {
+            const indexUp = focusAxisRef.current.rowIndex - 1;
+            if (indexUp < 0) {
+                focusAxisRef.current.rowIndex = 0;
+            } else {
+                focusAxisRef.current.rowIndex -= 1;
+            }
+            const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
+            const tableTop = tableDivRef.current?.getBoundingClientRect().top || 0;
+            const td = document.getElementById(`td-${name}`);
+            const tdHeight = td?.getBoundingClientRect().height || 0;
+            const tdTop = td?.getBoundingClientRect().top || 0;
+            if (tableDivRef.current && td && tdTop - tableTop < tdHeight) {
+                tableDivRef.current.scrollBy(0, - tdHeight + (tdTop - tableTop));
+            }
+            handleFocusEditAbleCell(focusAxisRef.current);
+        })
     }
 
     /**
      * 监听键盘按键 ↓
      */
     const onArrowDown = () => {
-        const indexDown = focusAxisRef.current.rowIndex + 1;
-        if (indexDown > pageDataSource.length - 1) {
-            focusAxisRef.current.rowIndex = pageDataSource.length - 1;
-        } else {
-            focusAxisRef.current.rowIndex += 1;
-        }
-        const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
-        const tableBottom = tableDivRef.current?.getBoundingClientRect().bottom || 0;
-        const td = document.getElementById(`td-${name}`);
-        const tdBottom = td?.getBoundingClientRect().bottom || 0;
-        if (tableDivRef.current && td && tdBottom > tableBottom) {
-            tableDivRef.current.scrollBy({
-                top: tdBottom - tableBottom + 15
-            });
-        }
-        console.log(focusAxisRef.current.rowIndex)
-        handleFocusEditAbleCell(focusAxisRef.current);
-
+        flushSync(() => {
+            const indexDown = focusAxisRef.current.rowIndex + 1;
+            if (indexDown > pageDataSource.length - 1) {
+                focusAxisRef.current.rowIndex = pageDataSource.length - 1;
+            } else {
+                focusAxisRef.current.rowIndex += 1;
+            }
+            const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
+            const tableBottom = tableDivRef.current?.getBoundingClientRect().bottom || 0;
+            const td = document.getElementById(`td-${name}`);
+            const tdBottom = td?.getBoundingClientRect().bottom || 0;
+            if (tableDivRef.current && td && tdBottom > tableBottom) {
+                tableDivRef.current.scrollBy({
+                    top: tdBottom - tableBottom + 15
+                });
+            }
+            handleFocusEditAbleCell(focusAxisRef.current);
+        })
     }
 
     /**
@@ -494,18 +509,35 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * @param cursorPosition 光标位置
      */
     const onArrowLeft = (cursorPosition: number) => {
-        if (cursorPosition === 0) {
-            const findIndex = apexColumns.findIndex(item => item.name === focusAxisRef.current.columnName);
-            if (findIndex > 0) {
-                let findColumn;
-                for (let i = findIndex - 1; i > -1; i--) {
-                    const item = apexColumns[i];
-                    if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                        findColumn = item;
-                        break;
+        flushSync(() => {
+            if (cursorPosition === 0) {
+                const findIndex = apexColumns.findIndex(item => item.name === focusAxisRef.current.columnName);
+                if (findIndex > 0) {
+                    let findColumn;
+                    for (let i = findIndex - 1; i > -1; i--) {
+                        const item = apexColumns[i];
+                        if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                            findColumn = item;
+                            break;
+                        }
                     }
-                }
-                if (!findColumn) {
+                    if (!findColumn) {
+                        for (let i = apexColumns.length - 1; i > findIndex; i--) {
+                            const item = apexColumns[i];
+                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                findColumn = item;
+                                break;
+                            }
+                        }
+                    }
+                    if (findColumn) {
+                        focusAxisRef.current.columnName = findColumn.name;
+                    }
+                } else {
+                    if (focusAxisRef.current.rowIndex > 0) {
+                        focusAxisRef.current.rowIndex -= 1;
+                    }
+                    let findColumn;
                     for (let i = apexColumns.length - 1; i > findIndex; i--) {
                         const item = apexColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
@@ -513,28 +545,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             break;
                         }
                     }
-                }
-                if (findColumn) {
-                    focusAxisRef.current.columnName = findColumn.name;
-                }
-            } else {
-                if (focusAxisRef.current.rowIndex > 0) {
-                    focusAxisRef.current.rowIndex -= 1;
-                }
-                let findColumn;
-                for (let i = apexColumns.length - 1; i > findIndex; i--) {
-                    const item = apexColumns[i];
-                    if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                        findColumn = item;
-                        break;
+                    if (findColumn) {
+                        focusAxisRef.current.columnName = findColumn.name;
                     }
                 }
-                if (findColumn) {
-                    focusAxisRef.current.columnName = findColumn.name;
-                }
             }
-        }
-        handleFocusEditAbleCell(focusAxisRef.current);
+            handleFocusEditAbleCell(focusAxisRef.current);
+        })
     }
 
     /**
@@ -543,61 +560,63 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * @param eventValue        输入框的值
      */
     const onArrowRight = (cursorPosition: number, eventValue: any) => {
-        if (cursorPosition === eventValue.length) {
-            const findIndex = apexColumns.findIndex(item => {
-                return item.name === focusAxisRef.current.columnName;
-            });
+        flushSync(() => {
+            if (cursorPosition === eventValue.length) {
+                const findIndex = apexColumns.findIndex(item => {
+                    return item.name === focusAxisRef.current.columnName;
+                });
 
-            // 最后一个可编辑列
-            let findLastEditIndex = -1;
-            for (let i = apexColumns.length - 1; i > -1; i--) {
-                const item = apexColumns[i];
-                if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                    findLastEditIndex = i;
-                    break;
-                }
-            }
-            if (findIndex === findLastEditIndex) {
-                if (focusAxisRef.current.rowIndex === pageDataSource.length - 1) {
-                    focusAxisRef.current.rowIndex = 0;
-                } else {
-                    focusAxisRef.current.rowIndex += 1;
-                }
-                let findColumn;
-                for (let i = 0; i < apexColumns.length - 1; i++) {
+                // 最后一个可编辑列
+                let findLastEditIndex = -1;
+                for (let i = apexColumns.length - 1; i > -1; i--) {
                     const item = apexColumns[i];
                     if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                        findColumn = item;
+                        findLastEditIndex = i;
                         break;
                     }
                 }
-                if (findColumn) {
-                    focusAxisRef.current.columnName = findColumn.name;
-                }
-            } else {
-                let findColumn;
-                for (let i = findIndex + 1; i < apexColumns.length; i++) {
-                    const item = apexColumns[i];
-                    if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
-                        findColumn = item;
-                        break;
+                if (findIndex === findLastEditIndex) {
+                    if (focusAxisRef.current.rowIndex === pageDataSource.length - 1) {
+                        focusAxisRef.current.rowIndex = 0;
+                    } else {
+                        focusAxisRef.current.rowIndex += 1;
                     }
-                }
-                if (!findColumn) {
-                    for (let i = 0; i < findIndex; i++) {
+                    let findColumn;
+                    for (let i = 0; i < apexColumns.length - 1; i++) {
                         const item = apexColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                             findColumn = item;
                             break;
                         }
                     }
-                }
-                if (findColumn) {
-                    focusAxisRef.current.columnName = findColumn.name;
+                    if (findColumn) {
+                        focusAxisRef.current.columnName = findColumn.name;
+                    }
+                } else {
+                    let findColumn;
+                    for (let i = findIndex + 1; i < apexColumns.length; i++) {
+                        const item = apexColumns[i];
+                        if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                            findColumn = item;
+                            break;
+                        }
+                    }
+                    if (!findColumn) {
+                        for (let i = 0; i < findIndex; i++) {
+                            const item = apexColumns[i];
+                            if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
+                                findColumn = item;
+                                break;
+                            }
+                        }
+                    }
+                    if (findColumn) {
+                        focusAxisRef.current.columnName = findColumn.name;
+                    }
                 }
             }
-        }
-        handleFocusEditAbleCell(focusAxisRef.current);
+            handleFocusEditAbleCell(focusAxisRef.current);
+        })
     }
 
     /**
@@ -736,7 +755,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
-            <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown} >
+            <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
                 <div className='apex-table-content' ref={tableDivRef} >
                     <table className='apex-table'>
                         <colgroup>

@@ -26,12 +26,21 @@
             .apex-table-thead {
                 position: sticky;
                 top: 0;
+                left: 0;
                 background: rgb(250, 250, 250);
                 font-size: 14px;
                 z-index: 100;
 
                 tr {
                     height: @rowHeight;
+
+                    .apex-table-thead-th-line-number-head {
+                        position: sticky;
+                        top: 0;
+                        left: 0;
+                        z-index: 100;
+                        background: rgb(250, 250, 250);
+                    }
 
                     .apex-table-thead-th {}
 
@@ -67,6 +76,15 @@
             .apex-table-tbody {
 
                 .apex-table-tbody-tr {
+                    position: relative;
+
+                    .apex-table-tbody-td-line-number {
+                        position: sticky;
+                        top: 0;
+                        left: 0;
+                        z-index: 99;
+                        background: rgb(250, 250, 250);
+                    }
 
                     .apex-table-tbody-td-checkbox {
                         text-align: center !important;
