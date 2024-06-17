@@ -536,6 +536,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 } else {
                     if (focusAxisRef.current.rowIndex > 0) {
                         focusAxisRef.current.rowIndex -= 1;
+                        onArrowUp();
                     }
                     let findColumn;
                     for (let i = apexColumns.length - 1; i > findIndex; i--) {
@@ -593,6 +594,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         focusAxisRef.current.rowIndex = 0;
                     } else {
                         focusAxisRef.current.rowIndex += 1;
+                        onArrowDown();
                     }
                     let findColumn;
                     for (let i = 0; i < apexColumns.length - 1; i++) {
