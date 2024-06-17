@@ -1,10 +1,10 @@
+import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable";
 import React from "react";
-import { ApexTableProps, IApexTableColumns } from "..";
 
 
 export interface IApexTdWrap {
     id?: string;
-    apexTableProps: ApexTableProps<any>;
+    apexTableProps: ApexTableProps<any, any>;
     apexColumn: IApexTableColumns<any>
     children?: React.ReactNode
 }

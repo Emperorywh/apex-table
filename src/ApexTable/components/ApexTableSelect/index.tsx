@@ -1,11 +1,11 @@
 import React, { forwardRef } from "react";
-import { ApexTableProps, IApexTableColumns } from "..";
-import ApexTdWrap from "./ApexTdWrap";
+import ApexTdWrap from "../ApexTdWrap";
 import { Select } from "antd";
+import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable";
 
 export interface ApexTableSelectProps<T> {
     tdId?: string;
-    apexTableProps: ApexTableProps<any>;
+    apexTableProps: ApexTableProps<any, any>;
     columnItem: IApexTableColumns<T>;
     dataSourceItem: any;
     ref?: React.Ref<any>;

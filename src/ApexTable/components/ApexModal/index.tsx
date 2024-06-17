@@ -1,13 +1,13 @@
 import React, { forwardRef, useRef } from "react";
-import { ApexTableProps, IApexTableColumns } from "..";
-import { ApexModalRef } from "../types/ApexModal";
-import ApexTdWrap from "./ApexTdWrap";
+import { ApexModalRef } from "../../types/ApexModal";
+import ApexTdWrap from "../ApexTdWrap";
 import { Input, InputRef, Modal } from "antd";
 import { MoreOutlined } from '@ant-design/icons';
+import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable";
 
 export interface IApexModalProps<T> {
     tdId?: string;
-    apexTableProps: ApexTableProps<any>;
+    apexTableProps: ApexTableProps<any, any>;
     columnItem: IApexTableColumns<T>;
     dataSourceItem: any;
     columnValue: string;

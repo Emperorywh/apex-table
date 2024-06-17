@@ -1,6 +1,6 @@
 import React from "react";
-import { IApexTableColumns } from "..";
 import dayjs from "dayjs";
+import { IApexTableColumns } from "apex-table/ApexTable";
 
 interface IProps<T> {
     columnItem: IApexTableColumns<T>;

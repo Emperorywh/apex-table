@@ -6,8 +6,8 @@ import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { ApexModalRef } from './types/ApexModal';
-import ApexInput from './components/ApexInput';
 import { flushSync } from 'react-dom';
+import { ApexColgroup, ApexInput, ApexPagination, ApexTbody, ApexThead } from './components';
 
 export interface ApexTableProps<T, V> {
     /**
@@ -781,102 +781,51 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
                 <div className='apex-table-content' ref={tableDivRef} >
                     <table className='apex-table'>
-                        <colgroup>
-                            {
-                                showLineNumber && <col style={{ width: 50 }}></col>
-                            }
-                            {
-                                allowSelect && <col style={{ width: 50 }}></col>
-                            }
-                            {
-                                apexColumns.map((item, index) => {
-                                    return <col key={`colgroup-${index}`} style={{ width: item.width || 120 }}></col>
-                                })
-                            }
-                        </colgroup>
+                        <ApexColgroup
+                            showLineNumber={showLineNumber}
+                            allowSelect={allowSelect}
+                            columns={apexColumns}
+                        />
                         {
                             tableTitle && <caption>{tableTitle}</caption>
                         }
-                        <thead className='apex-table-thead'>
-                            <tr>
-                                {
-                                    showLineNumber ? <th className='apex-table-thead-th apex-table-thead-th-line-number-head'>
-                                        <span>行号</span>
-                                    </th> : null
-                                }
-                                {
-                                    showHeaderCheckBox ? <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
-                                        <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
-                                    </th> : null
-                                }
-                                {
-                                    apexColumns.map((item, index) => {
-                                        if (item?.visible === false) {
-                                            return null
-                                        } else {
-                                            return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th ${allowFixed && item.fixed ? 'apex-table-thead-fixed-' + item.fixed : ''}`}>
-                                                {item['title']}
-                                            </th>;
-                                        }
-                                    })
-                                }
-                            </tr>
-                        </thead>
-                        <tbody className='apex-table-tbody'>
-                            {
-                                pageDataSource.length > 0 ? pageDataSource.map((dataSourceItem, dataSourceIndex) => {
-                                    return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
-                                        {
-                                            showLineNumber && <td className='apex-table-tbody-td apex-table-tbody-td-line-number'>
-                                                <div className={`number ${dataSourceIndex > 2 ? 'number-low' : ''}`}>{dataSourceIndex + 1}</div>
-                                            </td>
-                                        }
-                                        {
-                                            allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
-                                                <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => handleRowSelected(event, dataSourceItem)} />
-                                            </td>
-                                        }
-                                        {
-                                            apexColumns.map((columnItem) => {
-                                                if (columnItem?.visible === false) return;
-                                                const refKey: string = `${dataSourceIndex}-${columnItem.name as string}`;
-                                                return <ApexInput
-                                                    key={refKey}
-                                                    column={columnItem}
-                                                    row={dataSourceItem}
-                                                    rowIndex={dataSourceIndex}
-                                                    ref={inputRef => editRefs.current[refKey] = inputRef}
-                                                    onCellClick={handleInputFocus}
-                                                    onChange={memoHandleChangeCellValue}
-                                                    onFocus={handleInputFocus}
-                                                />
-                                            })
-                                        }
-                                    </tr>
-                                }) : <tr>
-                                    <td colSpan={apexColumns.length}>
-                                        <Empty />
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
+                        <ApexThead
+                            showLineNumber={showLineNumber}
+                            showHeaderCheckBox={showHeaderCheckBox}
+                            indeterminate={indeterminate}
+                            onHeaderCheckBoxChange={onHeaderCheckBoxChange}
+                            columns={apexColumns}
+                            isSingle={isSingle}
+                            headerChecked={headerChecked}
+                        />
+                        <ApexTbody
+                            columns={apexColumns}
+                            dataSource={pageDataSource}
+                            showLineNumber={showLineNumber}
+                            allowSelect={allowSelect}
+                            onRowSelected={handleRowSelected}
+                            onCellClick={handleInputFocus}
+                            onChange={memoHandleChangeCellValue}
+                            onFocus={handleInputFocus}
+                            onSetRef={(inputRef, refKey) => {
+                                editRefs.current[refKey] = inputRef;
+                                return inputRef;
+                            }} />
                     </table>
                 </div>
-                {
-                    showPagination && <div className='apex-table-pagination'>
-                        <Pagination
-                            {...pagination}
-                            current={currentPage}
-                            pageSize={pageSize}
-                            total={total}
-                            onChange={(page, pageSize) => {
-                                pagination?.onChange && pagination.onChange(page, pageSize)
-                                setCurrentPage(page);
-                                setPageSize(pageSize);
-                            }}
-                        />
-                    </div>
-                }
+                <ApexPagination
+                    {...pagination}
+                    currentPage={currentPage}
+                    pageSize={pageSize}
+                    total={total}
+                    showPagination={showPagination}
+                    pagination={pagination}
+                    onChange={(page, pageSize) => {
+                        pagination?.onChange && pagination.onChange(page, pageSize)
+                        setCurrentPage(page);
+                        setPageSize(pageSize);
+                    }}
+                />
             </div>
         </Spin>
     </ConfigProvider >

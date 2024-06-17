@@ -1,8 +1,8 @@
 import { Input, InputRef } from "antd";
+import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable";
 import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
-import { IApexTableColumns, IFocusAxis } from "..";
-import ApexShowCellChildren from "./ApexShowCellChildren";
+import { ApexShowCellChildren } from "..";
 
 interface IProps {
     children?: React.ReactNode;
