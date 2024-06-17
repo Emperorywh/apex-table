@@ -460,13 +460,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     /**
      * 监听键盘按键 ↑
      */
-    const onArrowUp = () => {
+    const onArrowUp = (added = false) => {
         flushSync(() => {
             const indexUp = focusAxisRef.current.rowIndex - 1;
             if (indexUp < 0) {
                 focusAxisRef.current.rowIndex = 0;
             } else {
-                focusAxisRef.current.rowIndex -= 1;
+                !added && (focusAxisRef.current.rowIndex -= 1);
             }
             const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
             const tableTop = tableDivRef.current?.getBoundingClientRect().top || 0;
@@ -483,13 +483,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     /**
      * 监听键盘按键 ↓
      */
-    const onArrowDown = () => {
+    const onArrowDown = (added = false) => {
         flushSync(() => {
             const indexDown = focusAxisRef.current.rowIndex + 1;
             if (indexDown > pageDataSource.length - 1) {
                 focusAxisRef.current.rowIndex = pageDataSource.length - 1;
             } else {
-                focusAxisRef.current.rowIndex += 1;
+                !added && (focusAxisRef.current.rowIndex += 1);
             }
             const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
             const tableBottom = tableDivRef.current?.getBoundingClientRect().bottom || 0;
@@ -536,7 +536,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 } else {
                     if (focusAxisRef.current.rowIndex > 0) {
                         focusAxisRef.current.rowIndex -= 1;
-                        onArrowUp();
+                        onArrowUp(true);
                     }
                     let findColumn;
                     for (let i = apexColumns.length - 1; i > findIndex; i--) {
@@ -594,7 +594,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         focusAxisRef.current.rowIndex = 0;
                     } else {
                         focusAxisRef.current.rowIndex += 1;
-                        onArrowDown();
+                        onArrowDown(true);
                     }
                     let findColumn;
                     for (let i = 0; i < apexColumns.length - 1; i++) {
