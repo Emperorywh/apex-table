@@ -44,6 +44,9 @@ const App: React.FC = () => {
         columns={columns}
         dataSource={dataSource}
         rowKey='id'
+        allowSelect
+        showHeaderCheckBox
+        isSingle
     />
 };
 

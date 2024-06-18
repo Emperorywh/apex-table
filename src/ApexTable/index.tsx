@@ -790,6 +790,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             tableTitle && <caption>{tableTitle}</caption>
                         }
                         <ApexThead
+                            allowSelect={allowSelect}
                             showLineNumber={showLineNumber}
                             showHeaderCheckBox={showHeaderCheckBox}
                             indeterminate={indeterminate}

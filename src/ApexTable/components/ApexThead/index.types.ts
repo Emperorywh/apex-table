@@ -4,6 +4,7 @@ import { IApexTableColumns } from "apex-table/ApexTable";
 export interface IProps<T> {
     showLineNumber: boolean;
     columns: IApexTableColumns<T>[];
+    allowSelect: boolean;
     showHeaderCheckBox: boolean;
     isSingle: boolean;
     headerChecked: boolean;

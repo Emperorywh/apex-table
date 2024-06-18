@@ -6,6 +6,7 @@ function ApexThead<T>(props: IProps<T>) {
     const {
         columns,
         showLineNumber = false,
+        allowSelect = false,
         showHeaderCheckBox = false,
         isSingle = false,
         headerChecked = false,
@@ -21,9 +22,11 @@ function ApexThead<T>(props: IProps<T>) {
                 </th> : null
             }
             {
-                showHeaderCheckBox ? <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
-                    <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
-                </th> : null
+                allowSelect && <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
+                    {
+                        showHeaderCheckBox && <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate} onChange={onHeaderCheckBoxChange} />
+                    }
+                </th>
             }
             {
                 columns.map((item, index) => {
