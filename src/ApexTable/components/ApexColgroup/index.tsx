@@ -1,7 +1,7 @@
 import React from "react";
-import { IPorps } from './index.types';
+import { IProps } from './index.types';
 
-function ApexColgroup<T>(props: IPorps<T>) {
+function ApexColgroup<T>(props: IProps<T>) {
     const { 
         showLineNumber = false,
         allowSelect = false,

@@ -1,16 +1,16 @@
 import React, { ReactNode, useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
 import "./index.less"
-import { Checkbox, ConfigProvider, Empty, ModalFuncProps, Pagination, PaginationProps, Spin } from 'antd';
+import { ConfigProvider, ModalFuncProps, PaginationProps, Spin } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { ApexModalRef } from './types/ApexModal';
 import { flushSync } from 'react-dom';
-import { ApexColgroup, ApexInput, ApexPagination, ApexTbody, ApexThead } from './components';
+import { ApexColgroup, ApexPagination, ApexTbody, ApexThead } from './components';
 
 export interface ApexTableProps<T, V> {
-    /**
+    /** 
      * 表格实例
      */
     ref?: React.Ref<ApexTableRef>;
@@ -591,7 +591,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 }
                 if (findIndex === findLastEditIndex) {
                     if (focusAxisRef.current.rowIndex === pageDataSource.length - 1) {
-                        focusAxisRef.current.rowIndex = 0;
+                        // focusAxisRef.current.rowIndex = 0;
                     } else {
                         focusAxisRef.current.rowIndex += 1;
                         onArrowDown(true);

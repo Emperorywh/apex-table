@@ -1,9 +1,9 @@
 import React from "react";
-import { IPorps } from './index.types';
+import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
 import ApexInput from "../ApexInput";
 
-function ApexTbody<T>(props: IPorps<T>) {
+function ApexTbody<T>(props: IProps<T>) {
     const {
         allowSelect,
         columns,

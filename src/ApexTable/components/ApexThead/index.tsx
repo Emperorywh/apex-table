@@ -1,8 +1,8 @@
 import React from "react";
-import { IPorps } from './index.types';
+import { IProps } from './index.types';
 import { Checkbox } from "antd";
 
-function ApexThead<T>(props: IPorps<T>) {
+function ApexThead<T>(props: IProps<T>) {
     const {
         columns,
         showLineNumber = false,

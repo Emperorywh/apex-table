@@ -1,6 +1,6 @@
 import { IApexTableColumns } from "apex-table/ApexTable";
 
-export interface IPorps<T> {
+export interface IProps<T> {
     showLineNumber: boolean;
     allowSelect: boolean;
     columns: IApexTableColumns<T>[];

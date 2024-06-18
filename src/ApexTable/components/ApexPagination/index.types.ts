@@ -1,6 +1,6 @@
 import { PaginationProps } from "antd";
 
-export interface IPorps {
+export interface IProps {
     currentPage: number;
     pageSize: number;
     total: number;

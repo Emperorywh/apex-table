@@ -1,8 +1,8 @@
 import React from "react";
-import { IPorps } from './index.types';
+import { IProps } from './index.types';
 import { Pagination } from "antd";
 
-function ApexPagination(props: IPorps) {
+function ApexPagination(props: IProps) {
     const {
         pagination,
         showPagination,

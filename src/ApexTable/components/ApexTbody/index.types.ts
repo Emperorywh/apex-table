@@ -1,7 +1,7 @@
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable";
 
-export interface IPorps<T> {
+export interface IProps<T> {
     columns: IApexTableColumns<T>[];
     dataSource: any[];
     showLineNumber: boolean;

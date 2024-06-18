@@ -1,25 +1,9 @@
 import { Input, InputRef } from "antd";
-import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable";
 import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
 import { ApexShowCellChildren } from "..";
+import { IApexInput, IProps } from './index.types';
 
-interface IProps {
-    children?: React.ReactNode;
-    column: IApexTableColumns<any>;
-    defaultValue?: string;
-    row: any;
-    rowIndex: number;
-    onCellClick: (rowInfo: IFocusAxis) => void;
-    onFocus?: (rowInfo: IFocusAxis) => void;
-    onBlur?: React.FocusEventHandler<HTMLInputElement>;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
-}
-
-export interface IApexInput {
-    focus: () => void;
-    blur: () => void;
-}
 
 const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
     const {

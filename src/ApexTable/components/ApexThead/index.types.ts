@@ -1,7 +1,7 @@
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 import { IApexTableColumns } from "apex-table/ApexTable";
 
-export interface IPorps<T> {
+export interface IProps<T> {
     showLineNumber: boolean;
     columns: IApexTableColumns<T>[];
     showHeaderCheckBox: boolean;
