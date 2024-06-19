@@ -468,14 +468,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             } else {
                 !added && (focusAxisRef.current.rowIndex -= 1);
             }
-            const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
-            const tableTop = tableDivRef.current?.getBoundingClientRect().top || 0;
-            const td = document.getElementById(`td-${name}`);
-            const tdHeight = td?.getBoundingClientRect().height || 0;
-            const tdTop = td?.getBoundingClientRect().top || 0;
-            if (tableDivRef.current && td && tdTop - tableTop < tdHeight) {
-                tableDivRef.current.scrollBy(0, - tdHeight + (tdTop - tableTop));
-            }
             handleFocusEditAbleCell(focusAxisRef.current);
         })
     }
@@ -490,15 +482,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 focusAxisRef.current.rowIndex = pageDataSource.length - 1;
             } else {
                 !added && (focusAxisRef.current.rowIndex += 1);
-            }
-            const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
-            const tableBottom = tableDivRef.current?.getBoundingClientRect().bottom || 0;
-            const td = document.getElementById(`td-${name}`);
-            const tdBottom = td?.getBoundingClientRect().bottom || 0;
-            if (tableDivRef.current && td && tdBottom > tableBottom) {
-                tableDivRef.current.scrollBy({
-                    top: tdBottom - tableBottom + 15
-                });
             }
             handleFocusEditAbleCell(focusAxisRef.current);
         })
@@ -551,19 +534,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                     }
                 }
                 handleFocusEditAbleCell(focusAxisRef.current);
-                const tableRect = tableDivRef.current?.getBoundingClientRect();
-                const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
-                const td = document.getElementById(`td-${name}`);
-                const tdRect = td?.getBoundingClientRect();
-                if (tableDivRef.current && tableRect && tdRect) {
-                    let offset = 0;
-                    if (tdRect.left - tableRect.left < tdRect.width) {
-                        offset = tdRect.left - tableRect.left - 50;
-                    } else if (tdRect.left - tableRect.left > tableDivRef.current.clientWidth) {
-                        offset = tdRect.left - tableRect.left;
-                    }
-                    tableDivRef.current.scrollBy(offset, 0);
-                }
             }
         })
     }
@@ -630,14 +600,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                     }
                 }
                 handleFocusEditAbleCell(focusAxisRef.current);
-                const tableRect = tableDivRef.current?.getBoundingClientRect();
-                const name = `${focusAxisRef.current.rowIndex}-${focusAxisRef.current.columnName}`;
-                const td = document.getElementById(`td-${name}`);
-                const tdRect = td?.getBoundingClientRect();
-                if (tableDivRef.current && tableRect && tdRect && tdRect.right - tableRect.right < tdRect.width) {
-                    const offset = tdRect.right - tableRect.right + 15;
-                    tableDivRef.current.scrollBy(offset, 0);
-                }
             }
         })
     }
@@ -800,6 +762,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             headerChecked={headerChecked}
                         />
                         <ApexTbody
+                            tableDivRef={tableDivRef}
                             columns={apexColumns}
                             dataSource={pageDataSource}
                             showLineNumber={showLineNumber}

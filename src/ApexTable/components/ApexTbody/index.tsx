@@ -9,6 +9,7 @@ function ApexTbody<T>(props: IProps<T>) {
         columns,
         dataSource,
         showLineNumber,
+        tableDivRef,
         onRowSelected,
         onCellClick,
         onChange,
@@ -35,6 +36,8 @@ function ApexTbody<T>(props: IProps<T>) {
                             if (columnItem?.visible === false) return;
                             const refKey: string = `${dataSourceIndex}-${columnItem.name as string}`;
                             return <ApexInput
+                                allowSelect={allowSelect}
+                                tableDivRef={tableDivRef}
                                 key={refKey}
                                 column={columnItem}
                                 row={dataSourceItem}

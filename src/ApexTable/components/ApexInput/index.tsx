@@ -3,14 +3,16 @@ import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } fr
 import { forwardRef } from "react";
 import { ApexShowCellChildren } from "..";
 import { IApexInput, IProps } from './index.types';
-
+import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 
 const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
     const {
+        allowSelect,
         column,
         defaultValue,
         row,
         rowIndex,
+        tableDivRef,
         onChange,
         onBlur,
         onCellClick
@@ -18,11 +20,11 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
 
     const { name, onRender } = column;
 
-    const refKey = `${rowIndex}-${name as string}`;
-
     const [focusState, setFocusState] = useState(false);
 
     const inputRef = useRef<InputRef>(null);
+
+    const tableTdRef = useRef<HTMLTableDataCellElement>(null);
 
 
     /**
@@ -102,6 +104,15 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
             requestAnimationFrame(() => {
                 inputRef.current?.select();
             })
+            onSetScrollBarPosition({
+                allowSelect: allowSelect,
+                tableDivRef: tableDivRef,
+                tableTdRef: tableTdRef,
+                axis: {
+                    rowIndex: rowIndex,
+                    columnName: name
+                }
+            })
         }
     }, [focusState]);
 
@@ -111,7 +122,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
             blur
         }
     }, [focusState])
-    return <td className={`apex-table-tbody-td`} id={`td-${refKey}`}>
+    return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
         {
             focusState && <Input
                 defaultValue={defaultValue || row[name]}
