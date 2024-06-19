@@ -45,8 +45,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                 ref={inputRef => onSetRef(inputRef, refKey)}
                                 onCellClick={onCellClick}
                                 onChange={onChange}
-                                onFocus={onFocus}
-                            />
+                                onFocus={onFocus}                            />
                         })
                     }
                 </tr>

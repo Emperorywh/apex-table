@@ -19,11 +19,8 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
     } = props;
 
     const { name, onRender } = column;
-
     const [focusState, setFocusState] = useState(false);
-
     const inputRef = useRef<InputRef>(null);
-
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
 
 

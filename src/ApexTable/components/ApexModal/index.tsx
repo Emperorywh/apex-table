@@ -1,81 +1,106 @@
-import React, { forwardRef, useRef } from "react";
-import { ApexModalRef } from "../../types/ApexModal";
-import ApexTdWrap from "../ApexTdWrap";
-import { Input, InputRef, Modal } from "antd";
-import { MoreOutlined } from '@ant-design/icons';
-import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable";
+import { Input, InputRef } from "antd";
+import React, { useRef, useState } from "react";
+import { IProps } from "./index.types";
+import ApexShowCellChildren from "../ApexShowCellChildren/index.tsx";
 
-export interface IApexModalProps<T> {
-    tdId?: string;
-    apexTableProps: ApexTableProps<any, any>;
-    columnItem: IApexTableColumns<T>;
-    dataSourceItem: any;
-    columnValue: string;
-    onInputChange: (value: string) => void;
-    ref?: React.Ref<InputRef>;
-    onFocus?: React.FocusEventHandler<HTMLInputElement>;
-    onBlur?: React.FocusEventHandler<HTMLInputElement>;
+function ApexModal(props: IProps) {
+    const {
+        allowSelect,
+        column,
+        defaultValue,
+        row,
+        rowIndex,
+        tableDivRef,
+        onChange,
+        onBlur,
+        onCellClick
+    } = props;
+    const { name, onRender } = column;
+    const inputRef = useRef<InputRef>(null);
+    const [focusState, setFocusState] = useState(false);
+    const tableTdRef = useRef<HTMLTableDataCellElement>(null);
+
+    /**
+     * 点击单元格
+     */
+    const hanldeCellClick = () => {
+        setFocusState(true);
+        onCellClick({
+            rowIndex: rowIndex,
+            columnName: name
+        });
+    }
+
+    /**
+     * 输入框失去焦点
+     * @param event 
+     */
+    const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+        setFocusState(false);
+        onBlur && onBlur(event);
+    }
+
+    /**
+     * 输入框值的改变
+     * @param event 
+     */
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        onChange && onChange(event, row, name)
+    }
+
+    /**
+     * 输入框聚焦
+     * @param event 
+     */
+    const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+        event.preventDefault();
+        setFocusState(true);
+        props.onFocus && props.onFocus({
+            rowIndex: rowIndex,
+            columnName: name
+        });
+    }
+
+    const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
+        const key = event.key;
+        const cursorPosition = event.target.selectionStart;
+        const selectionEnd = event.target.selectionEnd;
+        switch (key) {
+            case 'ArrowUp':
+                break;
+            case 'ArrowDown':
+                break;
+            case 'ArrowLeft':
+                if (cursorPosition !== selectionEnd) {
+                    event.stopPropagation();
+                }
+                break;
+            case 'ArrowRight':
+                if (cursorPosition < selectionEnd) {
+                    event.stopPropagation();
+                }
+                break;
+        }
+    }
+
+    return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+        {
+            focusState && <Input
+                defaultValue={defaultValue || row[name]}
+                ref={inputRef}
+                onBlur={handleInputBlur}
+                onFocus={handleInputFocus}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+            />
+        }
+        {
+            !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
+                {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+            </div>
+        }
+    </td>
 }
 
-const ApexModal: React.FC<IApexModalProps<any>> = forwardRef((props, ref) => {
-    const { columnItem, dataSourceItem, columnValue, tdId, onInputChange, onFocus, onBlur } = props;
-    const { modalOptions } = columnItem;
-    const modalRef = useRef<ApexModalRef>();
-    if (modalOptions) {
-        const {
-            title,
-            content,
-            icon = null,
-            okText = '确定',
-            cancelText = '取消',
-            footer = null,
-            closable = true,
-            onOk,
-            onCancel,
-            ...modalProps
-        } = modalOptions(dataSourceItem, dataSourceItem[columnItem.name], modalRef as unknown as any);
-        return <ApexTdWrap id={tdId} apexTableProps={props.apexTableProps} apexColumn={columnItem}>
-            <Input
-                defaultValue={columnValue}
-                onBlur={inputEvent => {
-                    onBlur && onBlur(inputEvent);
-                    const inputValue = inputEvent.target.value;
-                    onInputChange && onInputChange(inputValue);
-                }}
-                onDoubleClick={() => {
-                    modalRef.current = Modal.info({
-                        title,
-                        icon,
-                        content,
-                        okText,
-                        cancelText,
-                        footer,
-                        closable,
-                        onOk,
-                        onCancel,
-                        ...modalProps
-                    });
-                }}
-                suffix={<MoreOutlined />}
-                ref={ref}
-                onFocus={onFocus}
-            />
-        </ApexTdWrap>
-    } else {
-        return <ApexTdWrap id={tdId} apexTableProps={props.apexTableProps} apexColumn={columnItem}>
-            <Input
-                defaultValue={columnValue}
-                onBlur={inputEvent => {
-                    onBlur && onBlur(inputEvent);
-                    const inputValue = inputEvent.target.value;
-                    onInputChange && onInputChange(inputValue);
-                }}
-                suffix={<MoreOutlined />}
-                ref={ref}
-                onFocus={onFocus}
-            />
-        </ApexTdWrap>
-    }
-});
 
 export default ApexModal;

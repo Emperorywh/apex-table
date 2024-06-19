@@ -8,6 +8,7 @@ export interface IProps {
     row: any;
     rowIndex: number;
     tableDivRef: React.RefObject<HTMLDivElement>;
+    tableTdRef: React.RefObject<HTMLTableDataCellElement>;
     onCellClick: (rowInfo: IFocusAxis) => void;
     onFocus?: (rowInfo: IFocusAxis) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
