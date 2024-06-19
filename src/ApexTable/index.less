@@ -22,7 +22,7 @@
         .apex-table {
             table-layout: fixed;
             width: 100%;
-            border-collapse: collapse;
+            border-spacing: 0;
 
             .apex-table-thead {
                 position: sticky;
@@ -43,13 +43,15 @@
                         background: rgb(250, 250, 250);
                     }
 
-                    .apex-table-thead-th {}
+                    .apex-table-thead-th {
+                        border: 1px solid @borderColor;
+                    }
 
                     .apex-table-thead-th-checkbox {
                         position: sticky;
                         left: 50px;
                         z-index: 99;
-                        background-color: #FFF;
+                        background-color: #fafafa;
                     }
 
                     .apex-table-thead-fixed-left {
