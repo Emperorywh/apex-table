@@ -2,6 +2,8 @@ import React from "react";
 import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
 import ApexInput from "../ApexInput";
+import ApexModal from "../ApexModal";
+import { IFocusAxis } from "apex-table/ApexTable";
 
 function ApexTbody<T>(props: IProps<T>) {
     const {
@@ -33,19 +35,51 @@ function ApexTbody<T>(props: IProps<T>) {
                     }
                     {
                         columns.map((columnItem) => {
+                            const { columnType = 'input' } = columnItem;
                             if (columnItem?.visible === false) return;
                             const refKey: string = `${dataSourceIndex}-${columnItem.name as string}`;
-                            return <ApexInput
-                                allowSelect={allowSelect}
-                                tableDivRef={tableDivRef}
-                                key={refKey}
-                                column={columnItem}
-                                row={dataSourceItem}
-                                rowIndex={dataSourceIndex}
-                                ref={inputRef => onSetRef(inputRef, refKey)}
-                                onCellClick={onCellClick}
-                                onChange={onChange}
-                                onFocus={onFocus}                            />
+                            switch (columnType) {
+                                case 'input':
+                                    return <ApexInput
+                                        allowSelect={allowSelect}
+                                        tableDivRef={tableDivRef}
+                                        key={refKey}
+                                        column={columnItem}
+                                        row={dataSourceItem}
+                                        rowIndex={dataSourceIndex}
+                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        onCellClick={onCellClick}
+                                        onChange={onChange}
+                                        onFocus={onFocus}
+                                    />;
+                                case 'modal':
+                                    return <ApexModal
+                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        key={refKey}
+                                        allowSelect={allowSelect}
+                                        column={columnItem}
+                                        row={dataSourceItem}
+                                        rowIndex={dataSourceIndex}
+                                        tableDivRef={tableDivRef}
+                                        onCellClick={onCellClick}
+                                        onChange={onChange}
+                                        onFocus={onFocus}
+                                    />
+                                default:
+                                    return <ApexInput
+                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        allowSelect={allowSelect}
+                                        tableDivRef={tableDivRef}
+                                        key={refKey}
+                                        column={columnItem}
+                                        row={dataSourceItem}
+                                        rowIndex={dataSourceIndex}
+                                        onCellClick={onCellClick}
+                                        onChange={onChange}
+                                        onFocus={onFocus}
+                                    />
+                            }
+
                         })
                     }
                 </tr>

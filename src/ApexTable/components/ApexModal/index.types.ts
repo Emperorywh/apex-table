@@ -1,3 +1,4 @@
+import { ModalFuncProps } from "antd";
 import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable";
 
 export interface IProps {
@@ -8,14 +9,18 @@ export interface IProps {
     row: any;
     rowIndex: number;
     tableDivRef: React.RefObject<HTMLDivElement>;
-    tableTdRef: React.RefObject<HTMLTableDataCellElement>;
     onCellClick: (rowInfo: IFocusAxis) => void;
     onFocus?: (rowInfo: IFocusAxis) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
 }
 
-export interface IApexInput {
+export interface IApexModal {
     focus: () => void;
     blur: () => void;
+}
+
+export interface ApexModalRef {
+    destroy: () => void;
+    update: (props: ModalFuncProps) => void;
 }

@@ -1,5 +1,6 @@
 import ApexColgroup from "./ApexColgroup";
 import ApexInput from "./ApexInput";
+import ApexModal from "./ApexModal";
 import ApexPagination from "./ApexPagination";
 import ApexShowCellChildren from "./ApexShowCellChildren/index.tsx";
 import ApexTbody from "./ApexTbody";
@@ -11,5 +12,6 @@ export {
     ApexTbody,
     ApexPagination,
     ApexInput,
+    ApexModal,
     ApexShowCellChildren
 }

@@ -1,9 +1,12 @@
-import { Input, InputRef } from "antd";
-import React, { useRef, useState } from "react";
-import { IProps } from "./index.types";
+import { Input, InputRef, Modal } from "antd";
+import React, { Ref, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { ApexModalRef, IProps } from "./index.types";
 import ApexShowCellChildren from "../ApexShowCellChildren/index.tsx";
+import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
+import { IApexInput } from "../ApexInput/index.types";
+import { EllipsisOutlined } from '@ant-design/icons';
 
-function ApexModal(props: IProps) {
+function ApexModal(props: IProps, ref: Ref<IApexInput>) {
     const {
         allowSelect,
         column,
@@ -15,10 +18,11 @@ function ApexModal(props: IProps) {
         onBlur,
         onCellClick
     } = props;
-    const { name, onRender } = column;
+    const { name, onRender, modalOptions } = column;
     const inputRef = useRef<InputRef>(null);
     const [focusState, setFocusState] = useState(false);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
+    const modalRef = useRef<ApexModalRef>();
 
     /**
      * 点击单元格
@@ -83,24 +87,118 @@ function ApexModal(props: IProps) {
         }
     }
 
-    return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
-        {
-            focusState && <Input
-                defaultValue={defaultValue || row[name]}
-                ref={inputRef}
-                onBlur={handleInputBlur}
-                onFocus={handleInputFocus}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-            />
+    useEffect(() => {
+        if (focusState) {
+            requestAnimationFrame(() => {
+                inputRef.current?.select();
+            })
+            onSetScrollBarPosition({
+                allowSelect: allowSelect,
+                tableDivRef: tableDivRef,
+                tableTdRef: tableTdRef,
+                axis: {
+                    rowIndex: rowIndex,
+                    columnName: name
+                }
+            })
         }
-        {
-            !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
-                {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-            </div>
+    }, [focusState]);
+
+    const focus = () => {
+        setFocusState(true);
+    }
+
+    const blur = () => {
+        setFocusState(false);
+    }
+
+    useImperativeHandle(ref, () => {
+        return {
+            focus,
+            blur
         }
-    </td>
+    }, [focusState])
+
+    if (modalOptions) {
+        const {
+            title,
+            content,
+            icon = null,
+            okText = '确定',
+            cancelText = '取消',
+            footer = null,
+            closable = true,
+            centered = true,
+            onOk,
+            onCancel,
+            afterClose,
+            ...modalProps
+        } = modalOptions(row, row[name], modalRef as unknown as any);
+
+        /**
+         * 弹窗完全关闭后，需要重新聚焦
+         */
+        const handleAfterClose = () => {
+            focus();
+            afterClose && afterClose();
+        }
+
+        return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+            {
+                focusState && <Input
+                    defaultValue={defaultValue || row[name]}
+                    ref={inputRef}
+                    onBlur={handleInputBlur}
+                    onFocus={handleInputFocus}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    suffix={<EllipsisOutlined />}
+                    onDoubleClick={() => {
+                        modalRef.current = Modal.info({
+                            title,
+                            icon,
+                            content,
+                            okText,
+                            cancelText,
+                            footer,
+                            closable,
+                            centered,
+                            onOk,
+                            onCancel,
+                            afterClose: handleAfterClose,
+                            ...modalProps
+                        });
+                    }}
+
+                />
+            }
+            {
+                !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
+                    {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+                </div>
+            }
+        </td>
+    } else {
+        return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+            {
+                focusState && <Input
+                    defaultValue={defaultValue || row[name]}
+                    ref={inputRef}
+                    onBlur={handleInputBlur}
+                    onFocus={handleInputFocus}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                />
+            }
+            {
+                !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
+                    {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+                </div>
+            }
+        </td>
+    }
 }
 
+const ForwardedApexModal = forwardRef(ApexModal)
 
-export default ApexModal;
+export default ForwardedApexModal;
