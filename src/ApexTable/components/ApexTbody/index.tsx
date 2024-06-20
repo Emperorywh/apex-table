@@ -16,7 +16,8 @@ function ApexTbody<T>(props: IProps<T>) {
         onCellClick,
         onChange,
         onFocus,
-        onSetRef
+        onSetRef,
+        onEnter
     } = props;
 
     return <tbody className='apex-table-tbody'>
@@ -51,6 +52,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
+                                        onEnter={onEnter}
                                     />;
                                 case 'modal':
                                     return <ApexModal
@@ -64,6 +66,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
+                                        onEnter={onEnter}
                                     />
                                 default:
                                     return <ApexInput
@@ -77,6 +80,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
+                                        onEnter={onEnter}
                                     />
                             }
 

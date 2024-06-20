@@ -15,7 +15,8 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
         tableDivRef,
         onChange,
         onBlur,
-        onCellClick
+        onCellClick,
+        onEnter
     } = props;
 
     const { name, onRender } = column;
@@ -69,6 +70,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
         const key = event.key;
         const cursorPosition = event.target.selectionStart;
         const selectionEnd = event.target.selectionEnd;
+        const value = event?.target?.value || '';
         switch (key) {
             case 'ArrowUp':
                 break;
@@ -80,9 +82,12 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
                 }
                 break;
             case 'ArrowRight':
-                if (cursorPosition < selectionEnd) {
+                if (cursorPosition < value.length) {
                     event.stopPropagation();
                 }
+                break;
+            case 'Enter':
+                onEnter && onEnter();
                 break;
         }
     }

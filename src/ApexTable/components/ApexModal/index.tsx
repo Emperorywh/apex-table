@@ -16,7 +16,8 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
         tableDivRef,
         onChange,
         onBlur,
-        onCellClick
+        onCellClick,
+        onEnter
     } = props;
     const { name, onRender, modalOptions } = column;
     const inputRef = useRef<InputRef>(null);
@@ -63,28 +64,6 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             rowIndex: rowIndex,
             columnName: name
         });
-    }
-
-    const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
-        const key = event.key;
-        const cursorPosition = event.target.selectionStart;
-        const selectionEnd = event.target.selectionEnd;
-        switch (key) {
-            case 'ArrowUp':
-                break;
-            case 'ArrowDown':
-                break;
-            case 'ArrowLeft':
-                if (cursorPosition !== selectionEnd) {
-                    event.stopPropagation();
-                }
-                break;
-            case 'ArrowRight':
-                if (cursorPosition < selectionEnd) {
-                    event.stopPropagation();
-                }
-                break;
-        }
     }
 
     useEffect(() => {
@@ -143,6 +122,50 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             afterClose && afterClose();
         }
 
+        const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
+            const key = event.key;
+            const cursorPosition = event.target.selectionStart;
+            const selectionEnd = event.target.selectionEnd;
+            const value = event?.target?.value || '';
+            switch (key) {
+                case 'ArrowUp':
+                    break;
+                case 'ArrowDown':
+                    break;
+                case 'ArrowLeft':
+                    if (cursorPosition !== selectionEnd) {
+                        event.stopPropagation();
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (cursorPosition < value.length) {
+                        event.stopPropagation();
+                    }
+                    break;
+                case 'Enter':
+                    if (value) {
+                        onEnter && onEnter();
+                    } else {
+                        modalRef.current = Modal.info({
+                            title,
+                            icon,
+                            content,
+                            okText,
+                            cancelText,
+                            footer,
+                            closable,
+                            centered,
+                            onOk,
+                            onCancel,
+                            afterClose: handleAfterClose,
+                            ...modalProps
+                        });
+                    }
+                    break;
+            }
+        }
+    
+
         return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
             {
                 focusState && <Input
@@ -179,6 +202,35 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             }
         </td>
     } else {
+        const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
+            const key = event.key;
+            const cursorPosition = event.target.selectionStart;
+            const selectionEnd = event.target.selectionEnd;
+            switch (key) {
+                case 'ArrowUp':
+                    break;
+                case 'ArrowDown':
+                    break;
+                case 'ArrowLeft':
+                    if (cursorPosition !== selectionEnd) {
+                        event.stopPropagation();
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (cursorPosition < selectionEnd) {
+                        event.stopPropagation();
+                    }
+                    break;
+                case 'Enter':
+                    if (event.target.value) {
+                        onEnter && onEnter();
+                    } else {
+                        
+                    }
+                    break;
+            }
+        }
+    
         return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
             {
                 focusState && <Input

@@ -774,7 +774,9 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             onSetRef={(inputRef, refKey) => {
                                 editRefs.current[refKey] = inputRef;
                                 return inputRef;
-                            }} />
+                            }}
+                            onEnter={() => onArrowRight(0, '')}
+                        />
                     </table>
                 </div>
                 <ApexPagination

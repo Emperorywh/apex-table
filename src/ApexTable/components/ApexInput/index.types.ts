@@ -12,6 +12,7 @@ export interface IProps {
     onFocus?: (rowInfo: IFocusAxis) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
+    onEnter?: () => void;
 }
 
 export interface IApexInput {

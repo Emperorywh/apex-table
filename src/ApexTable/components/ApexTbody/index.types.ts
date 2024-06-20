@@ -12,4 +12,5 @@ export interface IProps<T> {
     onChange: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
     onFocus: (axis: IFocusAxis) => void;
     onSetRef: (ref: any, refKey: string) => any;
+    onEnter?: () => void;
 }
