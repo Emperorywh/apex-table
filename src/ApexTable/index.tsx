@@ -5,9 +5,9 @@ import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
-import { ApexModalRef } from './types/ApexModal';
 import { flushSync } from 'react-dom';
 import { ApexColgroup, ApexPagination, ApexTbody, ApexThead } from './components';
+import { ApexModalRef } from './components/ApexModal/index.types';
 
 export interface ApexTableProps<T, V> {
     /** 
