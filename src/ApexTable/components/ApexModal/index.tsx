@@ -50,7 +50,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
      * @param event 
      */
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onChange && onChange(event, row, name)
+        onChange && onChange(row, name, event.target.value)
     }
 
     /**
@@ -164,7 +164,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                     break;
             }
         }
-    
+
 
         return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
             {
@@ -225,12 +225,12 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                     if (event.target.value) {
                         onEnter && onEnter();
                     } else {
-                        
+
                     }
                     break;
             }
         }
-    
+
         return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
             {
                 focusState && <Input
@@ -251,6 +251,4 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
     }
 }
 
-const ForwardedApexModal = forwardRef(ApexModal)
-
-export default ForwardedApexModal;
+export default forwardRef(ApexModal);

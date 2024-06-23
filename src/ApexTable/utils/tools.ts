@@ -11,7 +11,7 @@ export const onSetScrollBarPosition = (params: {
     axis: IFocusAxis,
     allowSelect: boolean,
 }) => {
-    const { tableDivRef, tableTdRef, axis, allowSelect } = params
+    const { tableDivRef, tableTdRef, allowSelect } = params
     // 容器相关信息
     const tableRect = tableDivRef.current?.getBoundingClientRect();
     const tableTop = tableRect?.top || 0;

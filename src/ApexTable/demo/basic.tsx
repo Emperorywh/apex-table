@@ -42,7 +42,7 @@ const App: React.FC = () => {
                 cargoName: '货位' + i,
                 cargoId: i,
                 unitName: '单位' + i,
-                unitId: i,
+                unitId: i % 3 > 0 ? i % 3 : 3,
                 assQty: i,
                 produceDate: new Date().toLocaleDateString(),
                 endDate: new Date().toLocaleDateString(),
@@ -88,7 +88,13 @@ const App: React.FC = () => {
         },
         {
             title: '单位',
-            name: 'unitName',
+            name: 'unitId',
+            columnType: 'select',
+            options: [
+                { value: 1, label: '个' },
+                { value: 2, label: '件' },
+                { value: 3, label: '箱' },
+            ]
         },
         {
             title: '数量',

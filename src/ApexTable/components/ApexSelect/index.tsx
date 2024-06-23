@@ -1,11 +1,18 @@
-import { Input, InputRef } from "antd";
-import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { forwardRef } from "react";
-import { ApexShowCellChildren } from "..";
-import { IApexInput, IProps } from './index.types';
+import { Ref, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { BaseSelectRef, IApexSelect, IProps } from "./index.types";
+import React from "react";
+import ApexShowCellChildren from "../ApexShowCellChildren/index.tsx";
+import { Select } from "antd";
+import { DefaultOptionType } from "antd/es/select";
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 
-const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
+/**
+ * 下拉框组件
+ * @param props 
+ * @param ref 
+ * @returns 
+ */
+function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
     const {
         allowSelect,
         column,
@@ -19,11 +26,25 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
         onEnter
     } = props;
 
-    const { name, onRender } = column;
+    const { name, onRender, options } = column;
     const [focusState, setFocusState] = useState(false);
-    const inputRef = useRef<InputRef>(null);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
+    const selectRef = useRef<BaseSelectRef>(null);
+    const [selectOption, setSelectOption] = useState<DefaultOptionType[]>([]);
 
+    /**
+     * 初始化下拉框
+     */
+    const initOptions = () => {
+        if (options) {
+            if (typeof options === 'function') {
+                const funcOption = options(row[name], row);
+                setSelectOption(funcOption);
+            } else if (typeof options === 'object' && Array.isArray(options)) {
+                setSelectOption(options);
+            }
+        }
+    }
 
     /**
      * 点击单元格
@@ -37,7 +58,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
     }
 
     /**
-     * 输入框聚焦
+     * 下拉框聚焦
      * @param event 
      */
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
@@ -50,7 +71,7 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
     }
 
     /**
-     * 输入框失去焦点
+     * 下拉框失去焦点
      * @param event 
      */
     const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
@@ -59,11 +80,11 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
     }
 
     /**
-     * 输入框值的改变
+     * 下拉框值的改变
      * @param event 
      */
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onChange && onChange(row, name, event.target.value)
+    const handleSelectChange = (value: any) => {
+        onChange && onChange(row, name, value)
     }
 
     const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
@@ -77,20 +98,15 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
             case 'ArrowDown':
                 break;
             case 'ArrowLeft':
-                if (cursorPosition !== selectionEnd) {
-                    event.stopPropagation();
-                }
-                break;
+
             case 'ArrowRight':
-                if (cursorPosition < value.length) {
-                    event.stopPropagation();
-                }
-                break;
+
             case 'Enter':
                 onEnter && onEnter();
                 break;
         }
     }
+
 
     const focus = () => {
         setFocusState(true);
@@ -100,11 +116,10 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
         setFocusState(false);
     }
 
-
     useEffect(() => {
         if (focusState) {
             requestAnimationFrame(() => {
-                inputRef.current?.select();
+                selectRef.current?.focus();
             })
             onSetScrollBarPosition({
                 allowSelect: allowSelect,
@@ -118,6 +133,10 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
         }
     }, [focusState]);
 
+    useEffect(() => {
+        initOptions();
+    }, []);
+
     useImperativeHandle(ref, () => {
         return {
             focus,
@@ -127,12 +146,13 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
 
     return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
         {
-            focusState && <Input
+            focusState && <Select
                 defaultValue={defaultValue || row[name]}
-                ref={inputRef}
+                options={selectOption}
+                ref={selectRef}
                 onBlur={handleInputBlur}
                 onFocus={handleInputFocus}
-                onChange={handleInputChange}
+                onChange={handleSelectChange}
                 onKeyDown={handleKeyDown}
             />
         }
@@ -142,6 +162,6 @@ const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
             </div>
         }
     </td>
-}))
+}
 
-export default ApexInput;
+export default forwardRef(ApexSelect);

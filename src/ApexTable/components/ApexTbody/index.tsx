@@ -4,6 +4,7 @@ import { Checkbox, Empty } from "antd";
 import ApexInput from "../ApexInput";
 import ApexModal from "../ApexModal";
 import { IFocusAxis } from "apex-table/ApexTable";
+import ApexSelect from "../ApexSelect";
 
 function ApexTbody<T>(props: IProps<T>) {
     const {
@@ -56,6 +57,20 @@ function ApexTbody<T>(props: IProps<T>) {
                                     />;
                                 case 'modal':
                                     return <ApexModal
+                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        key={refKey}
+                                        allowSelect={allowSelect}
+                                        column={columnItem}
+                                        row={dataSourceItem}
+                                        rowIndex={dataSourceIndex}
+                                        tableDivRef={tableDivRef}
+                                        onCellClick={onCellClick}
+                                        onChange={onChange}
+                                        onFocus={onFocus}
+                                        onEnter={onEnter}
+                                    />
+                                case 'select':
+                                    return <ApexSelect
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}

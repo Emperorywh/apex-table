@@ -1,27 +1,15 @@
 import { ModalFuncProps } from "antd";
-import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable";
+import { ICommonProps, IComponentsRef } from "../index.types";
 
-export interface IProps {
-    allowSelect: boolean;
-    children?: React.ReactNode;
-    column: IApexTableColumns<any>;
-    defaultValue?: string;
-    row: any;
-    rowIndex: number;
-    tableDivRef: React.RefObject<HTMLDivElement>;
-    onCellClick: (rowInfo: IFocusAxis) => void;
-    onFocus?: (rowInfo: IFocusAxis) => void;
-    onBlur?: React.FocusEventHandler<HTMLInputElement>;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
-    onEnter?: () => void;
+export interface IProps extends ICommonProps {
+    
 }
 
-export interface IApexModal {
-    focus: () => void;
-    blur: () => void;
+export interface IApexModal extends IComponentsRef {
+    
 }
 
-export interface ApexModalRef {
+export interface ApexModalRef  {
     destroy: () => void;
     update: (props: ModalFuncProps) => void;
 }

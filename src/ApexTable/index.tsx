@@ -8,6 +8,7 @@ import 'dayjs/locale/zh-cn';
 import { flushSync } from 'react-dom';
 import { ApexColgroup, ApexPagination, ApexTbody, ApexThead } from './components';
 import { ApexModalRef } from './components/ApexModal/index.types';
+import { DefaultOptionType } from 'antd/es/select';
 
 export interface ApexTableProps<T, V> {
     /** 
@@ -99,7 +100,7 @@ export interface IApexTableColumns<T> {
     title: string;
     name: string;
     columnType?: IColumnType;
-    options?: any[] | ((value: any, row: any) => any);
+    options?: DefaultOptionType[] | ((value: any, row: any) => DefaultOptionType[]);
     defaultValue?: any;
     width?: number;
     showTime?: boolean;
@@ -147,10 +148,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         tableTitle = false,
         showPagination = false,
         pagination = {},
-        readOnly = false,
         height = 450,
         isSingle = false,
-        allowFixed = false,
         showLineNumber = true,
         rowKey
     } = props;
@@ -335,10 +334,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setTableDataSource(tempTableDataSource);
         }
     }, [tableDataSource])
-
-    const memoHandleChangeCellValue = (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => {
-        handleChangeCellValue(row, columnName, event.target.value);
-    }
 
     /**
      * 初始化外部传入的静态数据源
@@ -769,7 +764,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             allowSelect={allowSelect}
                             onRowSelected={handleRowSelected}
                             onCellClick={handleInputFocus}
-                            onChange={memoHandleChangeCellValue}
+                            onChange={handleChangeCellValue}
                             onFocus={handleInputFocus}
                             onSetRef={(inputRef, refKey) => {
                                 editRefs.current[refKey] = inputRef;
