@@ -1,10 +1,8 @@
 import React from "react";
 import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
-import ApexInput from "../ApexInput";
-import ApexModal from "../ApexModal";
-import { IFocusAxis } from "apex-table/ApexTable";
-import ApexSelect from "../ApexSelect";
+import { ApexInput, ApexInputNumber, ApexModal, ApexSelect } from "..";
+
 
 function ApexTbody<T>(props: IProps<T>) {
     const {
@@ -43,6 +41,20 @@ function ApexTbody<T>(props: IProps<T>) {
                             switch (columnType) {
                                 case 'input':
                                     return <ApexInput
+                                        allowSelect={allowSelect}
+                                        tableDivRef={tableDivRef}
+                                        key={refKey}
+                                        column={columnItem}
+                                        row={dataSourceItem}
+                                        rowIndex={dataSourceIndex}
+                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        onCellClick={onCellClick}
+                                        onChange={onChange}
+                                        onFocus={onFocus}
+                                        onEnter={onEnter}
+                                    />;
+                                case 'inputNumber':
+                                    return <ApexInputNumber
                                         allowSelect={allowSelect}
                                         tableDivRef={tableDivRef}
                                         key={refKey}

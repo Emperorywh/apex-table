@@ -99,6 +99,7 @@ const App: React.FC = () => {
         {
             title: '数量',
             name: 'assQty',
+            columnType: 'inputNumber'
         },
         {
             title: '生产日期',

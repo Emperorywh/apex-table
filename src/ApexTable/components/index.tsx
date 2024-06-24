@@ -1,5 +1,6 @@
 import ApexColgroup from "./ApexColgroup";
 import ApexInput from "./ApexInput";
+import ApexInputNumber from "./ApexInputNumber";
 import ApexModal from "./ApexModal";
 import ApexPagination from "./ApexPagination";
 import ApexSelect from "./ApexSelect";
@@ -15,5 +16,6 @@ export {
     ApexInput,
     ApexModal,
     ApexSelect,
+    ApexInputNumber,
     ApexShowCellChildren
 }
