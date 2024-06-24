@@ -1,4 +1,5 @@
 import ApexColgroup from "./ApexColgroup";
+import ApexDatePicker from "./ApexDatePicker";
 import ApexInput from "./ApexInput";
 import ApexInputNumber from "./ApexInputNumber";
 import ApexModal from "./ApexModal";
@@ -17,5 +18,6 @@ export {
     ApexModal,
     ApexSelect,
     ApexInputNumber,
+    ApexDatePicker,
     ApexShowCellChildren
 }

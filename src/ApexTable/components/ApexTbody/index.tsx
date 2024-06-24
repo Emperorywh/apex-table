@@ -1,7 +1,7 @@
 import React from "react";
 import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
-import { ApexInput, ApexInputNumber, ApexModal, ApexSelect } from "..";
+import { ApexDatePicker, ApexInput, ApexInputNumber, ApexModal, ApexSelect } from "..";
 
 
 function ApexTbody<T>(props: IProps<T>) {
@@ -83,6 +83,20 @@ function ApexTbody<T>(props: IProps<T>) {
                                     />
                                 case 'select':
                                     return <ApexSelect
+                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        key={refKey}
+                                        allowSelect={allowSelect}
+                                        column={columnItem}
+                                        row={dataSourceItem}
+                                        rowIndex={dataSourceIndex}
+                                        tableDivRef={tableDivRef}
+                                        onCellClick={onCellClick}
+                                        onChange={onChange}
+                                        onFocus={onFocus}
+                                        onEnter={onEnter}
+                                    />
+                                case 'datePicker':
+                                    return <ApexDatePicker
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}

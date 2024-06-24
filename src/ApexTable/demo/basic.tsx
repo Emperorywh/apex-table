@@ -104,6 +104,7 @@ const App: React.FC = () => {
         {
             title: '生产日期',
             name: 'produceDate',
+            columnType: 'datePicker'
         },
         {
             title: '保质期（天）',
@@ -112,6 +113,7 @@ const App: React.FC = () => {
         {
             title: '到期日期',
             name: 'endDate',
+            columnType: 'datePicker'
         }
     ]
 
