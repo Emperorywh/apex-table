@@ -98,9 +98,9 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
             case 'ArrowDown':
                 break;
             case 'ArrowLeft':
-
+                break;
             case 'ArrowRight':
-
+                break;
             case 'Enter':
                 onEnter && onEnter();
                 break;
