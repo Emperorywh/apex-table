@@ -64,7 +64,6 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
      * @param event 
      */
     const handleInputChange: DatePickerProps['onChange'] = (date, dateString) => {
-        debugger
         onChange && onChange(row, name, dateString)
     }
 
@@ -107,6 +106,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
         if (focusState) {
             requestAnimationFrame(() => {
                 inputRef.current?.focus();
+                document.execCommand('selectAll', false, undefined);
             })
             onSetScrollBarPosition({
                 allowSelect: allowSelect,

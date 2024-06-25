@@ -135,7 +135,7 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
 
     useEffect(() => {
         initOptions();
-    }, []);
+    }, [options]);
 
     useImperativeHandle(ref, () => {
         return {
