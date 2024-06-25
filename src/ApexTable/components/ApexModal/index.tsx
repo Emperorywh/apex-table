@@ -224,8 +224,6 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                 case 'Enter':
                     if (event.target.value) {
                         onEnter && onEnter();
-                    } else {
-
                     }
                     break;
             }

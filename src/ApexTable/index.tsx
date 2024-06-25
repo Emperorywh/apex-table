@@ -514,7 +514,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 } else {
                     if (focusAxisRef.current.rowIndex > 0) {
                         focusAxisRef.current.rowIndex -= 1;
-                        onArrowUp(true);
                     }
                     let findColumn;
                     for (let i = apexColumns.length - 1; i > findIndex; i--) {
@@ -544,7 +543,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 const findIndex = apexColumns.findIndex(item => {
                     return item.name === focusAxisRef.current.columnName;
                 });
-
                 // 最后一个可编辑列
                 let findLastEditIndex = -1;
                 for (let i = apexColumns.length - 1; i > -1; i--) {
@@ -559,7 +557,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         // focusAxisRef.current.rowIndex = 0;
                     } else {
                         focusAxisRef.current.rowIndex += 1;
-                        onArrowDown(true);
                     }
                     let findColumn;
                     for (let i = 0; i < apexColumns.length - 1; i++) {

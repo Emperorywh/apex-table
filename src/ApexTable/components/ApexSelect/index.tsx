@@ -89,20 +89,26 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
 
     const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
         const key = event.key;
-        const cursorPosition = event.target.selectionStart;
-        const selectionEnd = event.target.selectionEnd;
-        const value = event?.target?.value || '';
+        event.preventDefault();
         switch (key) {
             case 'ArrowUp':
+                if (!row[name]) {
+                    event.stopPropagation();
+                }
                 break;
             case 'ArrowDown':
+                if (!row[name]) {
+                    event.stopPropagation();
+                }
                 break;
             case 'ArrowLeft':
                 break;
             case 'ArrowRight':
                 break;
             case 'Enter':
-                onEnter && onEnter();
+                if (row[name]) {
+                    onEnter && onEnter();
+                }
                 break;
         }
     }
@@ -150,6 +156,7 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
                 defaultValue={defaultValue || row[name]}
                 options={selectOption}
                 ref={selectRef}
+                allowClear
                 onBlur={handleInputBlur}
                 onFocus={handleInputFocus}
                 onChange={handleSelectChange}

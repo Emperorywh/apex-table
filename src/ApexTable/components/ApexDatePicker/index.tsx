@@ -83,9 +83,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
                 }
                 break;
             case 'ArrowRight':
-                if (cursorPosition < value.length) {
-                    event.stopPropagation();
-                }
+
                 break;
             case 'Enter':
                 onEnter && onEnter();
