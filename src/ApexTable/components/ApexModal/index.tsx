@@ -6,6 +6,12 @@ import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import { IApexInput } from "../ApexInput/index.types";
 import { EllipsisOutlined } from '@ant-design/icons';
 
+/**
+ * 弹窗组件
+ * @param props 
+ * @param ref 
+ * @returns 
+ */
 function ApexModal(props: IProps, ref: Ref<IApexInput>) {
     const {
         allowSelect,
@@ -41,8 +47,15 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
      * @param event 
      */
     const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
-        setFocusState(false);
-        onBlur && onBlur(event);
+        if (event.relatedTarget?.tagName === 'SPAN') {
+            setTimeout(() => {
+                setFocusState(false);
+                onBlur && onBlur(event);
+            }, 500);
+        } else {
+            setFocusState(false);
+            onBlur && onBlur(event);
+        }
     }
 
     /**
@@ -146,23 +159,30 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                     if (value) {
                         onEnter && onEnter();
                     } else {
-                        modalRef.current = Modal.info({
-                            title,
-                            icon,
-                            content,
-                            okText,
-                            cancelText,
-                            footer,
-                            closable,
-                            centered,
-                            onOk,
-                            onCancel,
-                            afterClose: handleAfterClose,
-                            ...modalProps
-                        });
+                        handleShowModal()
                     }
                     break;
             }
+        }
+
+        /**
+         * 打开弹窗
+         */
+        const handleShowModal = () => {
+            modalRef.current = Modal.info({
+                title,
+                icon,
+                content,
+                okText,
+                cancelText,
+                footer,
+                closable,
+                centered,
+                onOk,
+                onCancel,
+                afterClose: handleAfterClose,
+                ...modalProps
+            });
         }
 
 
@@ -175,24 +195,8 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                     onFocus={handleInputFocus}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
-                    suffix={<EllipsisOutlined />}
-                    onDoubleClick={() => {
-                        modalRef.current = Modal.info({
-                            title,
-                            icon,
-                            content,
-                            okText,
-                            cancelText,
-                            footer,
-                            closable,
-                            centered,
-                            onOk,
-                            onCancel,
-                            afterClose: handleAfterClose,
-                            ...modalProps
-                        });
-                    }}
-
+                    suffix={<EllipsisOutlined onClick={handleShowModal} />}
+                    onDoubleClick={handleShowModal}
                 />
             }
             {

@@ -68,7 +68,7 @@ const App: React.FC = () => {
                             <Button onClick={() => {
                                 modalRef.current?.destroy();
                             }}>取消</Button>
-                            <Button type='primary' onClick={() => { }}>确定</Button>
+                            <Button type='primary' onClick={() => {modalRef.current?.destroy();}}>确定</Button>
                         </Space>
                     </div>
                 }
