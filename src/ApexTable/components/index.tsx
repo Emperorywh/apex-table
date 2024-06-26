@@ -8,6 +8,7 @@ import ApexSelect from "./ApexSelect";
 import ApexShowCellChildren from "./ApexShowCellChildren/index.tsx";
 import ApexTbody from "./ApexTbody";
 import ApexThead from "./ApexThead";
+import ApexVirtualList from "./ApexVirtualList";
 
 export {
     ApexColgroup,
@@ -19,5 +20,6 @@ export {
     ApexSelect,
     ApexInputNumber,
     ApexDatePicker,
-    ApexShowCellChildren
+    ApexShowCellChildren,
+    ApexVirtualList
 }

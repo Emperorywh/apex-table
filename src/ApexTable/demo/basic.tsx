@@ -31,7 +31,7 @@ const App: React.FC = () => {
      */
     const initDataSource = () => {
         const array: ITableListItem[] = [];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 1000; i++) {
             array.push({
                 id: nanoid(),
                 kFullName: '默认仓库' + i,
@@ -126,8 +126,6 @@ const App: React.FC = () => {
         columns={columns}
         dataSource={dataSource}
         showHeaderCheckBox
-        showPagination
-        pagination={{ pageSize: 50 }}
         rowKey='id'
     />
 };
