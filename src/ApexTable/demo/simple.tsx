@@ -39,7 +39,7 @@ const App: React.FC = () => {
         // setColumns(tempColumn);
         // setDataSource(data);
         const data: any[] = [];
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 100000; i++) {
             data.push({
                 id: nanoid(),
                 num: i

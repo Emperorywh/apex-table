@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
 import { ApexDatePicker, ApexInput, ApexInputNumber, ApexModal, ApexSelect } from "..";
@@ -11,6 +11,10 @@ function ApexTbody<T>(props: IProps<T>) {
         dataSource,
         showLineNumber,
         tableDivRef,
+        startIndex,
+        endIndex,
+        rowHeight,
+        totalHeight,
         onRowSelected,
         onCellClick,
         onChange,
@@ -20,6 +24,7 @@ function ApexTbody<T>(props: IProps<T>) {
     } = props;
 
     return <tbody className='apex-table-tbody'>
+        <tr style={{ height: startIndex * rowHeight }}></tr>
         {
             dataSource.length > 0 ? dataSource.map((dataSourceItem, dataSourceIndex) => {
                 return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
@@ -134,6 +139,7 @@ function ApexTbody<T>(props: IProps<T>) {
                 </td>
             </tr>
         }
+        <tr style={{ height: totalHeight - (startIndex * rowHeight) - ((endIndex - startIndex) * rowHeight) }}></tr>
     </tbody>
 }
 

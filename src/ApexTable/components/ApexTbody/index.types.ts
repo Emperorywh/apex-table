@@ -2,6 +2,10 @@ import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable";
 
 export interface IProps<T> {
+    startIndex: number;
+    endIndex: number;
+    rowHeight: number;
+    totalHeight: number;
     columns: IApexTableColumns<T>[];
     dataSource: any[];
     showLineNumber: boolean;

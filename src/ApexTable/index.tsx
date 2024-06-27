@@ -82,6 +82,11 @@ export interface ApexTableProps<T, V> {
     rowKey: string;
 
     /**
+     * 行高
+     */
+    rowHeight: number;
+
+    /**
      * 获取 dataSource 的方法
      * @param params 
      * @returns 
@@ -149,6 +154,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         showPagination = false,
         pagination = {},
         height = 450,
+        rowHeight = 45,
         isSingle = false,
         showLineNumber = true,
         rowKey
@@ -730,10 +736,25 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         onChangeHeaderCheckBoxIndeter();
     }, [checkedData, dataSource]);
 
+    // 缓冲区数量
+    const bufferCount = 10;
+    // 渲染节点的数量
+    const renderCount = Math.ceil(height / rowHeight);
+    const [startIndex, setStartIndex] = useState(0);
+    const [endIndex, setEndIndex] = useState(renderCount || 0);
+
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
             <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
-                <div className='apex-table-content' ref={tableDivRef} >
+                <div className='apex-table-content' ref={tableDivRef} onScroll={event => {
+                    flushSync(() => {
+                        const scrollTop = event.target.scrollTop;
+                        const start = Math.floor(scrollTop / rowHeight);
+                        const end = Math.floor(start + renderCount);
+                        setStartIndex(start - bufferCount > 0 ? start - bufferCount : 0);
+                        setEndIndex(end);
+                    })
+                }}>
                     <table className='apex-table'>
                         <ApexColgroup
                             showLineNumber={showLineNumber}
@@ -754,9 +775,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             headerChecked={headerChecked}
                         />
                         <ApexTbody
+                            startIndex={startIndex}
+                            endIndex={endIndex}
+                            rowHeight={rowHeight}
+                            totalHeight={pageDataSource.length * rowHeight}
                             tableDivRef={tableDivRef}
                             columns={apexColumns}
-                            dataSource={pageDataSource}
+                            dataSource={pageDataSource.slice(startIndex, endIndex)}
                             showLineNumber={showLineNumber}
                             allowSelect={allowSelect}
                             onRowSelected={handleRowSelected}
