@@ -1,4 +1,4 @@
-import { IApexTableColumns } from "apex-table/ApexTable";
+import { IApexTableColumns } from "apex-table/ApexTable/index.types";
 
 export interface IProps<T> {
     showLineNumber: boolean;

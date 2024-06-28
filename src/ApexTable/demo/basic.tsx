@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ApexTable } from 'apex-table';
-import type { IApexTableColumns } from 'apex-table/ApexTable';
 import { Button, Space } from 'antd';
 import { nanoid } from "nanoid";
+import { IApexTableColumns } from '../index.types';
 interface ITableListItem {
     kFullName: string;
     kid: number;

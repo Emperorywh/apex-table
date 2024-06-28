@@ -1,4 +1,4 @@
-import { IApexTableColumns, IFocusAxis } from "..";
+import { IApexTableColumns, IFocusAxis } from "../index.types";
 
 /**
  * 表格组件通用类型
@@ -10,6 +10,7 @@ export interface ICommonProps {
     defaultValue?: string;
     row: any;
     rowIndex: number;
+    rowHeight: number;
     tableDivRef: React.RefObject<HTMLDivElement>;
     onCellClick: (rowInfo: IFocusAxis) => void;
     onFocus?: (rowInfo: IFocusAxis) => void;

@@ -19,6 +19,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
         defaultValue,
         row,
         rowIndex,
+        rowHeight,
         tableDivRef,
         onChange,
         onBlur,
@@ -186,7 +187,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
         }
 
 
-        return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+        return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}
@@ -233,7 +234,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             }
         }
 
-        return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+        return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}

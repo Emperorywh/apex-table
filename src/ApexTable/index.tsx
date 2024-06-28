@@ -1,146 +1,12 @@
-import React, { ReactNode, useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
 import "./index.less"
-import { ConfigProvider, ModalFuncProps, PaginationProps, Spin } from 'antd';
+import { ConfigProvider, Spin } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import dayjs from 'dayjs';
 import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { flushSync } from 'react-dom';
 import { ApexColgroup, ApexPagination, ApexTbody, ApexThead } from './components';
-import { ApexModalRef } from './components/ApexModal/index.types';
-import { DefaultOptionType } from 'antd/es/select';
-
-export interface ApexTableProps<T, V> {
-    /** 
-     * 表格实例
-     */
-    ref?: React.Ref<ApexTableRef>;
-
-    /**
-     * 高度
-     */
-    height?: number;
-
-    /**
-    * 是否允许勾选
-    */
-    allowSelect?: boolean;
-
-    /**
-     * 表格的列配置
-     */
-    columns: IApexTableColumns<T>[];
-
-    /**
-     * 表格数据源(静态)
-     */
-    dataSource?: V[];
-
-    /**
-     * 是否展示表头复选框
-     */
-    showHeaderCheckBox?: boolean
-
-    /**
-     * 表格标题
-     */
-    tableTitle?: ReactNode;
-
-    /**
-     * 是否展示分页
-     */
-    showPagination?: boolean;
-
-    /**
-     * 分页配置
-     */
-    pagination?: PaginationProps;
-
-    /**
-     * 是否只读，开启后不能进行编辑，列也有此属性，先以列为准
-     */
-    readOnly?: boolean;
-
-    /**
-     * 是否单选
-     */
-    isSingle?: boolean;
-
-    /**
-     * 是否开起固定
-     */
-    allowFixed?: boolean;
-
-    /**
-     * 是否展示行号
-     */
-    showLineNumber?: boolean;
-
-    /**
-     * 唯一行号字段名
-     */
-    rowKey: string;
-
-    /**
-     * 行高
-     */
-    rowHeight: number;
-
-    /**
-     * 获取 dataSource 的方法
-     * @param params 
-     * @returns 
-     */
-    request?: (params?: { pageSize: number, currentPage: number }) => Promise<{
-        data: any[],
-        success: boolean,
-        total: number
-    }>
-}
-
-/**
- * 表格列的配置描述
- */
-export interface IApexTableColumns<T> {
-    title: string;
-    name: string;
-    columnType?: IColumnType;
-    options?: DefaultOptionType[] | ((value: any, row: any) => DefaultOptionType[]);
-    defaultValue?: any;
-    width?: number;
-    showTime?: boolean;
-    // 是否显示
-    visible?: boolean;
-    /**
-     * 是否只读，优先级高于列表
-     */
-    readOnly?: boolean;
-    fixed?: 'left' | 'right';
-    onChange?: (value: any, option?: any, options?: any) => void;
-    onFormatter?: (row?: any, value?: any) => React.ReactNode;
-    onRender?: (row?: any, value?: any) => React.ReactNode;
-    modalOptions?: (row: any, value: any, modalRef: React.RefObject<ApexModalRef>) => ModalFuncProps;
-}
-
-/**
- * 列类型
- */
-export type IColumnType = 'input' | 'inputNumber' | 'datePicker' | 'rangePicker' | 'select' | 'modal' | 'customer';
-
-export interface IFocusAxis {
-    rowIndex: number;
-    columnName: string;
-}
-
-export interface ApexTableRef {
-    getColumns: () => IApexTableColumns<any>[];
-    getDataSource: () => any[];
-    setColumns: (columns: IApexTableColumns<any>[]) => void;
-    resetColumns: () => void;
-    pushRows: (dataSource: any[]) => any[];
-    insertRows: (rowKey: string, dataSource: any[]) => void;
-    updateRow: (rowKey: string, dataSource: any) => void
-}
+import { ApexTableProps, IApexTableColumns, IFocusAxis } from './index.types';
 
 
 const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
@@ -300,33 +166,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }
 
     /**
-     * 下拉框事件监听
-     * @param row 
-     * @param columnName 
-     * @param value 
-     */
-    const handleSelectChange = (row: any, columnName: any, value: any, option: any, options: any, onChange?: (value: any, option?: any, options?: any) => void) => {
-        handleChangeCellValue(row, columnName, value);
-        onChange && onChange(value, option, options);
-    }
-
-
-    /**
-     * 时间选择器 改变时间监听
-     * @param date 
-     * @param dateString 
-     */
-    const handleDatePickerChange = (row: any, columnName: any, date: dayjs.Dayjs | null, dateString: string, onChange?: (date: dayjs.Dayjs | null, dateString: string) => void) => {
-        handleChangeCellValue(row, columnName, dayjs(date));
-        onChange && onChange(date, dateString);
-    }
-
-    const handleRangePickerChange = (row: any, columnName: any, date: any, dateString: [string, string], onChange?: (date: dayjs.Dayjs | null, dateString: [string, string]) => void) => {
-        handleChangeCellValue(row, columnName, dayjs(date));
-        onChange && onChange(date, dateString);
-    }
-
-    /**
      * 改变单元格的值
      * @param row           当前行信息
      * @param columnName    单元格列名
@@ -413,18 +252,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         const findRefName = Object.keys(editRefs.current).find(key => key === name);
         if (findRefName) {
             editRefs.current[findRefName]?.focus();
-        }
-    }
-
-    /**
-     * 可编辑单元格 全选
-     * @param rowInfo 
-     */
-    const handleFocusEditAbleSelect = (rowInfo: IFocusAxis) => {
-        const name = `${rowInfo.rowIndex}-${rowInfo.columnName}`;
-        const findRefName = Object.keys(editRefs.current).find(key => key === name);
-        if (findRefName) {
-            editRefs.current[findRefName]?.select();
         }
     }
 
@@ -756,7 +583,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             }
             if (start > bufferCount) {
                 start -= bufferCount;
-            } else if (start <= bufferCount) {
+            } else {
                 start = 0;
             }
             const endBottom = pageDataSource.length - 1;
@@ -788,6 +615,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             tableTitle && <caption>{tableTitle}</caption>
                         }
                         <ApexThead
+                            rowHeight={rowHeight}
                             allowSelect={allowSelect}
                             showLineNumber={showLineNumber}
                             showHeaderCheckBox={showHeaderCheckBox}

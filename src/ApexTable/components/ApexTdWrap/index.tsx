@@ -1,4 +1,4 @@
-import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable";
+import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable/index.types";
 import React from "react";
 
 

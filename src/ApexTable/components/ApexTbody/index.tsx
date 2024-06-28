@@ -14,7 +14,6 @@ function ApexTbody<T>(props: IProps<T>) {
         startIndex,
         endIndex,
         rowHeight,
-        rowKey,
         totalHeight,
         onRowSelected,
         onCellClick,
@@ -24,18 +23,27 @@ function ApexTbody<T>(props: IProps<T>) {
         onEnter
     } = props;
 
+    const topHeight = startIndex * rowHeight;
+    const bottomHeight = totalHeight - (startIndex * rowHeight) - ((endIndex - startIndex) * rowHeight);
+
     return <tbody className='apex-table-tbody'>
-        <tr style={{ height: startIndex * rowHeight }}></tr>
+        {
+            dataSource.length > 0 && topHeight > 0 && <tr style={{ height: topHeight }}></tr>
+        }
         {
             dataSource.length > 0 ? dataSource.map((dataSourceItem) => {
-                return <tr key={`apex-table-tbody-tr-${dataSourceItem['rowIndex']}`} className='apex-table-tbody-tr'>
+                return <tr
+                    key={`apex-table-tbody-tr-${dataSourceItem['rowIndex']}`}
+                    className='apex-table-tbody-tr'
+                    style={{ height: rowHeight }}
+                >
                     {
-                        showLineNumber && <td className='apex-table-tbody-td apex-table-tbody-td-line-number'>
-                            <div className={`number ${dataSourceItem['rowIndex'] > 2 ? 'number-low' : ''}`}>{dataSourceItem['rowIndex'] + 1}</div>
+                        showLineNumber && <td style={{ height: rowHeight }} className='apex-table-tbody-td apex-table-tbody-td-line-number'>
+                            <div className={`number`} >{dataSourceItem['rowIndex'] + 1}</div>
                         </td>
                     }
                     {
-                        allowSelect && <td className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
+                        allowSelect && <td style={{ height: rowHeight }} className='apex-table-tbody-td apex-table-tbody-td-checkbox'>
                             <Checkbox checked={dataSourceItem?.['apexTableChecked']} onChange={(event) => onRowSelected(event, dataSourceItem)} />
                         </td>
                     }
@@ -53,6 +61,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         column={columnItem}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
+                                        rowHeight={rowHeight}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -67,6 +76,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         column={columnItem}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
+                                        rowHeight={rowHeight}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -81,6 +91,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         column={columnItem}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
+                                        rowHeight={rowHeight}
                                         tableDivRef={tableDivRef}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -95,6 +106,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         column={columnItem}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
+                                        rowHeight={rowHeight}
                                         tableDivRef={tableDivRef}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -109,6 +121,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         column={columnItem}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
+                                        rowHeight={rowHeight}
                                         tableDivRef={tableDivRef}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -124,6 +137,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         column={columnItem}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
+                                        rowHeight={rowHeight}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
@@ -140,7 +154,9 @@ function ApexTbody<T>(props: IProps<T>) {
                 </td>
             </tr>
         }
-        <tr style={{ height: totalHeight - (startIndex * rowHeight) - ((endIndex - startIndex) * rowHeight) }}></tr>
+        {
+            dataSource.length > 0 && bottomHeight > 0 && <tr style={{ height: bottomHeight }}></tr>
+        }
     </tbody>
 }
 

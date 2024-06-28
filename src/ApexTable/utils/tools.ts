@@ -1,4 +1,4 @@
-import { IFocusAxis } from "..";
+import { IFocusAxis } from "../index.types";
 
 /**
  * 检查聚焦单元格是否被遮挡

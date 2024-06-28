@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ApexTable } from 'apex-table';
-import type { ApexTableRef, IApexTableColumns } from 'apex-table/ApexTable';
 import { nanoid } from "nanoid";
+import { ApexTableRef, IApexTableColumns } from '../index.types';
 
 const App: React.FC = () => {
 
@@ -26,7 +26,7 @@ const App: React.FC = () => {
                 name: 'column' + i
             });
         }
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 1000; i++) {
             const row: any = {
                 id: nanoid()
             };
@@ -46,7 +46,7 @@ const App: React.FC = () => {
             columns={columns}
             dataSource={dataSource}
             rowKey='id'
-            rowHeight={45}
+            rowHeight={40}
             allowSelect
             showHeaderCheckBox
             isSingle

@@ -1,6 +1,7 @@
 import React from "react";
 import dayjs from "dayjs";
-import { IApexTableColumns } from "apex-table/ApexTable";
+import { IApexTableColumns } from "apex-table/ApexTable/index.types";
+import { DefaultOptionType } from "antd/es/select";
 
 interface IProps<T> {
     columnItem: IApexTableColumns<T>;
@@ -21,7 +22,7 @@ const ApexShowCellChildren: React.FC<IProps<any>> = (props) => {
             </>
         case 'select':
             const { options } = columnItem;
-            let selectOption: { value: number, label: string }[] = [];
+            let selectOption: DefaultOptionType[] = [];
             if (typeof options === 'object') {
                 selectOption = options;
             } else if (typeof options === 'function') {

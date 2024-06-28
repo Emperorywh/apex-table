@@ -13,6 +13,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
         defaultValue,
         row,
         rowIndex,
+        rowHeight,
         tableDivRef,
         onChange,
         onBlur,
@@ -125,7 +126,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
         }
     }, [focusState])
 
-    return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+    return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
         {
             focusState && <DatePicker
                 defaultValue={defaultValue && dayjs(defaultValue) || dayjs(row[name])}

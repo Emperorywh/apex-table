@@ -11,14 +11,15 @@ function ApexThead<T>(props: IProps<T>) {
         isSingle = false,
         headerChecked = false,
         indeterminate = false,
+        rowHeight,
         onHeaderCheckBoxChange
     } = props;
 
     return <thead className='apex-table-thead'>
-        <tr>
+        <tr style={{ height: rowHeight }}>
             {
                 showLineNumber ? <th className='apex-table-thead-th apex-table-thead-th-line-number-head'>
-                    <span>行号</span>
+                    <div >行号</div>
                 </th> : null
             }
             {

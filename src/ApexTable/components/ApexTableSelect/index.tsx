@@ -1,7 +1,8 @@
 import React, { forwardRef } from "react";
 import ApexTdWrap from "../ApexTdWrap";
 import { Select } from "antd";
-import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable";
+import { ApexTableProps, IApexTableColumns } from "apex-table/ApexTable/index.types";
+import { DefaultOptionType } from "antd/es/select";
 
 export interface ApexTableSelectProps<T> {
     tdId?: string;
@@ -22,7 +23,7 @@ export interface ApexTableSelectProps<T> {
 const ApexTableSelect: React.FC<ApexTableSelectProps<any>> = forwardRef((props, ref) => {
     const { columnItem, dataSourceItem, tdId, onSelectChange, onFocus, onBlur } = props;
     const { options, defaultValue, onChange } = columnItem;
-    let selectOption = [];
+    let selectOption: DefaultOptionType[] = [];
     if (typeof options === 'object') {
         selectOption = options;
     } else if (typeof options === 'function') {

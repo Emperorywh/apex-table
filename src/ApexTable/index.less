@@ -1,5 +1,3 @@
-// 默认行高
-@rowHeight: 45px;
 // 边框颜色
 @borderColor: rgba(5, 5, 5, 0.06);
 // 主要颜色
@@ -33,7 +31,6 @@
                 z-index: 100;
 
                 tr {
-                    height: @rowHeight;
 
                     .apex-table-thead-th-line-number-head {
                         position: sticky;
@@ -98,7 +95,7 @@
                     }
 
                     .apex-table-tbody-td {
-                        height: @rowHeight;
+                        height: 100%;
                         box-sizing: border-box;
                         border: 1px solid @borderColor;
                         text-align: left;

@@ -1,5 +1,5 @@
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
-import { IApexTableColumns } from "apex-table/ApexTable";
+import { IApexTableColumns } from "apex-table/ApexTable/index.types";
 
 export interface IProps<T> {
     showLineNumber: boolean;
@@ -9,5 +9,6 @@ export interface IProps<T> {
     isSingle: boolean;
     headerChecked: boolean;
     indeterminate: boolean;
+    rowHeight: number;
     onHeaderCheckBoxChange: (event: CheckboxChangeEvent) => void;
 }

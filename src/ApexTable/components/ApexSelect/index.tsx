@@ -19,6 +19,7 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
         defaultValue,
         row,
         rowIndex,
+        rowHeight,
         tableDivRef,
         onChange,
         onBlur,
@@ -150,7 +151,7 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
         }
     }, [focusState])
 
-    return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+    return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
         {
             focusState && <Select
                 defaultValue={defaultValue || row[name]}

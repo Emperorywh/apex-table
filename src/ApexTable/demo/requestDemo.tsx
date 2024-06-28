@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { ApexTable } from 'apex-table';
-import type { ApexTableRef } from 'apex-table/ApexTable';
+import { ApexTableRef } from "../index.types";
 
 const App: React.FC = () => {
     const apexTableRef = useRef<ApexTableRef>(null);
@@ -54,14 +54,13 @@ const App: React.FC = () => {
                 data: response?.data?.itemList || [],
                 success: response?.success || false,
                 total: response?.data?.itemCount || 0
-            }
-        }}
+            };
+        } }
         showPagination
         readOnly
         rowKey="id"
         showHeaderCheckBox
-        allowSelect
-    />
+        allowSelect rowHeight={45}    />
 }
 
 export default App;

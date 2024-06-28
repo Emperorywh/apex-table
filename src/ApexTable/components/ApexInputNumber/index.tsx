@@ -12,6 +12,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumbe
         defaultValue,
         row,
         rowIndex,
+        rowHeight,
         tableDivRef,
         onChange,
         onBlur,
@@ -125,7 +126,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumbe
         }
     }, [focusState])
 
-    return <td className={`apex-table-tbody-td`} ref={tableTdRef}>
+    return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
         {
             focusState && <InputNumber
                 defaultValue={defaultValue || row[name]}

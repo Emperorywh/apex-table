@@ -1,5 +1,5 @@
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
-import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable";
+import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable/index.types";
 
 export interface IProps<T> {
     startIndex: number;
