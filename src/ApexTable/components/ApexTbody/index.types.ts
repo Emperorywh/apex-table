@@ -5,7 +5,9 @@ export interface IProps<T> {
     startIndex: number;
     endIndex: number;
     rowHeight: number;
+    rowKey: any;
     totalHeight: number;
+    renderCount: number;
     columns: IApexTableColumns<T>[];
     dataSource: any[];
     showLineNumber: boolean;

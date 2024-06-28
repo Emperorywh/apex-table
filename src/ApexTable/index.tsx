@@ -347,8 +347,9 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const initOuterDataSource = () => {
         if (Array.isArray(dataSource) && dataSource.length > 0) {
             const data: any[] = [...dataSource];
-            data.forEach((item) => {
+            data.forEach((item, index) => {
                 item['apexTableChecked'] = false;
+                item['rowIndex'] = index;
             });
             initPagenation(data);
             setTableDataSource(data);
@@ -737,23 +738,45 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }, [checkedData, dataSource]);
 
     // 缓冲区数量
-    const bufferCount = 10;
+    const bufferCount = 5;
     // 渲染节点的数量
     const renderCount = Math.ceil(height / rowHeight);
     const [startIndex, setStartIndex] = useState(0);
-    const [endIndex, setEndIndex] = useState(renderCount || 0);
+    const [endIndex, setEndIndex] = useState(renderCount + bufferCount || 0);
+
+    /**
+     * 滚动时对数据源进行切片
+     */
+    const handleScrollBySlice = (scrollTop: number) => {
+        flushSync(() => {
+            let start = Math.floor(scrollTop / rowHeight);
+            const startBottom = pageDataSource.length - 1 - renderCount - bufferCount;
+            if (start > startBottom) {
+                start = startBottom;
+            }
+            if (start > bufferCount) {
+                start -= bufferCount;
+            } else if (start <= bufferCount) {
+                start = 0;
+            }
+            const endBottom = pageDataSource.length - 1;
+            let end = Math.floor(start + renderCount + bufferCount);
+            if (end > endBottom) {
+                end = endBottom;
+            }
+            if (start > bufferCount) {
+                end += bufferCount;
+            }
+            setStartIndex(start);
+            setEndIndex(end);
+        })
+    }
 
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
             <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
-                <div className='apex-table-content' ref={tableDivRef} onScroll={event => {
-                    flushSync(() => {
-                        const scrollTop = event.target.scrollTop;
-                        const start = Math.floor(scrollTop / rowHeight);
-                        const end = Math.floor(start + renderCount);
-                        setStartIndex(start - bufferCount > 0 ? start - bufferCount : 0);
-                        setEndIndex(end);
-                    })
+                <div className='apex-table-content' ref={tableDivRef} onScroll={(event: any) => {
+                    handleScrollBySlice(event?.target?.scrollTop || 0)
                 }}>
                     <table className='apex-table'>
                         <ApexColgroup
@@ -775,10 +798,12 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             headerChecked={headerChecked}
                         />
                         <ApexTbody
+                            rowKey={rowKey}
                             startIndex={startIndex}
                             endIndex={endIndex}
                             rowHeight={rowHeight}
-                            totalHeight={pageDataSource.length * rowHeight}
+                            totalHeight={(pageDataSource.length - 1) * rowHeight}
+                            renderCount={renderCount}
                             tableDivRef={tableDivRef}
                             columns={apexColumns}
                             dataSource={pageDataSource.slice(startIndex, endIndex)}

@@ -127,6 +127,7 @@ const App: React.FC = () => {
         dataSource={dataSource}
         showHeaderCheckBox
         rowKey='id'
+        rowHeight={45}
     />
 };
 

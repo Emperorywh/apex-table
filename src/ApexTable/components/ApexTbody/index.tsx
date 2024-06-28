@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
 import { ApexDatePicker, ApexInput, ApexInputNumber, ApexModal, ApexSelect } from "..";
@@ -14,6 +14,7 @@ function ApexTbody<T>(props: IProps<T>) {
         startIndex,
         endIndex,
         rowHeight,
+        rowKey,
         totalHeight,
         onRowSelected,
         onCellClick,
@@ -26,11 +27,11 @@ function ApexTbody<T>(props: IProps<T>) {
     return <tbody className='apex-table-tbody'>
         <tr style={{ height: startIndex * rowHeight }}></tr>
         {
-            dataSource.length > 0 ? dataSource.map((dataSourceItem, dataSourceIndex) => {
-                return <tr key={`apex-table-tbody-tr-${dataSourceIndex}`} className='apex-table-tbody-tr'>
+            dataSource.length > 0 ? dataSource.map((dataSourceItem) => {
+                return <tr key={`apex-table-tbody-tr-${dataSourceItem['rowIndex']}`} className='apex-table-tbody-tr'>
                     {
                         showLineNumber && <td className='apex-table-tbody-td apex-table-tbody-td-line-number'>
-                            <div className={`number ${dataSourceIndex > 2 ? 'number-low' : ''}`}>{dataSourceIndex + 1}</div>
+                            <div className={`number ${dataSourceItem['rowIndex'] > 2 ? 'number-low' : ''}`}>{dataSourceItem['rowIndex'] + 1}</div>
                         </td>
                     }
                     {
@@ -42,7 +43,7 @@ function ApexTbody<T>(props: IProps<T>) {
                         columns.map((columnItem) => {
                             const { columnType = 'input' } = columnItem;
                             if (columnItem?.visible === false) return;
-                            const refKey: string = `${dataSourceIndex}-${columnItem.name as string}`;
+                            const refKey: string = `${dataSourceItem['rowIndex']}-${columnItem.name as string}`;
                             switch (columnType) {
                                 case 'input':
                                     return <ApexInput
@@ -51,7 +52,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         key={refKey}
                                         column={columnItem}
                                         row={dataSourceItem}
-                                        rowIndex={dataSourceIndex}
+                                        rowIndex={dataSourceItem['rowIndex']}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -65,7 +66,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         key={refKey}
                                         column={columnItem}
                                         row={dataSourceItem}
-                                        rowIndex={dataSourceIndex}
+                                        rowIndex={dataSourceItem['rowIndex']}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -79,7 +80,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         allowSelect={allowSelect}
                                         column={columnItem}
                                         row={dataSourceItem}
-                                        rowIndex={dataSourceIndex}
+                                        rowIndex={dataSourceItem['rowIndex']}
                                         tableDivRef={tableDivRef}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -93,7 +94,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         allowSelect={allowSelect}
                                         column={columnItem}
                                         row={dataSourceItem}
-                                        rowIndex={dataSourceIndex}
+                                        rowIndex={dataSourceItem['rowIndex']}
                                         tableDivRef={tableDivRef}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -107,7 +108,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         allowSelect={allowSelect}
                                         column={columnItem}
                                         row={dataSourceItem}
-                                        rowIndex={dataSourceIndex}
+                                        rowIndex={dataSourceItem['rowIndex']}
                                         tableDivRef={tableDivRef}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -122,7 +123,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         key={refKey}
                                         column={columnItem}
                                         row={dataSourceItem}
-                                        rowIndex={dataSourceIndex}
+                                        rowIndex={dataSourceItem['rowIndex']}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
