@@ -41,19 +41,14 @@ export const onSetScrollBarPosition = (params: {
             scrollAxis.y = tdBottom - tableBottom + 15;
         }
         // 检查左侧是否在可视区域
-        if (Math.abs(tdLeft - tableLeft) < tdRect.width) {
-            scrollAxis.x = tdLeft - tableLeft - 50;
-            if (allowSelect) {
-                scrollAxis.x -= 50;
-            }
-        } else if (Math.abs(tdLeft - tableLeft) > tableDivRef.current.clientWidth) {
+        if (tdLeft - tableLeft < tdRect.width) {
             scrollAxis.x = tdLeft - tableLeft - 50;
             if (allowSelect) {
                 scrollAxis.x -= 50;
             }
         }
         // 检查右侧是否在可视区域
-        if (Math.abs(tdRight - tableRight) < tdRect.width) {
+        if (tableRight - tdRight < tdRect.width) {
             scrollAxis.x = tdRight - tableRight + 15;
         }
         if (scrollAxis.x !== 0 || scrollAxis.y !== 0) {

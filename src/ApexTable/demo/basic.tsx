@@ -31,7 +31,7 @@ const App: React.FC = () => {
      */
     const initDataSource = () => {
         const array: ITableListItem[] = [];
-        for (let i = 0; i < 100000; i++) {
+        for (let i = 0; i < 999; i++) {
             array.push({
                 id: nanoid(),
                 kFullName: '默认仓库' + i,
