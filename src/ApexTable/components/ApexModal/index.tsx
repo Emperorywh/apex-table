@@ -187,7 +187,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
         }
 
 
-        return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
+        return <td className={`apex-table-tbody-td`} style={{ height: rowHeight }} ref={tableTdRef}>
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}
@@ -201,8 +201,10 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                 />
             }
             {
-                !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
-                    {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+                !focusState && <div className="apex-show-cell" onClick={hanldeCellClick}>
+                    <div className="overflow-hidden-one">
+                        {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+                    </div>
                 </div>
             }
         </td>
@@ -234,7 +236,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             }
         }
 
-        return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
+        return <td className={`apex-table-tbody-td`} style={{ height: rowHeight }} ref={tableTdRef}>
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}
@@ -246,8 +248,10 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                 />
             }
             {
-                !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
-                    {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+                !focusState && <div className="apex-show-cell " onClick={hanldeCellClick} >
+                    <div className="overflow-hidden-one">
+                        {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+                    </div>
                 </div>
             }
         </td>

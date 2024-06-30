@@ -11,4 +11,5 @@ export interface IProps<T> {
     indeterminate: boolean;
     rowHeight: number;
     onHeaderCheckBoxChange: (event: CheckboxChangeEvent) => void;
+    onColWidthChange: (column: IApexTableColumns<T>, width: number) => void;
 }

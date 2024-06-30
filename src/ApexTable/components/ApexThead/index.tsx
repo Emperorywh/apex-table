@@ -1,6 +1,7 @@
 import React from "react";
 import { IProps } from './index.types';
 import { Checkbox } from "antd";
+import ApexTh from "../ApexTh";
 
 function ApexThead<T>(props: IProps<T>) {
     const {
@@ -12,7 +13,8 @@ function ApexThead<T>(props: IProps<T>) {
         headerChecked = false,
         indeterminate = false,
         rowHeight,
-        onHeaderCheckBoxChange
+        onHeaderCheckBoxChange,
+        onColWidthChange
     } = props;
 
     return <thead className='apex-table-thead'>
@@ -34,9 +36,7 @@ function ApexThead<T>(props: IProps<T>) {
                     if (item?.visible === false) {
                         return null
                     } else {
-                        return <th key={`${String(item.name)}-${index}`} className={`apex-table-thead-th`}>
-                            {item['title']}
-                        </th>;
+                        return <ApexTh key={`${String(item.name)}-${index}`} column={item} rowHeight={rowHeight} onColWidthChange={onColWidthChange}></ApexTh>
                     }
                 })
             }

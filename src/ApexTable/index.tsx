@@ -599,6 +599,15 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         })
     }
 
+    const handleColWidthChange = (column: IApexTableColumns<any>, width: number) => {
+        const cloneColumn = [...apexColumns];
+        const findColumn = cloneColumn.find(item => item.name === column.name);
+        if (findColumn) {
+            findColumn.width = width;
+            setApexColumns(cloneColumn);
+        }
+    }
+
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
             <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
@@ -624,6 +633,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             columns={apexColumns}
                             isSingle={isSingle}
                             headerChecked={headerChecked}
+                            onColWidthChange={handleColWidthChange}
                         />
                         <ApexTbody
                             rowKey={rowKey}

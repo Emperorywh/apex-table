@@ -7,6 +7,16 @@
 // 聚焦时背景颜色
 @focusBackgroundColor: #FDF5E6;
 
+.overflow-hidden-one {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    /* 显示三行 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
 .apex-table-container {
     display: flex;
     flex-direction: column;
@@ -42,6 +52,33 @@
 
                     .apex-table-thead-th {
                         border: 1px solid @borderColor;
+                        box-sizing: border-box;
+
+                        .apex-table-thead-th-content {
+                            position: relative;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            .apex-table-thead-th-resize {
+                                position: absolute;
+                                height: 100%;
+                                top: 0;
+                                bottom: 0;
+                                right: -8px;
+                                width: 16px;
+                                z-index: 999;
+                                cursor: col-resize;
+
+                                &:active {
+                                    width: 1px;
+                                    background-color: @primaryColor;
+                                    height: 1000px;
+                                    z-index: 1000;
+                                }
+                            }
+                        }
                     }
 
                     .apex-table-thead-th-checkbox {

@@ -7,6 +7,7 @@ import ApexPagination from "./ApexPagination";
 import ApexSelect from "./ApexSelect";
 import ApexShowCellChildren from "./ApexShowCellChildren/index.tsx";
 import ApexTbody from "./ApexTbody";
+import ApexTh from "./ApexTh";
 import ApexThead from "./ApexThead";
 
 export {
@@ -20,4 +21,5 @@ export {
     ApexInputNumber,
     ApexDatePicker,
     ApexShowCellChildren,
+    ApexTh,
 }
