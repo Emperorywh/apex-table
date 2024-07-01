@@ -1,9 +1,10 @@
-import { Input, InputNumber } from "antd";
+import { InputNumber } from "antd";
 import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
-import { ApexShowCellChildren } from "..";
+import { ApexShowCell } from "..";
 import { IApexInputNumber, IProps } from './index.types';
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
+import ApexTd from "../ApexTd";
 
 const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumber>) => {
     const {
@@ -20,7 +21,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumbe
         onEnter
     } = props;
 
-    const { name, onRender } = column;
+    const { name } = column;
     const [focusState, setFocusState] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
@@ -126,7 +127,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumbe
         }
     }, [focusState])
 
-    return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
+    return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
         {
             focusState && <InputNumber
                 defaultValue={defaultValue || row[name]}
@@ -138,11 +139,9 @@ const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumbe
             />
         }
         {
-            !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
-                {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-            </div>
+            !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick} />
         }
-    </td>
+    </ApexTd>
 }))
 
 export default ApexInputNumber;

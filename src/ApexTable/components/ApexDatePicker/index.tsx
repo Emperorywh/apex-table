@@ -1,10 +1,11 @@
 import { DatePicker, DatePickerProps } from "antd";
 import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
-import { ApexShowCellChildren } from "..";
+import { ApexShowCell } from "..";
 import { IApexDatePicker, IProps } from './index.types';
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import dayjs from "dayjs";
+import ApexTd from "../ApexTd";
 
 const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>) => {
     const {
@@ -21,7 +22,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
         onEnter
     } = props;
 
-    const { name, onRender } = column;
+    const { name } = column;
     const [focusState, setFocusState] = useState(false);
     const inputRef = useRef<any>(null);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
@@ -126,7 +127,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
         }
     }, [focusState])
 
-    return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
+    return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
         {
             focusState && <DatePicker
                 defaultValue={defaultValue && dayjs(defaultValue) || dayjs(row[name])}
@@ -138,11 +139,9 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
             />
         }
         {
-            !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
-                {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-            </div>
+            !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick} />
         }
-    </td>
+    </ApexTd>
 }))
 
 export default ApexDatePicker;

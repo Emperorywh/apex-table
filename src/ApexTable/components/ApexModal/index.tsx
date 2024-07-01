@@ -1,10 +1,11 @@
 import { Input, InputRef, Modal } from "antd";
 import React, { Ref, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { ApexModalRef, IProps } from "./index.types";
-import ApexShowCellChildren from "../ApexShowCellChildren/index.tsx";
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import { IApexInput } from "../ApexInput/index.types";
 import { EllipsisOutlined } from '@ant-design/icons';
+import ApexShowCell from "../ApexShowCell";
+import ApexTd from "../ApexTd";
 
 /**
  * 弹窗组件
@@ -26,7 +27,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
         onCellClick,
         onEnter
     } = props;
-    const { name, onRender, modalOptions } = column;
+    const { name, modalOptions } = column;
     const inputRef = useRef<InputRef>(null);
     const [focusState, setFocusState] = useState(false);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
@@ -186,8 +187,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             });
         }
 
-
-        return <td className={`apex-table-tbody-td`} style={{ height: rowHeight }} ref={tableTdRef}>
+        return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}
@@ -201,13 +201,9 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                 />
             }
             {
-                !focusState && <div className="apex-show-cell" onClick={hanldeCellClick}>
-                    <div className="overflow-hidden-one">
-                        {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-                    </div>
-                </div>
+                !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick} />
             }
-        </td>
+        </ApexTd>
     } else {
         const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
             const key = event.key;
@@ -236,7 +232,7 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             }
         }
 
-        return <td className={`apex-table-tbody-td`} style={{ height: rowHeight }} ref={tableTdRef}>
+        return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}
@@ -248,13 +244,9 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
                 />
             }
             {
-                !focusState && <div className="apex-show-cell " onClick={hanldeCellClick} >
-                    <div className="overflow-hidden-one">
-                        {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-                    </div>
-                </div>
+                !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick} />
             }
-        </td>
+        </ApexTd>
     }
 }
 

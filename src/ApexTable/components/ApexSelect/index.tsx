@@ -1,10 +1,11 @@
 import { Ref, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { BaseSelectRef, IApexSelect, IProps } from "./index.types";
 import React from "react";
-import ApexShowCellChildren from "../ApexShowCellChildren/index.tsx";
 import { Select } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
+import ApexShowCell from "../ApexShowCell";
+import ApexTd from "../ApexTd";
 
 /**
  * 下拉框组件
@@ -27,7 +28,7 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
         onEnter
     } = props;
 
-    const { name, onRender, options } = column;
+    const { name, options } = column;
     const [focusState, setFocusState] = useState(false);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
     const selectRef = useRef<BaseSelectRef>(null);
@@ -151,7 +152,7 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
         }
     }, [focusState])
 
-    return <td className={`apex-table-tbody-td`} style={{height: rowHeight}} ref={tableTdRef}>
+    return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
         {
             focusState && <Select
                 defaultValue={defaultValue || row[name]}
@@ -165,11 +166,9 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
             />
         }
         {
-            !focusState && <div className="apex-show-cell" onClick={hanldeCellClick} >
-                {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
-            </div>
+            !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick} />
         }
-    </td>
+    </ApexTd>
 }
 
 export default forwardRef(ApexSelect);

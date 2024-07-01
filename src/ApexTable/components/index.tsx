@@ -5,11 +5,12 @@ import ApexInputNumber from "./ApexInputNumber";
 import ApexModal from "./ApexModal";
 import ApexPagination from "./ApexPagination";
 import ApexSelect from "./ApexSelect";
-import ApexShowCellChildren from "./ApexShowCellChildren/index.tsx";
+import ApexShowCell from "./ApexShowCell";
+import ApexShowCellChildren from "./ApexShowCellChildren";
 import ApexTbody from "./ApexTbody";
 import ApexTh from "./ApexTh";
 import ApexThead from "./ApexThead";
-
+ 
 export {
     ApexColgroup,
     ApexThead,
@@ -22,4 +23,5 @@ export {
     ApexDatePicker,
     ApexShowCellChildren,
     ApexTh,
+    ApexShowCell
 }
