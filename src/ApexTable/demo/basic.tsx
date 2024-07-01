@@ -58,6 +58,7 @@ const App: React.FC = () => {
             title: '仓库',
             name: 'kFullName',
             columnType: 'modal',
+            fixed: 'left',
             modalOptions: (row, value, modalRef) => {
                 return {
                     title: '仓库信息',

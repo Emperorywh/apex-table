@@ -13,7 +13,7 @@ import ApexTd from "../ApexTd";
  * @param ref 
  * @returns 
  */
-function ApexModal(props: IProps, ref: Ref<IApexInput>) {
+function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
     const {
         allowSelect,
         showLineNumber,

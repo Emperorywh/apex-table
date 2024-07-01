@@ -1,11 +1,5 @@
-import { IApexTableColumns } from "apex-table/ApexTable/index.types";
+import { ITdThCommonProps } from "../index.types";
 
-export interface IProps<T> {
-    rowHeight: number;
+export interface IProps<T> extends ITdThCommonProps<T> {
     children: React.ReactNode;
-    allowFixed: boolean;
-    showLineNumber: boolean;
-    allowSelect: boolean;
-    column: IApexTableColumns<T>;
-    columns: IApexTableColumns<T>[];
 }

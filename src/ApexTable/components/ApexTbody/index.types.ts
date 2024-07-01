@@ -1,18 +1,14 @@
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
-import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable/index.types";
+import { IFocusAxis } from "apex-table/ApexTable/index.types";
+import { ITdThCommonProps } from "../index.types";
 
-export interface IProps<T> {
+export interface IProps<T> extends ITdThCommonProps<T> {
     startIndex: number;
     endIndex: number;
-    rowHeight: number;
     rowKey: any;
     totalHeight: number;
     renderCount: number;
-    columns: IApexTableColumns<T>[];
     dataSource: any[];
-    showLineNumber: boolean;
-    allowSelect: boolean;
-    allowFixed: boolean;
     tableDivRef: React.RefObject<HTMLDivElement>;
     onRowSelected: (event: CheckboxChangeEvent, row: any) => void;
     onCellClick: (axis: IFocusAxis) => void;

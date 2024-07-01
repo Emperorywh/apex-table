@@ -1,20 +1,27 @@
 import { IApexTableColumns, IFocusAxis } from "../index.types";
 
 /**
+ * td/th 通用属性
+ */
+export interface ITdThCommonProps<T> {
+    column: IApexTableColumns<T>;
+    columns: IApexTableColumns<T>[];
+    rowHeight: number;
+    allowResize?: boolean;
+    allowFixed: boolean;
+    showLineNumber: boolean;
+    allowSelect: boolean;
+}
+
+/**
  * 表格组件通用类型
  */
-export interface ICommonProps {
-    allowSelect: boolean;
-    allowFixed: boolean;
+export interface ICommonProps<T> extends ITdThCommonProps<T> {
     children?: React.ReactNode;
-    column: IApexTableColumns<any>;
-    columns: IApexTableColumns<any>[];
     defaultValue?: string;
     row: any;
     rowIndex: number;
-    rowHeight: number;
     tableDivRef: React.RefObject<HTMLDivElement>;
-    showLineNumber: boolean;
     onCellClick: (rowInfo: IFocusAxis) => void;
     onFocus?: (rowInfo: IFocusAxis) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;

@@ -7,7 +7,7 @@ import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import dayjs from "dayjs";
 import ApexTd from "../ApexTd";
 
-const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>) => {
+const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePicker>) => {
     const {
         allowSelect,
         showLineNumber,

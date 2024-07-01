@@ -1,4 +1,4 @@
-import { IFocusAxis } from "../index.types";
+import { IApexTableColumns, IFocusAxis } from "../index.types";
 
 /**
  * 检查聚焦单元格是否被遮挡
@@ -55,4 +55,50 @@ export const onSetScrollBarPosition = (params: {
             tableDivRef.current.scrollBy(scrollAxis.x, scrollAxis.y);
         }
     }
+}
+
+/**
+ * 设置固定列位置
+ * @param params 
+ */
+export const handleSetFixedPosition = (params: {
+    styles: any;
+    column: IApexTableColumns<any>;
+    columns: IApexTableColumns<any>[];
+    fixed?: 'left' | 'right';
+    allowSelect: boolean;
+    showLineNumber: boolean;
+}) => {
+    const { styles, fixed, allowSelect, showLineNumber, columns, column } = params;
+    const style: any = Object.assign({}, styles);
+    if (fixed === 'left') {
+        style.left = 0;
+        if (allowSelect) {
+            style.left += 50;
+        }
+        if (showLineNumber) {
+            style.left += 50;
+        }
+        for (let i = 0; i < columns.length; i++) {
+            const item = columns[i];
+            if (item.name !== column.name && item.fixed === 'left') {
+                style.left += (item.width || 120)
+            }
+            if (item.name === column.name) {
+                break;
+            }
+        }
+    } else if (fixed === 'right') {
+        style.right = 0;
+        for (let i = columns.length - 1; i > -1; i--) {
+            const item = columns[i];
+            if (item.name !== column.name && item.fixed === 'right') {
+                style.right += (item.width || 120)
+            }
+            if (item.name === column.name) {
+                break;
+            }
+        }
+    }
+    return style;
 }

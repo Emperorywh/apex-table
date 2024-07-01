@@ -66,7 +66,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
                                         showLineNumber={showLineNumber}
-                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
@@ -84,7 +84,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
                                         showLineNumber={showLineNumber}
-                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
@@ -93,7 +93,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                 case 'modal':
                                     return <ApexModal
                                         allowFixed={allowFixed}
-                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}
                                         column={columnItem}
@@ -111,7 +111,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                 case 'select':
                                     return <ApexSelect
                                         allowFixed={allowFixed}
-                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}
                                         column={columnItem}
@@ -129,7 +129,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                 case 'datePicker':
                                     return <ApexDatePicker
                                         allowFixed={allowFixed}
-                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}
                                         column={columnItem}
@@ -147,7 +147,7 @@ function ApexTbody<T>(props: IProps<T>) {
                                 default:
                                     return <ApexInput
                                         allowFixed={allowFixed}
-                                        ref={inputRef => onSetRef(inputRef, refKey)}
+                                        ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                                         allowSelect={allowSelect}
                                         tableDivRef={tableDivRef}
                                         key={refKey}

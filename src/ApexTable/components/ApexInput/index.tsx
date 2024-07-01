@@ -6,7 +6,7 @@ import { IApexInput, IProps } from './index.types';
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import ApexTd from "../ApexTd";
 
-const ApexInput = memo(forwardRef((props: IProps, ref: Ref<IApexInput>) => {
+const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => {
     const {
         allowSelect,
         showLineNumber,

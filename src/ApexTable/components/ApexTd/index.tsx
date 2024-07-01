@@ -1,5 +1,6 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import { IProps } from "./index.types";
+import { handleSetFixedPosition } from "apex-table/ApexTable/utils/tools";
 
 function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
     const {
@@ -32,36 +33,15 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
         const style: any = {
             height: rowHeight
         }
-        if (fixed === 'left') {
-            style.left = 0;
-            if (allowSelect) {
-                style.left += 50;
-            }
-            if (showLineNumber) {
-                style.left += 50;
-            }
-            for (let i = 0; i < columns.length; i++) {
-                const item = columns[i];
-                if (item.name !== column.name && item.fixed === 'left') {
-                    style.left += (item.width || 120)
-                }
-                if (item.name === column.name) {
-                    break;
-                }
-            }
-        } else if (fixed === 'right') {
-            style.right = 0;
-            for (let i = columns.length - 1; i > -1; i--) {
-                const item = columns[i];
-                if (item.name !== column.name && item.fixed === 'right') {
-                    style.right += (item.width || 120)
-                }
-                if (item.name === column.name) {
-                    break;
-                }
-            }
-        }
-        setStyles(style);
+        const newSyle = handleSetFixedPosition({
+            styles: style,
+            column,
+            columns,
+            fixed,
+            allowSelect,
+            showLineNumber
+        });
+        setStyles(newSyle);
     }
 
     useEffect(() => {
