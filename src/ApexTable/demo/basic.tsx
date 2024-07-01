@@ -68,7 +68,7 @@ const App: React.FC = () => {
                             <Button onClick={() => {
                                 modalRef.current?.destroy();
                             }}>取消</Button>
-                            <Button type='primary' onClick={() => {modalRef.current?.destroy();}}>确定</Button>
+                            <Button type='primary' onClick={() => { modalRef.current?.destroy(); }}>确定</Button>
                         </Space>
                     </div>
                 }
@@ -123,11 +123,15 @@ const App: React.FC = () => {
 
     return <ApexTable
         allowSelect
+        allowResize
         columns={columns}
         dataSource={dataSource}
         showHeaderCheckBox
         rowKey='id'
         rowHeight={45}
+        onColumnWidthChange={column => {
+            console.log("列宽改变", column)
+        }}
     />
 };
 

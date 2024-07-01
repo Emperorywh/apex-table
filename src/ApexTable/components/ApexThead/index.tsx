@@ -8,6 +8,7 @@ function ApexThead<T>(props: IProps<T>) {
         columns,
         showLineNumber = false,
         allowSelect = false,
+        allowResize = false,
         showHeaderCheckBox = false,
         isSingle = false,
         headerChecked = false,
@@ -36,7 +37,13 @@ function ApexThead<T>(props: IProps<T>) {
                     if (item?.visible === false) {
                         return null
                     } else {
-                        return <ApexTh key={`${String(item.name)}-${index}`} column={item} rowHeight={rowHeight} onColWidthChange={onColWidthChange}></ApexTh>
+                        return <ApexTh
+                            allowResize={allowResize}
+                            key={`${String(item.name)}-${index}`}
+                            column={item}
+                            rowHeight={rowHeight}
+                            onColWidthChange={onColWidthChange}
+                        ></ApexTh>
                     }
                 })
             }

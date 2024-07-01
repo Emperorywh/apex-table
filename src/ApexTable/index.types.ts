@@ -65,6 +65,11 @@ export interface ApexTableProps<T, V> {
     allowFixed?: boolean;
 
     /**
+     * 是否开起列宽调整
+     */
+    allowResize?: boolean;
+
+    /**
      * 是否展示行号
      */
     showLineNumber?: boolean;
@@ -88,7 +93,14 @@ export interface ApexTableProps<T, V> {
         data: any[],
         success: boolean,
         total: number
-    }>
+    }>;
+
+    /**
+     * 监听列宽改变
+     * @param column 
+     * @returns 
+     */
+    onColumnWidthChange?: (column: IApexTableColumns<T>) => void;
 }
 
 /**

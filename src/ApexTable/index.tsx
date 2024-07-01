@@ -13,6 +13,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
 
     const {
         allowSelect = false,
+        allowResize = false,
         columns = [],
         dataSource = [],
         showHeaderCheckBox = false,
@@ -23,7 +24,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         rowHeight = 45,
         isSingle = false,
         showLineNumber = true,
-        rowKey
+        rowKey,
+        onColumnWidthChange
     } = props;
 
     /**
@@ -599,11 +601,19 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         })
     }
 
+    /**
+     * 列宽改变
+     * @param column 
+     * @param width 
+     * @returns 
+     */
     const handleColWidthChange = (column: IApexTableColumns<any>, width: number) => {
+        if (!allowResize) return;
         const cloneColumn = [...apexColumns];
         const findColumn = cloneColumn.find(item => item.name === column.name);
         if (findColumn) {
             findColumn.width = width;
+            onColumnWidthChange && onColumnWidthChange(findColumn);
             setApexColumns(cloneColumn);
         }
     }
@@ -625,6 +635,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         }
                         <ApexThead
                             rowHeight={rowHeight}
+                            allowResize={allowResize}
                             allowSelect={allowSelect}
                             showLineNumber={showLineNumber}
                             showHeaderCheckBox={showHeaderCheckBox}

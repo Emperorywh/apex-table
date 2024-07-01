@@ -10,6 +10,7 @@ export interface IProps<T> {
     headerChecked: boolean;
     indeterminate: boolean;
     rowHeight: number;
+    allowResize: boolean;
     onHeaderCheckBoxChange: (event: CheckboxChangeEvent) => void;
     onColWidthChange: (column: IApexTableColumns<T>, width: number) => void;
 }

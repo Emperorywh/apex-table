@@ -3,7 +3,7 @@ import { IProps } from "./index.types";
 
 
 function ApexTh<T>(props: IProps<T>) {
-    const { column, rowHeight, onColWidthChange } = props;
+    const { allowResize = false, column, rowHeight, onColWidthChange } = props;
     const thRef = useRef<HTMLTableHeaderCellElement>(null);
     const resizeFather = useRef<HTMLDivElement>(null);
     const resizeRef = useRef<HTMLDivElement>(null);
@@ -69,11 +69,13 @@ function ApexTh<T>(props: IProps<T>) {
     return <th className={`apex-table-thead-th`} style={{ height: rowHeight }} ref={thRef}>
         <div className={`apex-table-thead-th-content`} ref={resizeFather}>
             <span className={`apex-table-thead-th-text overflow-hidden-one`}>{column['title']}</span>
-            <div
-                ref={resizeRef}
-                className={`apex-table-thead-th-resize`}
-                onMouseDown={handleMouseDown}
-            ></div>
+            {
+                allowResize && <div
+                    ref={resizeRef}
+                    className={`apex-table-thead-th-resize`}
+                    onMouseDown={handleMouseDown}
+                ></div>
+            }
         </div>
     </th>
 }
