@@ -7,6 +7,7 @@ import { ApexDatePicker, ApexInput, ApexInputNumber, ApexModal, ApexSelect } fro
 function ApexTbody<T>(props: IProps<T>) {
     const {
         allowSelect,
+        allowFixed,
         columns,
         dataSource,
         showLineNumber,
@@ -56,12 +57,15 @@ function ApexTbody<T>(props: IProps<T>) {
                                 case 'input':
                                     return <ApexInput
                                         allowSelect={allowSelect}
+                                        allowFixed={allowFixed}
                                         tableDivRef={tableDivRef}
                                         key={refKey}
                                         column={columnItem}
+                                        columns={columns}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
+                                        showLineNumber={showLineNumber}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -70,13 +74,16 @@ function ApexTbody<T>(props: IProps<T>) {
                                     />;
                                 case 'inputNumber':
                                     return <ApexInputNumber
+                                        allowFixed={allowFixed}
                                         allowSelect={allowSelect}
                                         tableDivRef={tableDivRef}
                                         key={refKey}
                                         column={columnItem}
+                                        columns={columns}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
+                                        showLineNumber={showLineNumber}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
@@ -85,14 +92,17 @@ function ApexTbody<T>(props: IProps<T>) {
                                     />;
                                 case 'modal':
                                     return <ApexModal
+                                        allowFixed={allowFixed}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}
                                         column={columnItem}
+                                        columns={columns}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
                                         tableDivRef={tableDivRef}
+                                        showLineNumber={showLineNumber}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
@@ -100,14 +110,17 @@ function ApexTbody<T>(props: IProps<T>) {
                                     />
                                 case 'select':
                                     return <ApexSelect
+                                        allowFixed={allowFixed}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}
                                         column={columnItem}
+                                        columns={columns}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
                                         tableDivRef={tableDivRef}
+                                        showLineNumber={showLineNumber}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
@@ -115,14 +128,17 @@ function ApexTbody<T>(props: IProps<T>) {
                                     />
                                 case 'datePicker':
                                     return <ApexDatePicker
+                                        allowFixed={allowFixed}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         key={refKey}
                                         allowSelect={allowSelect}
                                         column={columnItem}
+                                        columns={columns}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
                                         tableDivRef={tableDivRef}
+                                        showLineNumber={showLineNumber}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}
@@ -130,14 +146,17 @@ function ApexTbody<T>(props: IProps<T>) {
                                     />
                                 default:
                                     return <ApexInput
+                                        allowFixed={allowFixed}
                                         ref={inputRef => onSetRef(inputRef, refKey)}
                                         allowSelect={allowSelect}
                                         tableDivRef={tableDivRef}
                                         key={refKey}
                                         column={columnItem}
+                                        columns={columns}
                                         row={dataSourceItem}
                                         rowIndex={dataSourceItem['rowIndex']}
                                         rowHeight={rowHeight}
+                                        showLineNumber={showLineNumber}
                                         onCellClick={onCellClick}
                                         onChange={onChange}
                                         onFocus={onFocus}

@@ -9,7 +9,10 @@ import ApexTd from "../ApexTd";
 const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumber>) => {
     const {
         allowSelect,
+        showLineNumber,
+        allowFixed,
         column,
+        columns,
         defaultValue,
         row,
         rowIndex,
@@ -127,7 +130,15 @@ const ApexInputNumber = memo(forwardRef((props: IProps, ref: Ref<IApexInputNumbe
         }
     }, [focusState])
 
-    return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
+    return <ApexTd
+        column={column}
+        columns={columns}
+        rowHeight={rowHeight}
+        ref={tableTdRef}
+        allowSelect={allowSelect}
+        allowFixed={allowFixed}
+        showLineNumber={showLineNumber}
+    >
         {
             focusState && <InputNumber
                 defaultValue={defaultValue || row[name]}

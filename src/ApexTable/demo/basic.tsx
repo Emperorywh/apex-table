@@ -61,6 +61,7 @@ const App: React.FC = () => {
             modalOptions: (row, value, modalRef) => {
                 return {
                     title: '仓库信息',
+                    width: '50vw',
                     content: <div>
                         <h1>仓库列表</h1>
                         <div>{value}</div>
@@ -80,7 +81,8 @@ const App: React.FC = () => {
         },
         {
             title: '商品名称',
-            name: 'pFullName'
+            name: 'pFullName',
+            fixed: 'left'
         },
         {
             title: '货位',
@@ -99,12 +101,13 @@ const App: React.FC = () => {
         {
             title: '数量',
             name: 'assQty',
-            columnType: 'inputNumber'
+            columnType: 'inputNumber',
         },
         {
             title: '生产日期',
             name: 'produceDate',
-            columnType: 'datePicker'
+            columnType: 'datePicker',
+            fixed: 'right'
         },
         {
             title: '保质期（天）',
@@ -124,6 +127,7 @@ const App: React.FC = () => {
     return <ApexTable
         allowSelect
         allowResize
+        allowFixed
         columns={columns}
         dataSource={dataSource}
         showHeaderCheckBox

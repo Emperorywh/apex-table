@@ -3,12 +3,24 @@ import { IProps } from "./index.types";
 
 
 function ApexTh<T>(props: IProps<T>) {
-    const { allowResize = false, column, rowHeight, onColWidthChange } = props;
+    const {
+        allowResize = false,
+        allowFixed = false,
+        column,
+        columns,
+        rowHeight,
+        allowSelect = false,
+        showLineNumber = false,
+        onColWidthChange
+    } = props;
+    const { fixed } = column;
     const thRef = useRef<HTMLTableHeaderCellElement>(null);
     const resizeFather = useRef<HTMLDivElement>(null);
     const resizeRef = useRef<HTMLDivElement>(null);
     const startPosition = useRef(0);
     const [dragging, setDragging] = useState(false);
+    const [classNames, setClassNames] = useState('');
+    const [styles, setStyles] = useState<any>();
 
     /**
      * 鼠标按下时触发
@@ -49,6 +61,56 @@ function ApexTh<T>(props: IProps<T>) {
         }
     }
 
+    /**
+     * 初始化类名
+     */
+    const initClassNames = () => {
+        let className = 'apex-table-thead-th';
+        if (allowFixed && fixed) {
+            className = className.concat(` apex-table-thead-th-fixed apex-table-thead-th-fixed-${fixed}`);
+        }
+        setClassNames(className);
+    }
+
+    /**
+     * 初始化样式
+     */
+    const initStyles = () => {
+        const style: any = {
+            height: rowHeight
+        }
+        if (fixed === 'left') {
+            style.left = 0;
+            if (allowSelect) {
+                style.left += 50;
+            }
+            if (showLineNumber) {
+                style.left += 50;
+            }
+            for (let i = 0; i < columns.length; i++) {
+                const item = columns[i];
+                if (item.name !== column.name && item.fixed === 'left') {
+                    style.left += (item.width || 120)
+                }
+                if (item.name === column.name) {
+                    break;
+                }
+            }
+        } else if (fixed === 'right') {
+            style.right = 0;
+            for (let i = columns.length - 1; i > -1; i--) {
+                const item = columns[i];
+                if (item.name !== column.name && item.fixed === 'right') {
+                    style.right += (item.width || 120)
+                }
+                if (item.name === column.name) {
+                    break;
+                }
+            }
+        }
+        setStyles(style);
+    }
+
     useEffect(() => {
         if (dragging) {
             window.addEventListener('mousemove', handleMouseMove);
@@ -66,7 +128,19 @@ function ApexTh<T>(props: IProps<T>) {
         };
     }, [dragging]);
 
-    return <th className={`apex-table-thead-th`} style={{ height: rowHeight }} ref={thRef}>
+    useEffect(() => {
+        initClassNames();
+    }, [column]);
+
+    useEffect(() => {
+        initStyles();
+    }, [])
+
+    return <th
+        className={classNames}
+        style={styles}
+        ref={thRef}
+    >
         <div className={`apex-table-thead-th-content`} ref={resizeFather}>
             <span className={`apex-table-thead-th-text overflow-hidden-one`}>{column['title']}</span>
             {

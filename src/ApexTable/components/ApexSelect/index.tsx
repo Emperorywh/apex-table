@@ -16,7 +16,10 @@ import ApexTd from "../ApexTd";
 function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
     const {
         allowSelect,
+        showLineNumber,
+        allowFixed,
         column,
+        columns,
         defaultValue,
         row,
         rowIndex,
@@ -152,7 +155,15 @@ function ApexSelect(props: IProps, ref: Ref<IApexSelect>) {
         }
     }, [focusState])
 
-    return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
+    return <ApexTd
+        column={column}
+        columns={columns}
+        rowHeight={rowHeight}
+        ref={tableTdRef}
+        allowSelect={allowSelect}
+        allowFixed={allowFixed}
+        showLineNumber={showLineNumber}
+    >
         {
             focusState && <Select
                 defaultValue={defaultValue || row[name]}

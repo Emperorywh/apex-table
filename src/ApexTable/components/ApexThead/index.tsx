@@ -9,6 +9,7 @@ function ApexThead<T>(props: IProps<T>) {
         showLineNumber = false,
         allowSelect = false,
         allowResize = false,
+        allowFixed = false,
         showHeaderCheckBox = false,
         isSingle = false,
         headerChecked = false,
@@ -38,10 +39,14 @@ function ApexThead<T>(props: IProps<T>) {
                         return null
                     } else {
                         return <ApexTh
+                            allowSelect={allowSelect}
+                            allowFixed={allowFixed}
                             allowResize={allowResize}
                             key={`${String(item.name)}-${index}`}
                             column={item}
+                            columns={columns}
                             rowHeight={rowHeight}
+                            showLineNumber={showLineNumber}
                             onColWidthChange={onColWidthChange}
                         ></ApexTh>
                     }

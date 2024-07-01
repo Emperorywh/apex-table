@@ -5,13 +5,16 @@ import { IApexTableColumns, IFocusAxis } from "../index.types";
  */
 export interface ICommonProps {
     allowSelect: boolean;
+    allowFixed: boolean;
     children?: React.ReactNode;
     column: IApexTableColumns<any>;
+    columns: IApexTableColumns<any>[];
     defaultValue?: string;
     row: any;
     rowIndex: number;
     rowHeight: number;
     tableDivRef: React.RefObject<HTMLDivElement>;
+    showLineNumber: boolean;
     onCellClick: (rowInfo: IFocusAxis) => void;
     onFocus?: (rowInfo: IFocusAxis) => void;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;

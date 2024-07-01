@@ -16,7 +16,10 @@ import ApexTd from "../ApexTd";
 function ApexModal(props: IProps, ref: Ref<IApexInput>) {
     const {
         allowSelect,
+        showLineNumber,
+        allowFixed,
         column,
+        columns,
         defaultValue,
         row,
         rowIndex,
@@ -187,7 +190,15 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             });
         }
 
-        return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
+        return <ApexTd
+            column={column}
+            columns={columns}
+            rowHeight={rowHeight}
+            ref={tableTdRef}
+            allowSelect={allowSelect}
+            allowFixed={allowFixed}
+            showLineNumber={showLineNumber}
+        >
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}
@@ -232,7 +243,15 @@ function ApexModal(props: IProps, ref: Ref<IApexInput>) {
             }
         }
 
-        return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
+        return <ApexTd
+            column={column}
+            columns={columns}
+            rowHeight={rowHeight}
+            ref={tableTdRef}
+            allowSelect={allowSelect}
+            allowFixed={allowFixed}
+            showLineNumber={showLineNumber}
+        >
             {
                 focusState && <Input
                     defaultValue={defaultValue || row[name]}

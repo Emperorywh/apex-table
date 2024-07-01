@@ -18,7 +18,7 @@ const ApexShowCell: React.FC<IProps> = (props) => {
     const { name, onRender } = column;
     return <div className="apex-show-cell" onClick={props.onClick}>
         <div className="overflow-hidden-one">
-            {onRender ? onRender(column, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
+            {onRender ? onRender(row, row[name]) : <ApexShowCellChildren columnItem={column} dataSourceItem={row} />}
         </div>
     </div>
 }

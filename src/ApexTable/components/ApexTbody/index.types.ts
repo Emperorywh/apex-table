@@ -12,6 +12,7 @@ export interface IProps<T> {
     dataSource: any[];
     showLineNumber: boolean;
     allowSelect: boolean;
+    allowFixed: boolean;
     tableDivRef: React.RefObject<HTMLDivElement>;
     onRowSelected: (event: CheckboxChangeEvent, row: any) => void;
     onCellClick: (axis: IFocusAxis) => void;

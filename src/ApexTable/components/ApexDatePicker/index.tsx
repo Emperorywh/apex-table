@@ -10,7 +10,10 @@ import ApexTd from "../ApexTd";
 const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>) => {
     const {
         allowSelect,
+        showLineNumber,
+        allowFixed,
         column,
+        columns,
         defaultValue,
         row,
         rowIndex,
@@ -127,7 +130,15 @@ const ApexDatePicker = memo(forwardRef((props: IProps, ref: Ref<IApexDatePicker>
         }
     }, [focusState])
 
-    return <ApexTd rowHeight={rowHeight} ref={tableTdRef}>
+    return <ApexTd
+        column={column}
+        columns={columns}
+        rowHeight={rowHeight}
+        ref={tableTdRef}
+        allowSelect={allowSelect}
+        allowFixed={allowFixed}
+        showLineNumber={showLineNumber}
+    >
         {
             focusState && <DatePicker
                 defaultValue={defaultValue && dayjs(defaultValue) || dayjs(row[name])}
