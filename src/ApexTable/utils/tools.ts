@@ -14,7 +14,7 @@ export const onSetScrollBarPosition = (params: {
     columns: IApexTableColumns<any>[];
     showLineNumber: boolean;
 }) => {
-    const { tableDivRef, tableTdRef, allowSelect, allowFixed, showLineNumber, columns } = params
+    const { axis, tableDivRef, tableTdRef, allowSelect, allowFixed, showLineNumber, columns } = params
     // 容器相关信息
     const tableRect = tableDivRef.current?.getBoundingClientRect();
     const tableTop = tableRect?.top || 0;
@@ -30,9 +30,6 @@ export const onSetScrollBarPosition = (params: {
     const tdLeft = tdRect?.left || 0;
     const tdRight = tdRect?.right || 0;
 
-    // 滚动条位置
-    const scrollLeft = tableDivRef.current?.scrollLeft || 0;
-
     if (tableDivRef.current && tdRect) {
         const scrollAxis = {
             x: 0,
@@ -46,6 +43,7 @@ export const onSetScrollBarPosition = (params: {
         if (tdBottom > tableBottom) {
             scrollAxis.y = tdBottom - tableBottom + 15;
         }
+        // 检查左侧是否在可视区域 
         let fixedLeft = 0;
         if (showLineNumber) {
             fixedLeft += 50;
@@ -56,27 +54,48 @@ export const onSetScrollBarPosition = (params: {
         if (allowFixed) {
             for (let i = 0; i < columns.length; i++) {
                 const item = columns[i];
+                if (item.name === axis.columnName) break;
+                if (item?.fixed === 'right') continue;
                 const itemFixedLeft = handleSetFixedPosition({
                     styles: {},
                     column: item,
                     columns: columns,
-                    fixed: 'left',
+                    fixed: item.fixed,
                     allowSelect,
                     showLineNumber
                 })
-                if (itemFixedLeft.left && itemFixedLeft.left < scrollLeft) {
-                    fixedLeft += itemFixedLeft.left;
+                const td = document.getElementById(`td-${0}-${item.name}`)?.getBoundingClientRect();
+                if (td && itemFixedLeft.left && (itemFixedLeft.left > (td.left - tableLeft) || itemFixedLeft.left === (td.left - tableLeft))) {
+                    fixedLeft += td.width;
                 }
             }
         }
-        // 检查左侧是否在可视区域 
         if (tdLeft - tableLeft - fixedLeft < tdRect.width) {
-            debugger;
             scrollAxis.x = tdLeft - tableLeft - fixedLeft;
         }
         // 检查右侧是否在可视区域
-        if (tableRight - tdRight < tdRect.width) {
-            scrollAxis.x = tdRight - tableRight + 15;
+        let fixedRight = 0;
+        if (allowFixed) {
+            for (let i = columns.length - 1; i > -1; i--) {
+                const item = columns[i];
+                if (item.name === axis.columnName) break;
+                if (item?.fixed === 'left') continue;
+                const itemFixedRight = handleSetFixedPosition({
+                    styles: {},
+                    column: item,
+                    columns: columns,
+                    fixed: item.fixed,
+                    allowSelect,
+                    showLineNumber
+                })
+                const td = document.getElementById(`td-${0}-${item.name}`)?.getBoundingClientRect();
+                if (td && itemFixedRight?.right !== undefined && (itemFixedRight.right < (tableRight - 15 - td.right) || itemFixedRight.right === (tableRight - 15 - td.right))) {
+                    fixedRight += td.width;
+                }
+            }
+        }
+        if (tableRight - tdRight - fixedRight < tdRect.width) {
+            scrollAxis.x = tdRight - tableRight + 15 + fixedRight;
         }
         if (scrollAxis.x !== 0 || scrollAxis.y !== 0) {
             tableDivRef.current.scrollBy(scrollAxis.x, scrollAxis.y);
@@ -92,7 +111,7 @@ export const handleSetFixedPosition = (params: {
     styles: any;
     column: IApexTableColumns<any>;
     columns: IApexTableColumns<any>[];
-    fixed: 'left' | 'right';
+    fixed?: 'left' | 'right';
     allowSelect: boolean;
     showLineNumber: boolean;
 }) => {

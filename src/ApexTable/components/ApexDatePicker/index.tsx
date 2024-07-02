@@ -134,6 +134,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
     }, [focusState])
 
     return <ApexTd
+        row={row}
         column={column}
         columns={columns}
         rowHeight={rowHeight}

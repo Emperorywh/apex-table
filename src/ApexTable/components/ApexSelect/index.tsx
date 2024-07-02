@@ -159,6 +159,7 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
     }, [focusState])
 
     return <ApexTd
+        row={row}
         column={column}
         columns={columns}
         rowHeight={rowHeight}

@@ -134,6 +134,7 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
     }, [focusState])
 
     return <ApexTd
+        row={row}
         column={column}
         columns={columns}
         rowHeight={rowHeight}

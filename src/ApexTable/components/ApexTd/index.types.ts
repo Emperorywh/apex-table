@@ -3,5 +3,6 @@ import { ITdThCommonProps } from "../index.types";
 
 export interface IProps<T> extends ITdThCommonProps<T> {
     column: IApexTableColumns<T>;
+    row: any;
     children: React.ReactNode;
 }

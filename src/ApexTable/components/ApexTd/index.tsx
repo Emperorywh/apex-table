@@ -4,6 +4,7 @@ import { handleSetFixedPosition } from "apex-table/ApexTable/utils/tools";
 
 function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
     const {
+        row,
         rowHeight,
         children,
         column,
@@ -54,6 +55,7 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
         className={classNames}
         style={styles}
         ref={ref}
+        id={`td-${row.rowIndex}-${column.name}`}
     >
         {children}
     </td>

@@ -194,6 +194,7 @@ function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
         }
 
         return <ApexTd
+            row={row}
             column={column}
             columns={columns}
             rowHeight={rowHeight}
@@ -247,6 +248,7 @@ function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
         }
 
         return <ApexTd
+            row={row}
             column={column}
             columns={columns}
             rowHeight={rowHeight}

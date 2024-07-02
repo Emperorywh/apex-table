@@ -88,7 +88,6 @@ function ApexTh<T>(props: IProps<T>) {
             allowSelect,
             showLineNumber
         });
-        console.log(newStyle);
         setStyles(newStyle);
     }
 
