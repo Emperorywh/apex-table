@@ -118,7 +118,10 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
                 axis: {
                     rowIndex: rowIndex,
                     columnName: name
-                }
+                },
+                allowFixed,
+                columns,
+                showLineNumber
             })
         }
     }, [focusState]);

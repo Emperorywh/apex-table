@@ -139,7 +139,10 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
                 axis: {
                     rowIndex: rowIndex,
                     columnName: name
-                }
+                },
+                allowFixed,
+                columns,
+                showLineNumber
             })
         }
     }, [focusState]);

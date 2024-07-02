@@ -6,12 +6,15 @@ import { IApexTableColumns, IFocusAxis } from "../index.types";
  * @param params 
  */
 export const onSetScrollBarPosition = (params: {
-    tableDivRef: React.RefObject<HTMLDivElement>,
-    tableTdRef: React.RefObject<HTMLTableDataCellElement>,
-    axis: IFocusAxis,
-    allowSelect: boolean,
+    tableDivRef: React.RefObject<HTMLDivElement>;
+    tableTdRef: React.RefObject<HTMLTableDataCellElement>;
+    axis: IFocusAxis;
+    allowSelect: boolean;
+    allowFixed: boolean;
+    columns: IApexTableColumns<any>[];
+    showLineNumber: boolean;
 }) => {
-    const { tableDivRef, tableTdRef, allowSelect } = params
+    const { tableDivRef, tableTdRef, allowSelect, allowFixed, showLineNumber, columns } = params
     // 容器相关信息
     const tableRect = tableDivRef.current?.getBoundingClientRect();
     const tableTop = tableRect?.top || 0;
@@ -27,6 +30,9 @@ export const onSetScrollBarPosition = (params: {
     const tdLeft = tdRect?.left || 0;
     const tdRight = tdRect?.right || 0;
 
+    // 滚动条位置
+    const scrollLeft = tableDivRef.current?.scrollLeft || 0;
+
     if (tableDivRef.current && tdRect) {
         const scrollAxis = {
             x: 0,
@@ -40,12 +46,33 @@ export const onSetScrollBarPosition = (params: {
         if (tdBottom > tableBottom) {
             scrollAxis.y = tdBottom - tableBottom + 15;
         }
-        // 检查左侧是否在可视区域
-        if (tdLeft - tableLeft < tdRect.width) {
-            scrollAxis.x = tdLeft - tableLeft - 50;
-            if (allowSelect) {
-                scrollAxis.x -= 50;
+        let fixedLeft = 0;
+        if (showLineNumber) {
+            fixedLeft += 50;
+        }
+        if (allowSelect) {
+            fixedLeft += 50;
+        }
+        if (allowFixed) {
+            for (let i = 0; i < columns.length; i++) {
+                const item = columns[i];
+                const itemFixedLeft = handleSetFixedPosition({
+                    styles: {},
+                    column: item,
+                    columns: columns,
+                    fixed: 'left',
+                    allowSelect,
+                    showLineNumber
+                })
+                if (itemFixedLeft.left && itemFixedLeft.left < scrollLeft) {
+                    fixedLeft += itemFixedLeft.left;
+                }
             }
+        }
+        // 检查左侧是否在可视区域 
+        if (tdLeft - tableLeft - fixedLeft < tdRect.width) {
+            debugger;
+            scrollAxis.x = tdLeft - tableLeft - fixedLeft;
         }
         // 检查右侧是否在可视区域
         if (tableRight - tdRight < tdRect.width) {
@@ -65,7 +92,7 @@ export const handleSetFixedPosition = (params: {
     styles: any;
     column: IApexTableColumns<any>;
     columns: IApexTableColumns<any>[];
-    fixed?: 'left' | 'right';
+    fixed: 'left' | 'right';
     allowSelect: boolean;
     showLineNumber: boolean;
 }) => {

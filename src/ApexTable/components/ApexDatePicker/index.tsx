@@ -118,7 +118,10 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
                 axis: {
                     rowIndex: rowIndex,
                     columnName: name
-                }
+                },
+                allowFixed,
+                columns,
+                showLineNumber
             })
         }
     }, [focusState]);
