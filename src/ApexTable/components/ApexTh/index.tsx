@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IProps } from "./index.types";
 import { handleSetFixedPosition } from "apex-table/ApexTable/utils/tools";
-
+import { flushSync } from 'react-dom';
 
 function ApexTh<T>(props: IProps<T>) {
     const {
@@ -109,8 +109,10 @@ function ApexTh<T>(props: IProps<T>) {
     }, [dragging]);
 
     useEffect(() => {
-        initClassNames();
-        initStyles();
+        flushSync(() => {
+            initClassNames();
+            initStyles();
+        });
     }, [column]);
 
     return <th

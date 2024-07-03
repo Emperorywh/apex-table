@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import { IProps } from "./index.types";
 import { handleSetFixedPosition } from "apex-table/ApexTable/utils/tools";
-
+import { flushSync } from 'react-dom';
 function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
     const {
         row,
@@ -46,8 +46,10 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
     }
 
     useEffect(() => {
-        initClassNames();
-        initStyles();
+        flushSync(() => {
+            initClassNames();
+            initStyles();
+        })
     }, [columns]);
 
 
