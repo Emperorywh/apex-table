@@ -1,7 +1,8 @@
 import React from "react";
 import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
-import { ApexDatePicker, ApexInput, ApexInputNumber, ApexModal, ApexSelect } from "..";
+import { ApexDatePicker, ApexInput, ApexInputNumber, ApexModal, ApexSelect, ApexShowCell } from "..";
+import ApexTd from "../ApexTd";
 
 
 function ApexTbody<T>(props: IProps<T>) {
@@ -50,9 +51,22 @@ function ApexTbody<T>(props: IProps<T>) {
                     }
                     {
                         columns.map((columnItem) => {
-                            const { columnType = 'input' } = columnItem;
+                            const { columnType = 'input', readOnly = false } = columnItem;
                             if (columnItem?.visible === false) return;
                             const refKey: string = `${dataSourceItem['rowIndex']}-${columnItem.name as string}`;
+                            if (readOnly) {
+                                return <ApexTd
+                                    key={refKey}
+                                    column={columnItem}
+                                    row={dataSourceItem}
+                                    columns={columns}
+                                    rowHeight={rowHeight}
+                                    allowFixed={allowFixed}
+                                    showLineNumber={showLineNumber}
+                                    allowSelect={allowSelect}>
+                                    <ApexShowCell column={columnItem} row={dataSourceItem} onClick={() => { }} />
+                                </ApexTd>
+                            }
                             switch (columnType) {
                                 case 'input':
                                     return <ApexInput

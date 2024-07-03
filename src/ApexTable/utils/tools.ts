@@ -43,6 +43,12 @@ export const onSetScrollBarPosition = (params: {
         if (tdBottom > tableBottom) {
             scrollAxis.y = tdBottom - tableBottom + 15;
         }
+        const findIndex = columns.findIndex(item => item.name === axis.columnName);
+        if (findIndex === 0) {
+            scrollAxis.x = tableLeft;
+        } else if (findIndex === columns.length -1) {
+            scrollAxis.x = tableRight;
+        }
         // 检查左侧是否在可视区域 
         let fixedLeft = 0;
         if (showLineNumber) {
