@@ -43,12 +43,6 @@ export const onSetScrollBarPosition = (params: {
         if (tdBottom > tableBottom) {
             scrollAxis.y = tdBottom - tableBottom + 15;
         }
-        const findIndex = columns.findIndex(item => item.name === axis.columnName);
-        if (findIndex === 0) {
-            scrollAxis.x = tableLeft;
-        } else if (findIndex === columns.length -1) {
-            scrollAxis.x = tableRight;
-        }
         // 检查左侧是否在可视区域 
         let fixedLeft = 0;
         if (showLineNumber) {
@@ -70,7 +64,7 @@ export const onSetScrollBarPosition = (params: {
                     allowSelect,
                     showLineNumber
                 })
-                const td = document.getElementById(`td-${0}-${item.name}`)?.getBoundingClientRect();
+                const td = document.getElementById(`td-${axis.rowIndex}-${item.name}`)?.getBoundingClientRect();
                 if (td && itemFixedLeft.left && (itemFixedLeft.left > (td.left - tableLeft) || itemFixedLeft.left === (td.left - tableLeft))) {
                     fixedLeft += td.width;
                 }
@@ -94,7 +88,7 @@ export const onSetScrollBarPosition = (params: {
                     allowSelect,
                     showLineNumber
                 })
-                const td = document.getElementById(`td-${0}-${item.name}`)?.getBoundingClientRect();
+                const td = document.getElementById(`td-${axis.rowIndex}-${item.name}`)?.getBoundingClientRect();
                 if (td && itemFixedRight?.right !== undefined && (itemFixedRight.right < (tableRight - 15 - td.right) || itemFixedRight.right === (tableRight - 15 - td.right))) {
                     fixedRight += td.width;
                 }
@@ -102,6 +96,12 @@ export const onSetScrollBarPosition = (params: {
         }
         if (tableRight - tdRight - fixedRight < tdRect.width) {
             scrollAxis.x = tdRight - tableRight + 15 + fixedRight;
+        }
+        const findIndex = columns.findIndex(item => item.name === axis.columnName);
+        if (findIndex === 0) {
+            tableDivRef.current.scrollLeft = 0;
+        } else if (findIndex === columns.length -1) {
+            tableDivRef.current.scrollLeft = tableRight;
         }
         if (scrollAxis.x !== 0 || scrollAxis.y !== 0) {
             tableDivRef.current.scrollBy(scrollAxis.x, scrollAxis.y);
