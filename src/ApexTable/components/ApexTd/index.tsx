@@ -46,9 +46,11 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
     }
 
     useEffect(() => {
-        flushSync(() => {
-            initClassNames();
-            initStyles();
+        Promise.resolve().then(() => {
+            flushSync(() => {
+                initClassNames();
+                initStyles();
+            })
         })
     }, [columns]);
 

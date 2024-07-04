@@ -100,8 +100,10 @@ export const onSetScrollBarPosition = (params: {
         const findIndex = columns.findIndex(item => item.name === axis.columnName);
         if (findIndex === 0) {
             tableDivRef.current.scrollLeft = 0;
+            scrollAxis.x = 0;
         } else if (findIndex === columns.length -1) {
             tableDivRef.current.scrollLeft = tableRight;
+            scrollAxis.x = 0;
         }
         if (scrollAxis.x !== 0 || scrollAxis.y !== 0) {
             tableDivRef.current.scrollBy(scrollAxis.x, scrollAxis.y);
