@@ -23,6 +23,17 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
         let className = 'apex-table-tbody-td';
         if (allowFixed && fixed) {
             className = className.concat(` apex-table-tbody-td-fixed apex-table-tbody-td-fixed-${fixed}`);
+            const filterColumns = columns.filter(item => item?.fixed === 'left');
+            if (filterColumns.length > 0) {
+                const lastLeft = filterColumns.pop();
+                if (lastLeft?.name === column.name) {
+                    className = className.concat(` apex-table-fixed-${fixed}-last`);
+                }
+            }
+            const firstColumn = columns.find(item => item?.fixed === 'right');
+            if (firstColumn && firstColumn.name === column.name) {
+                className = className.concat(` apex-table-fixed-${fixed}-last`);
+            }
         }
         setClassNames(className);
     }

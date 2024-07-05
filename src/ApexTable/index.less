@@ -143,7 +143,6 @@
                         box-sizing: border-box;
                         border: 1px solid @borderColor;
                         text-align: left;
-                        overflow: hidden;
 
                         .ant-input,
                         .ant-input-number,
@@ -261,6 +260,33 @@
                 }
             }
 
+            .apex-table-fixed-left-last {
+                &::before {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: -2px;
+                    width: 30px;
+                    transform: translate(100%);
+                    content: "";
+                    pointer-events: none;
+                    box-shadow: inset 10px 0 8px -8px #00000026;
+                }
+            }
+
+            .apex-table-fixed-right-last {
+                &::before {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    bottom: -2px;
+                    width: 20px;
+                    transform: translate(-100%);
+                    content: '';
+                    pointer-events: none;
+                    box-shadow: inset -10px 0 8px -8px #00000026;
+                }
+            }
         }
     }
 
