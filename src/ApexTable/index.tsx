@@ -191,7 +191,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             const data: any[] = [...dataSource];
             data.forEach((item, index) => {
                 item['apexTableChecked'] = false;
-                item['rowIndex'] = index;
             });
             initPagenation(data);
             setTableDataSource(data);
@@ -219,6 +218,9 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = currentPage * pageSize;
             const newArray: any[] = tableDataSource.slice(startIndex, endIndex);
+            newArray.forEach((item, index) => {
+                item['rowIndex'] = index;
+            })
             setPageDataSource([...newArray]);
         }
         if (props.request && typeof props.request === 'function') {
@@ -522,6 +524,21 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         }
     }
 
+    /**
+     * 删除一行数据
+     * @param uniqueId 
+     * @param row 
+     */
+    const deleteRow = (uniqueId: string) => {
+        const cloneTable = structuredClone(tableDataSource);
+        let findIndex = cloneTable.findIndex((item) => item[rowKey] === uniqueId);
+        if (findIndex > -1) {
+            const cloneTable = structuredClone(tableDataSource);
+            cloneTable.splice(findIndex, 1);
+            setTableDataSource(cloneTable);
+        }
+    }
+
     useImperativeHandle(ref, () => {
         return {
             getColumns,
@@ -530,7 +547,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             getDataSource,
             pushRows,
             insertRows,
-            updateRow
+            updateRow,
+            deleteRow
         }
     }, [apexColumns, tableDataSource]);
 
@@ -670,6 +688,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                                 return inputRef;
                             }}
                             onEnter={() => onArrowRight(0, '')}
+                            insertRows={insertRows}
+                            deleteRow={deleteRow}
                         />
                     </table>
                 </div>

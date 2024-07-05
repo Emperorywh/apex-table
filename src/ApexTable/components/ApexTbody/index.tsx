@@ -3,8 +3,8 @@ import { IProps } from './index.types';
 import { Checkbox, Empty } from "antd";
 import { ApexDatePicker, ApexInput, ApexInputNumber, ApexModal, ApexSelect, ApexShowCell } from "..";
 import ApexTd from "../ApexTd";
-
-
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { nanoid } from "nanoid";
 function ApexTbody<T>(props: IProps<T>) {
     const {
         allowSelect,
@@ -16,13 +16,16 @@ function ApexTbody<T>(props: IProps<T>) {
         startIndex,
         endIndex,
         rowHeight,
+        rowKey,
         totalHeight,
         onRowSelected,
         onCellClick,
         onChange,
         onFocus,
         onSetRef,
-        onEnter
+        onEnter,
+        insertRows,
+        deleteRow
     } = props;
 
     const topHeight = startIndex * rowHeight;
@@ -42,6 +45,10 @@ function ApexTbody<T>(props: IProps<T>) {
                     {
                         showLineNumber && <td style={{ height: rowHeight }} className='apex-table-tbody-td apex-table-tbody-td-line-number'>
                             <div className={`number`} >{dataSourceItem['rowIndex'] + 1}</div>
+                            <div className={`insert-delete-box`}>
+                                <PlusOutlined className="icon" style={{ marginRight: 5 }} onClick={() => insertRows(dataSourceItem[rowKey], [{ [rowKey]: nanoid() }])} />
+                                <MinusOutlined className="icon" onClick={() => deleteRow(dataSourceItem[rowKey])} />
+                            </div>
                         </td>
                     }
                     {

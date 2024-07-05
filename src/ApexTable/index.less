@@ -128,6 +128,37 @@
                         left: 0;
                         z-index: 99;
                         background: rgb(250, 250, 250);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+
+                        .number {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .insert-delete-box {
+                            display: none;
+
+                            .icon {
+                                font-size: 16px;
+                                cursor: pointer;
+
+                                &:hover {
+                                    color: @primaryColor;
+                                }
+                            }
+                        }
+
+                        &:hover .number {
+                            display: none;
+                        }
+
+                        &:hover .insert-delete-box {
+                            display: block;
+                        }
                     }
 
                     .apex-table-tbody-td-checkbox {
@@ -236,18 +267,6 @@
 
                     .apex-table-tbody-td:focus-within {
                         background-color: #FFF;
-                    }
-
-                    .apex-table-tbody-td-line-number {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-
-                        .number {
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        }
                     }
                 }
 

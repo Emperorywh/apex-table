@@ -85,6 +85,11 @@ export interface ApexTableProps<T, V> {
     rowHeight: number;
 
     /**
+     * 是否开起行图标删除增加功能
+     */
+    allowRowAddDel?: boolean;
+
+    /**
      * 获取 dataSource 的方法
      * @param params 
      * @returns 
@@ -145,4 +150,5 @@ export interface ApexTableRef {
     pushRows: (dataSource: any[]) => any[];
     insertRows: (rowKey: string, dataSource: any[]) => void;
     updateRow: (rowKey: string, dataSource: any) => void
+    deleteRow: (rowKey: string) => void
 }

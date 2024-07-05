@@ -16,4 +16,6 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     onFocus: (axis: IFocusAxis) => void;
     onSetRef: (ref: any, refKey: string) => any;
     onEnter?: () => void;
+    insertRows: (rowKey: string, dataSource: any[]) => void;
+    deleteRow: (rowKey: string) => void
 }
