@@ -18,6 +18,7 @@ function ApexTbody<T>(props: IProps<T>) {
         rowHeight,
         rowKey,
         totalHeight,
+        allowRowAddDel = true,
         onRowSelected,
         onCellClick,
         onChange,
@@ -45,10 +46,12 @@ function ApexTbody<T>(props: IProps<T>) {
                     {
                         showLineNumber && <td style={{ height: rowHeight }} className='apex-table-tbody-td apex-table-tbody-td-line-number'>
                             <div className={`number`} >{dataSourceItem['rowIndex'] + 1}</div>
-                            <div className={`insert-delete-box`}>
-                                <PlusOutlined className="icon" style={{ marginRight: 5 }} onClick={() => insertRows(dataSourceItem[rowKey], [{ [rowKey]: nanoid() }])} />
-                                <MinusOutlined className="icon" onClick={() => deleteRow(dataSourceItem[rowKey])} />
-                            </div>
+                            {
+                                allowRowAddDel && <div className={`insert-delete-box`}>
+                                    <PlusOutlined className="icon" style={{ marginRight: 5 }} onClick={() => insertRows(dataSourceItem[rowKey], [{ [rowKey]: nanoid() }])} />
+                                    <MinusOutlined className="icon" onClick={() => deleteRow(dataSourceItem[rowKey])} />
+                                </div>
+                            }
                         </td>
                     }
                     {

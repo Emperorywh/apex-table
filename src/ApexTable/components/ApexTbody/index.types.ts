@@ -10,6 +10,7 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     renderCount: number;
     dataSource: any[];
     tableDivRef: React.RefObject<HTMLDivElement>;
+    allowRowAddDel?: boolean;
     onRowSelected: (event: CheckboxChangeEvent, row: any) => void;
     onCellClick: (axis: IFocusAxis) => void;
     onChange: (event: React.ChangeEvent<HTMLInputElement>, row: any, columnName: any) => void;
