@@ -145,7 +145,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
     >
         {
             focusState && <DatePicker
-                defaultValue={defaultValue && dayjs(defaultValue) || dayjs(row[name])}
+                defaultValue={defaultValue && dayjs(defaultValue) || row[name] ? dayjs(row[name]) : row[name]}
                 ref={inputRef}
                 onBlur={handleInputBlur}
                 onFocus={handleInputFocus}

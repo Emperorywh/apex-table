@@ -39,7 +39,7 @@ const ApexShowCellChildren: React.FC<IProps<any>> = (props) => {
             </>
         case 'datePicker':
             return <>
-                {dayjs(value).format("YYYY-MM-DD")}
+                {value ? dayjs(value).format("YYYY-MM-DD") : value}
             </>
         case 'rangePicker':
             return <>
