@@ -178,7 +178,7 @@ const App: React.FC = () => {
             allowSelect
             showHeaderCheckBox
             isSingle
-            height={900}
+            height={450}
         />
     </>
 };

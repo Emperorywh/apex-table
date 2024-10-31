@@ -145,6 +145,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
     >
         {
             focusState && <InputNumber
+                keyboard={false}
                 defaultValue={defaultValue || row[name]}
                 ref={inputRef}
                 onBlur={handleInputBlur}
