@@ -121,7 +121,7 @@ function ApexTh<T>(props: IProps<T>) {
     useEffect(() => {
         initClassNames();
         initStyles();
-    }, [column]);
+    }, [columns]);
 
     return <th
         className={classNames}
