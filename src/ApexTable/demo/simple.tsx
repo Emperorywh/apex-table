@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { ApexTable } from 'apex-table';
 import { ApexTableRef, IApexTableColumns } from '../index.types';
 import { Button, Space } from 'antd';
@@ -6,14 +6,14 @@ import mockDataJson from './mockData';
 
 
 const App: React.FC = () => {
-
+    
     const apexTableRef = useRef<ApexTableRef>(null);
-
+    
     /**
      * 数据源
      */
     const [dataSource, setDataSource] = useState<any[]>(mockDataJson);
-
+    
     /**
      * 表格列
      */
@@ -33,7 +33,9 @@ const App: React.FC = () => {
                             <Button onClick={() => {
                                 modalRef.current?.destroy();
                             }}>取消</Button>
-                            <Button type='primary' onClick={() => { modalRef.current?.destroy(); }}>确定</Button>
+                            <Button type='primary' onClick={() => {
+                                modalRef.current?.destroy();
+                            }}>确定</Button>
                         </Space>
                     </div>
                 }
@@ -42,6 +44,10 @@ const App: React.FC = () => {
         {
             title: '商品编号',
             name: 'pUserCode',
+            rules: {
+                isValid: ({ row, value }) => value.length > 0,
+                noticeMessage: '商品编号必填'
+            }
         },
         {
             title: '商品名称',
@@ -167,7 +173,7 @@ const App: React.FC = () => {
             name: 'remark',
         },
     ]);
-
+    
     return <>
         <ApexTable
             ref={apexTableRef}

@@ -527,7 +527,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     /**
      * 删除一行数据
      * @param uniqueId 
-     * @param row 
      */
     const deleteRow = (uniqueId: string) => {
         const cloneTable = structuredClone(tableDataSource);

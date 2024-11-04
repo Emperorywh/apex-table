@@ -11,7 +11,8 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
         columns,
         allowFixed,
         allowSelect,
-        showLineNumber
+        showLineNumber,
+        isValid
     } = props;
     const { fixed } = column;
     const [classNames, setClassNames] = useState('');
@@ -34,6 +35,9 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
             if (firstColumn && firstColumn.name === column.name) {
                 className = className.concat(` apex-table-fixed-${fixed}-last`);
             }
+        }
+        if (!isValid && isValid !== undefined) {
+            className = className.concat(' apex-table-tbody-td-verify-failed')
         }
         setClassNames(className);
     }
@@ -63,7 +67,7 @@ function ApexTd(props: IProps<any>, ref: React.Ref<HTMLTableDataCellElement>) {
                 initStyles();
             })
         })
-    }, [columns]);
+    }, [columns, isValid]);
 
 
     return <td

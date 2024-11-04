@@ -5,4 +5,5 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     column: IApexTableColumns<T>;
     row: any;
     children: React.ReactNode;
+    isValid?: boolean
 }

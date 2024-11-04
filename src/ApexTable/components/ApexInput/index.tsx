@@ -1,10 +1,12 @@
-import { Input, InputRef } from "antd";
+import { Input, InputRef, message } from "antd";
 import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
 import { ApexShowCell } from "..";
 import { IApexInput, IProps } from './index.types';
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import ApexTd from "../ApexTd";
+import { IApexTableCellInfo } from 'apex-table/ApexTable/index.types'
+import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => {
     const {
@@ -23,13 +25,23 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
         onCellClick,
         onEnter
     } = props;
-
-    const { name } = column;
+    
+    const { name, rules } = column;
     const [focusState, setFocusState] = useState(false);
     const inputRef = useRef<InputRef>(null);
+    /**
+     * 是否通过单元格校验
+     */
+    const [isValid, setIsValid] = useCellValidation({
+        rules,
+        rowInfo: {
+            row,
+            value: row[name]
+        },
+        isFocus: focusState
+    });
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
-
-
+    
     /**
      * 点击单元格
      */
@@ -40,37 +52,39 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
             columnName: name
         });
     }
-
+    
     /**
      * 输入框聚焦
-     * @param event 
+     * @param event
      */
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
         event.preventDefault();
+        setIsValid(true);
         setFocusState(true);
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
             columnName: name
         });
     }
-
+    
     /**
      * 输入框失去焦点
-     * @param event 
+     * @param event
      */
     const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+        const value = event.target.value;
         setFocusState(false);
         onBlur && onBlur(event);
     }
-
+    
     /**
      * 输入框值的改变
-     * @param event 
+     * @param event
      */
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange && onChange(row, name, event.target.value)
     }
-
+    
     const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
         const key = event.key;
         const cursorPosition = event.target.selectionStart;
@@ -96,16 +110,16 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
                 break;
         }
     }
-
+    
     const focus = () => {
         setFocusState(true);
     }
-
+    
     const blur = () => {
         setFocusState(false);
     }
-
-
+    
+    
     useEffect(() => {
         if (focusState) {
             requestAnimationFrame(() => {
@@ -125,14 +139,14 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
             })
         }
     }, [focusState]);
-
+    
     useImperativeHandle(ref, () => {
         return {
             focus,
             blur
         }
-    }, [focusState])
-
+    })
+    
     return <ApexTd
         row={row}
         column={column}
@@ -142,6 +156,7 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
         allowSelect={allowSelect}
         allowFixed={allowFixed}
         showLineNumber={showLineNumber}
+        isValid={isValid}
     >
         {
             focusState && <Input
@@ -154,7 +169,7 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
             />
         }
         {
-            !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick} />
+            !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick}/>
         }
     </ApexTd>
 }))
