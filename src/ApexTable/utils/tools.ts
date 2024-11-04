@@ -3,7 +3,7 @@ import { IApexTableColumns, IFocusAxis } from "../index.types";
 /**
  * 检查聚焦单元格是否被遮挡
  * 并设置滚动条位置
- * @param params 
+ * @param params
  */
 export const onSetScrollBarPosition = (params: {
     tableDivRef: React.RefObject<HTMLDivElement>;
@@ -21,7 +21,7 @@ export const onSetScrollBarPosition = (params: {
     const tableBottom = tableRect?.bottom || 0;
     const tableLeft = tableRect?.left || 0;
     const tableRight = tableRect?.right || 0;
-
+    
     // 聚焦单元格相关信息
     const tdRect = tableTdRef.current?.getBoundingClientRect();
     const tdHeight = tdRect?.height || 0;
@@ -29,7 +29,7 @@ export const onSetScrollBarPosition = (params: {
     const tdBottom = tdRect?.bottom || 0;
     const tdLeft = tdRect?.left || 0;
     const tdRight = tdRect?.right || 0;
-
+    
     if (tableDivRef.current && tdRect) {
         const scrollAxis = {
             x: 0,
@@ -101,8 +101,8 @@ export const onSetScrollBarPosition = (params: {
         if (findIndex === 0) {
             tableDivRef.current.scrollLeft = 0;
             scrollAxis.x = 0;
-        } else if (findIndex === columns.length -1) {
-            tableDivRef.current.scrollLeft = tableRight;
+        } else if (findIndex === columns.length - 1) {
+            tableDivRef.current.scrollLeft = tableDivRef.current.scrollWidth;
             scrollAxis.x = 0;
         }
         if (scrollAxis.x !== 0 || scrollAxis.y !== 0) {
@@ -113,7 +113,7 @@ export const onSetScrollBarPosition = (params: {
 
 /**
  * 设置固定列位置
- * @param params 
+ * @param params
  */
 export const handleSetFixedPosition = (params: {
     styles: any;
