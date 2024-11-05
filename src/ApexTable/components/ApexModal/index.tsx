@@ -6,6 +6,7 @@ import { IApexInput } from "../ApexInput/index.types";
 import { EllipsisOutlined } from '@ant-design/icons';
 import ApexShowCell from "../ApexShowCell";
 import ApexTd from "../ApexTd";
+import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 /**
  * 弹窗组件
@@ -30,12 +31,22 @@ function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
         onCellClick,
         onEnter
     } = props;
-    const { name, modalOptions } = column;
+    const { name, modalOptions, rules } = column;
     const inputRef = useRef<InputRef>(null);
     const [focusState, setFocusState] = useState(false);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
     const modalRef = useRef<ApexModalRef>();
-
+    /**
+     * 是否通过单元格校验
+     */
+    const [isValid, setIsValid] = useCellValidation({
+        rules,
+        rowInfo: {
+            row,
+            value: row[name]
+        },
+        isFocus: focusState
+    });
     /**
      * 点击单元格
      */
@@ -78,6 +89,7 @@ function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
         event.preventDefault();
         setFocusState(true);
+        setIsValid(true);
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
             columnName: name
@@ -202,6 +214,7 @@ function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
             allowSelect={allowSelect}
             allowFixed={allowFixed}
             showLineNumber={showLineNumber}
+            isValid={isValid}
         >
             {
                 focusState && <Input
@@ -256,6 +269,7 @@ function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
             allowSelect={allowSelect}
             allowFixed={allowFixed}
             showLineNumber={showLineNumber}
+            isValid={isValid}
         >
             {
                 focusState && <Input

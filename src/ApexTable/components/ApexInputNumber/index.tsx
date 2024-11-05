@@ -5,6 +5,7 @@ import { ApexShowCell } from "..";
 import { IApexInputNumber, IProps } from './index.types';
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import ApexTd from "../ApexTd";
+import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInputNumber>) => {
     const {
@@ -23,13 +24,23 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
         onCellClick,
         onEnter
     } = props;
-
-    const { name } = column;
+    
+    const { name, rules } = column;
     const [focusState, setFocusState] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
-
-
+    /**
+     * 是否通过单元格校验
+     */
+    const [isValid, setIsValid] = useCellValidation({
+        rules,
+        rowInfo: {
+            row,
+            value: row[name]
+        },
+        isFocus: focusState
+    });
+    
     /**
      * 点击单元格
      */
@@ -40,37 +51,38 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
             columnName: name
         });
     }
-
+    
     /**
      * 输入框聚焦
-     * @param event 
+     * @param event
      */
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
         event.preventDefault();
         setFocusState(true);
+        setIsValid(true);
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
             columnName: name
         });
     }
-
+    
     /**
      * 输入框失去焦点
-     * @param event 
+     * @param event
      */
     const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
         setFocusState(false);
         onBlur && onBlur(event);
     }
-
+    
     /**
      * 输入框值的改变
-     * @param event 
+     * @param event
      */
     const handleInputChange = (value: any) => {
         onChange && onChange(row, name, value)
     }
-
+    
     const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
         const key = event.key;
         const cursorPosition = event.target.selectionStart;
@@ -96,16 +108,16 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
                 break;
         }
     }
-
+    
     const focus = () => {
         setFocusState(true);
     }
-
+    
     const blur = () => {
         setFocusState(false);
     }
-
-
+    
+    
     useEffect(() => {
         if (focusState) {
             requestAnimationFrame(() => {
@@ -125,14 +137,14 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
             })
         }
     }, [focusState]);
-
+    
     useImperativeHandle(ref, () => {
         return {
             focus,
             blur
         }
     }, [focusState])
-
+    
     return <ApexTd
         row={row}
         column={column}
@@ -142,6 +154,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
         allowSelect={allowSelect}
         allowFixed={allowFixed}
         showLineNumber={showLineNumber}
+        isValid={isValid}
     >
         {
             focusState && <InputNumber
@@ -155,7 +168,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
             />
         }
         {
-            !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick} />
+            !focusState && <ApexShowCell column={column} row={row} onClick={hanldeCellClick}/>
         }
     </ApexTd>
 }))

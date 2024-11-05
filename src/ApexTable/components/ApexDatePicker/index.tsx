@@ -6,6 +6,7 @@ import { IApexDatePicker, IProps } from './index.types';
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import dayjs from "dayjs";
 import ApexTd from "../ApexTd";
+import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePicker>) => {
     const {
@@ -25,11 +26,21 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
         onEnter
     } = props;
 
-    const { name } = column;
+    const { name, rules } = column;
     const [focusState, setFocusState] = useState(false);
     const inputRef = useRef<any>(null);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
-
+    /**
+     * 是否通过单元格校验
+     */
+    const [isValid, setIsValid] = useCellValidation({
+        rules,
+        rowInfo: {
+            row,
+            value: row[name]
+        },
+        isFocus: focusState
+    });
 
     /**
      * 点击单元格
@@ -49,6 +60,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
         event.preventDefault();
         setFocusState(true);
+        setIsValid(true);
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
             columnName: name
@@ -142,6 +154,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
         allowSelect={allowSelect}
         allowFixed={allowFixed}
         showLineNumber={showLineNumber}
+        isValid={isValid}
     >
         {
             focusState && <DatePicker

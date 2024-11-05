@@ -6,6 +6,7 @@ import { DefaultOptionType } from "antd/es/select";
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import ApexShowCell from "../ApexShowCell";
 import ApexTd from "../ApexTd";
+import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 /**
  * 下拉框组件
@@ -31,12 +32,22 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
         onEnter
     } = props;
 
-    const { name, options } = column;
+    const { name, options, rules } = column;
     const [focusState, setFocusState] = useState(false);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
     const selectRef = useRef<BaseSelectRef>(null);
     const [selectOption, setSelectOption] = useState<DefaultOptionType[]>([]);
-
+    /**
+     * 是否通过单元格校验
+     */
+    const [isValid, setIsValid] = useCellValidation({
+        rules,
+        rowInfo: {
+            row,
+            value: row[name]
+        },
+        isFocus: focusState
+    });
     /**
      * 初始化下拉框
      */
@@ -69,6 +80,7 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
         event.preventDefault();
         setFocusState(true);
+        setIsValid(true);
         props.onFocus && props.onFocus({
             rowIndex: rowIndex,
             columnName: name
@@ -167,6 +179,7 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
         allowSelect={allowSelect}
         allowFixed={allowFixed}
         showLineNumber={showLineNumber}
+        isValid={isValid}
     >
         {
             focusState && <Select

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { message } from 'antd';
 import { IuseCellValidationType } from 'apex-table/hooks/useCellValidation/index.types'
 import { IApexTableCellInfo } from 'apex-table/ApexTable/index.types'
@@ -17,10 +17,14 @@ const useCellValidation = (params: IuseCellValidationType): [boolean, React.Disp
         if (rules) {
             const { isValid = null, noticeMessage = '' } = rules;
             if (typeof isValid === 'function') {
-                const result = isValid(params);
-                setIsCellValid(result);
-                if (!result && noticeMessage && !isFocus) {
-                    message.error(noticeMessage)
+                try {
+                    const result = isValid(params);
+                    setIsCellValid(result);
+                    if (!result && noticeMessage && !isFocus) {
+                        message.error(noticeMessage)
+                    }
+                } catch (error) {
+                    console.error(error)
                 }
             }
         }

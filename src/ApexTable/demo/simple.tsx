@@ -22,6 +22,10 @@ const App: React.FC = () => {
             title: '仓库',
             name: 'kFullName',
             columnType: 'modal',
+            rules: {
+                isValid: ({ row, value }) => value.length > 0,
+                noticeMessage: '仓库必填'
+            },
             modalOptions: (row, value, modalRef) => {
                 return {
                     title: '仓库信息',
