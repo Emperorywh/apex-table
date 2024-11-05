@@ -25,6 +25,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         rowHeight = 45,
         isSingle = false,
         showLineNumber = true,
+        showColumnConfig = false,
         rowKey,
         onColumnWidthChange
     } = props;
@@ -664,6 +665,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             isSingle={isSingle}
                             headerChecked={headerChecked}
                             onColWidthChange={handleColWidthChange}
+                            showColumnConfig={showColumnConfig}
                         />
                         <ApexTbody
                             rowKey={rowKey}

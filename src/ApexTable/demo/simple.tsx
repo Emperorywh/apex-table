@@ -189,6 +189,7 @@ const App: React.FC = () => {
             showHeaderCheckBox
             isSingle
             height={450}
+            showColumnConfig
         />
     </>
 };

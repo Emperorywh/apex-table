@@ -75,6 +75,11 @@ export interface ApexTableProps<T, V> {
     showLineNumber?: boolean;
     
     /**
+     * 是否开起 列配置
+     */
+    showColumnConfig?: boolean;
+    
+    /**
      * 唯一行号字段名
      */
     rowKey: string;
