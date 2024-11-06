@@ -12,6 +12,7 @@ import DraggableColumn from 'apex-table/ApexTable/components/ApexColumnConfig/co
 import { DragEndEvent } from '@dnd-kit/core/dist/types'
 import { arrayMove, sortableKeyboardCoordinates, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Button, Space } from 'antd'
+import { IApexTableColumns } from 'apex-table/ApexTable/index.types'
 
 /**
  * 列配置
@@ -28,14 +29,14 @@ const ApexColumnConfig = (props: IProps<any>) => {
         })
     );
     
-    const handleDragEnd = (event:DragEndEvent) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
-    
+        
         if (active && over && active.id !== over.id) {
             setItems((items) => {
                 const oldIndex = items.indexOf(active.id as any);
                 const newIndex = items.indexOf(over.id as any);
-            
+                
                 return arrayMove(items, oldIndex, newIndex);
             });
         }
@@ -56,6 +57,17 @@ const ApexColumnConfig = (props: IProps<any>) => {
     }
     
     useEffect(() => {
+        const sortColumnsArray:  IApexTableColumns<any>[] = [];
+        items.forEach(sortName => {
+            const findColumn = sortColumns.find(sortItem => sortItem.name === sortName);
+            if (findColumn) {
+                sortColumnsArray.push(findColumn);
+            }
+        })
+        setSortColumns(sortColumnsArray)
+    }, [items])
+    
+    useEffect(() => {
         initColumns();
         setSortColumns(columns);
     }, [columns])
@@ -70,11 +82,14 @@ const ApexColumnConfig = (props: IProps<any>) => {
             <SortableContext
                 items={items}
                 strategy={verticalListSortingStrategy}
+            
             >
-                {items.map(item => <DraggableColumn key={item} id={item} columns={sortColumns}/>)}
+                <div style={{ height: 500, overflow: 'auto', overflowX: 'hidden' }}>
+                    {items.map(item => <DraggableColumn key={item} id={item} columns={sortColumns}/>)}
+                </div>
             </SortableContext>
         </DndContext>
-        <Space>
+        <Space style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
             <Button onClick={onCancel}>取消</Button>
             <Button type='primary' onClick={handleOk}>确定</Button>
         </Space>

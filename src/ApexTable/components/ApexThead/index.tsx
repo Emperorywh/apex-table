@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IProps } from './index.types';
-import { Checkbox, Modal } from "antd";
+import { Button, Checkbox, Modal, Popconfirm } from "antd";
 import ApexTh from "../ApexTh";
 import { SettingOutlined } from '@ant-design/icons'
 import ApexColumnConfig from 'apex-table/ApexTable/components/ApexColumnConfig'
@@ -8,6 +8,7 @@ import ApexColumnConfig from 'apex-table/ApexTable/components/ApexColumnConfig'
 function ApexThead<T>(props: IProps<T>) {
     const {
         columns,
+        originColumns,
         showLineNumber = false,
         showColumnConfig = false,
         allowSelect = false,
@@ -19,7 +20,8 @@ function ApexThead<T>(props: IProps<T>) {
         indeterminate = false,
         rowHeight,
         onHeaderCheckBoxChange,
-        onColWidthChange
+        onColWidthChange,
+        onChangeColumns
     } = props;
     
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,17 +76,45 @@ function ApexThead<T>(props: IProps<T>) {
         }
     </tr>
     <Modal
-        title="列配置"
+        title={
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0 10px'
+            }}>
+                <div style={{
+                    fontSize: 14,
+                    color:'rgba(42, 46, 54, 0.88)',
+                }}>列配置</div>
+                <Popconfirm
+                    title="提示"
+                    description="确定要恢复到初始设置吗？"
+                    onConfirm={() => {
+                        onChangeColumns(originColumns);
+                        setIsModalOpen(false);
+                    }}
+                    okText="确定"
+                    cancelText="取消"
+                    placement="bottom"
+                >
+                    <Button type="link" style={{
+                        fontWeight: '700'
+                    }}>重置</Button>
+                </Popconfirm>
+            </div>
+        }
         centered
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
+        destroyOnClose
     >
         <ApexColumnConfig
             columns={columns}
             onCancel={() => setIsModalOpen(false)}
             onOk={(columns) => {
-                console.log("columns", JSON.parse(JSON.stringify(columns)))
+                onChangeColumns(columns);
                 setIsModalOpen(false);
             }}
         />

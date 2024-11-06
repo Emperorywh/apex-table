@@ -8,6 +8,8 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     isSingle: boolean;
     headerChecked: boolean;
     indeterminate: boolean;
+    originColumns: IApexTableColumns<T>[];
     onHeaderCheckBoxChange: (event: CheckboxChangeEvent) => void;
     onColWidthChange: (column: IApexTableColumns<T>, width: number) => void;
+    onChangeColumns: (columns: IApexTableColumns<T>[]) => void;
 }

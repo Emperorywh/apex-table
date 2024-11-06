@@ -555,7 +555,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     /***** End  ========================= End *****/
 
     useEffect(() => {
-        setApexColumns(columns)
+        const cloneColumns = [...columns];
+        cloneColumns.forEach(item => {
+            if (!item.hasOwnProperty('visible')) {
+                item.visible = true;
+            }
+        })
+        setApexColumns(cloneColumns)
     }, [columns]);
 
     useEffect(() => {
@@ -662,10 +668,12 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             indeterminate={indeterminate}
                             onHeaderCheckBoxChange={onHeaderCheckBoxChange}
                             columns={apexColumns}
+                            originColumns={columns}
                             isSingle={isSingle}
                             headerChecked={headerChecked}
                             onColWidthChange={handleColWidthChange}
                             showColumnConfig={showColumnConfig}
+                            onChangeColumns={columns => setApexColumns(columns)}
                         />
                         <ApexTbody
                             rowKey={rowKey}
