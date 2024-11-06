@@ -15,6 +15,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         allowSelect = false,
         allowResize = false,
         allowFixed = false,
+        allowRowDrag = false,
         columns = [],
         dataSource = [],
         showHeaderCheckBox = false,
@@ -680,6 +681,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             startIndex={startIndex}
                             endIndex={endIndex}
                             rowHeight={rowHeight}
+                            tableDataSource={tableDataSource}
                             totalHeight={(pageDataSource.length - 1) * rowHeight}
                             renderCount={renderCount}
                             tableDivRef={tableDivRef}
@@ -688,6 +690,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             showLineNumber={showLineNumber}
                             allowSelect={allowSelect}
                             allowFixed={allowFixed}
+                            allowRowDrag={allowRowDrag}
                             onRowSelected={handleRowSelected}
                             onCellClick={handleInputFocus}
                             onChange={handleChangeCellValue}
@@ -699,6 +702,11 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             onEnter={() => onArrowRight(0, '')}
                             insertRows={insertRows}
                             deleteRow={deleteRow}
+                            onChangeTableData={newTableDataSource => {
+                                flushSync(() => {
+                                    setTableDataSource(newTableDataSource);
+                                })
+                            }}
                         />
                     </table>
                 </div>

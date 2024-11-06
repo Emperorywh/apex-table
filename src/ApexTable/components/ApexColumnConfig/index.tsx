@@ -82,7 +82,6 @@ const ApexColumnConfig = (props: IProps<any>) => {
             <SortableContext
                 items={items}
                 strategy={verticalListSortingStrategy}
-            
             >
                 <div style={{ height: 500, overflow: 'auto', overflowX: 'hidden' }}>
                     {items.map(item => <DraggableColumn

@@ -1,9 +1,9 @@
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 import { IFocusAxis } from "apex-table/ApexTable/index.types";
 import { ITdThCommonProps } from "../index.types";
-import React from 'react'
 
 export interface IProps<T> extends ITdThCommonProps<T> {
+    dataSourceItem: any;
     allowRowDrag?: boolean;
     startIndex: number;
     endIndex: number;
@@ -11,7 +11,6 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     totalHeight: number;
     renderCount: number;
     dataSource: any[];
-    tableDataSource: any[];
     tableDivRef: React.RefObject<HTMLDivElement>;
     allowRowAddDel?: boolean;
     onRowSelected: (event: CheckboxChangeEvent, row: any) => void;
@@ -22,5 +21,4 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     onEnter?: () => void;
     insertRows: (rowKey: string, dataSource: any[]) => void;
     deleteRow: (rowKey: string) => void
-    onChangeTableData: (dataSource: any[]) => void;
 }

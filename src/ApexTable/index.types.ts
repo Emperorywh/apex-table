@@ -70,6 +70,11 @@ export interface ApexTableProps<T, V> {
     allowResize?: boolean;
     
     /**
+     * 是否开起行拖动
+     */
+    allowRowDrag?: boolean;
+    
+    /**
      * 是否展示行号
      */
     showLineNumber?: boolean;

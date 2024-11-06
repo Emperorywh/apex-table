@@ -190,6 +190,7 @@ const App: React.FC = () => {
             isSingle
             height={450}
             showColumnConfig
+            allowRowDrag
         />
     </>
 };
