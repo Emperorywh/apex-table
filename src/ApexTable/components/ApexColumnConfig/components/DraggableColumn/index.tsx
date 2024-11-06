@@ -3,7 +3,7 @@ import { IProps } from 'apex-table/ApexTable/components/ApexColumnConfig/compone
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities';
 import { IApexTableColumns } from 'apex-table/ApexTable/index.types'
-import { DragOutlined } from '@ant-design/icons'
+import { DragOutlined, HolderOutlined } from '@ant-design/icons'
 import { Checkbox } from 'antd'
 import "./index.less";
 
@@ -13,7 +13,7 @@ import "./index.less";
  */
 const DraggableColumn = (props: IProps<any>) => {
     
-    const { id, columns } = props;
+    const { id, columns, onChangeColumn } = props;
     
     const [column, setColumn] = useState<IApexTableColumns<any> | null>(null);
     
@@ -44,13 +44,16 @@ const DraggableColumn = (props: IProps<any>) => {
     
     
     return (column &&
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <div ref={setNodeRef} style={style} {...attributes} >
             <div className="drag-row">
-                <DragOutlined style={{ fontSize: 18 }}/>
+                <HolderOutlined style={{ fontSize: 12, padding: 5 }} {...listeners}/>
                 <div className="drag-content">
-                    <Checkbox checked={column.visible} onChange={event => {
-                        console.log(event.target.checked)
-                    }}>{column.title}</Checkbox>
+                    <Checkbox
+                        checked={column.visible}
+                        onChange={event => {
+                            column.visible = event.target.checked;
+                            onChangeColumn(column);
+                        }}>{column.title}</Checkbox>
                 </div>
             </div>
         </div>

@@ -85,7 +85,19 @@ const ApexColumnConfig = (props: IProps<any>) => {
             
             >
                 <div style={{ height: 500, overflow: 'auto', overflowX: 'hidden' }}>
-                    {items.map(item => <DraggableColumn key={item} id={item} columns={sortColumns}/>)}
+                    {items.map(item => <DraggableColumn
+                        key={item}
+                        id={item}
+                        columns={sortColumns}
+                        onChangeColumn={column => {
+                            const tempSort = [...sortColumns];
+                            const findColumn = tempSort.find(item => item.name === column.name);
+                            if (findColumn) {
+                                findColumn.visible = column.visible;
+                                setSortColumns(tempSort);
+                            }
+                        }}
+                    />)}
                 </div>
             </SortableContext>
         </DndContext>
