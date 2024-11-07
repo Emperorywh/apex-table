@@ -1,9 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IProps } from './index.types';
 import { Button, Checkbox, Modal, Popconfirm } from "antd";
 import ApexTh from "../ApexTh";
 import { SettingOutlined } from '@ant-design/icons'
 import ApexColumnConfig from 'apex-table/ApexTable/components/ApexColumnConfig'
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { DragEndEvent } from '@dnd-kit/core/dist/types'
+import { IApexTableColumns } from 'apex-table/ApexTable/index.types'
 
 function ApexThead<T>(props: IProps<T>) {
     const {
@@ -25,6 +41,46 @@ function ApexThead<T>(props: IProps<T>) {
     } = props;
     
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [items, setItems] = useState<string[]>([]);
+    const [dragKey, setDragKey] = useState<any>('');
+    
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+    
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        setDragKey('');
+        if (active && over && active.id !== over.id) {
+            const oldIndex = items.indexOf(active.id as any);
+            const newIndex = items.indexOf(over.id as any);
+            const newDragKeys = arrayMove(items, oldIndex, newIndex);
+            setItems(newDragKeys);
+            const newDataSource: any[] = [];
+            newDragKeys.forEach(item => {
+                const findData = columns.find(dataItem => dataItem.name === item);
+                if (findData) {
+                    newDataSource.push(findData);
+                }
+            });
+            onChangeColumns(newDataSource);
+        }
+    }
+    
+    const handleDragStart = (event: DragEndEvent) => {
+        const { active } = event;
+        setDragKey(active.id);
+    }
+    
+    /**
+     * 初始化列
+     */
+    const initColumns = () => {
+        setItems(columns.map(item => item.name));
+    }
     
     /**
      *  点击列配置
@@ -32,6 +88,21 @@ function ApexThead<T>(props: IProps<T>) {
     const handleColumnConfig = () => {
         setIsModalOpen(true)
     }
+    
+    useEffect(() => {
+        const sortColumnsArray: IApexTableColumns<any>[] = [];
+        items.forEach(sortName => {
+            const findColumn = columns.find(sortItem => sortItem.name === sortName);
+            if (findColumn) {
+                sortColumnsArray.push(findColumn);
+            }
+        })
+    }, [items])
+    
+    useEffect(() => {
+        initColumns();
+    }, [columns])
+    
     
     return <thead className='apex-table-thead'>
     <tr style={{ height: rowHeight }}>
@@ -55,25 +126,38 @@ function ApexThead<T>(props: IProps<T>) {
                 }
             </th>
         }
-        {
-            columns.map((item, index) => {
-                if (item?.visible === false) {
-                    return null
-                } else {
-                    return <ApexTh
-                        allowSelect={allowSelect}
-                        allowFixed={allowFixed}
-                        allowResize={allowResize}
-                        key={`${String(item.name)}-${index}`}
-                        column={item}
-                        columns={columns}
-                        rowHeight={rowHeight}
-                        showLineNumber={showLineNumber}
-                        onColWidthChange={onColWidthChange}
-                    />
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            onDragStart={handleDragStart}
+        >
+            <SortableContext
+                items={items}
+                strategy={verticalListSortingStrategy}
+            >
+                {
+                    columns.map((item, index) => {
+                        if (item?.visible === false) {
+                            return null
+                        } else {
+                            return <ApexTh
+                                dragKey={dragKey}
+                                allowSelect={allowSelect}
+                                allowFixed={allowFixed}
+                                allowResize={allowResize}
+                                key={`${String(item.name)}-${index}`}
+                                column={item}
+                                columns={columns}
+                                rowHeight={rowHeight}
+                                showLineNumber={showLineNumber}
+                                onColWidthChange={onColWidthChange}
+                            />
+                        }
+                    })
                 }
-            })
-        }
+            </SortableContext>
+        </DndContext>
     </tr>
     <Modal
         title={
@@ -85,8 +169,9 @@ function ApexThead<T>(props: IProps<T>) {
             }}>
                 <div style={{
                     fontSize: 14,
-                    color:'rgba(42, 46, 54, 0.88)',
-                }}>列配置</div>
+                    color: 'rgba(42, 46, 54, 0.88)',
+                }}>列配置
+                </div>
                 <Popconfirm
                     title="提示"
                     description="确定要恢复到初始设置吗？"

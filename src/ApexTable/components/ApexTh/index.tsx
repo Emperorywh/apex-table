@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IProps } from "./index.types";
 import { handleSetFixedPosition } from "apex-table/ApexTable/utils/tools";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 function ApexTh<T>(props: IProps<T>) {
     const {
@@ -8,6 +10,7 @@ function ApexTh<T>(props: IProps<T>) {
         allowFixed = false,
         column,
         columns,
+        dragKey,
         rowHeight,
         allowSelect = false,
         showLineNumber = false,
@@ -21,20 +24,33 @@ function ApexTh<T>(props: IProps<T>) {
     const [dragging, setDragging] = useState(false);
     const [classNames, setClassNames] = useState('');
     const [styles, setStyles] = useState<any>();
-
+    
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: column.name });
+    
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+    
     /**
      * 鼠标按下时触发
-     * @param event 
+     * @param event
      */
     const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.preventDefault();
         startPosition.current = event.clientX;
         setDragging(true);
     }
-
+    
     /**
      * 鼠标放开时触发
-     * @param event 
+     * @param event
      */
     const handleMouseUp = (event: MouseEvent) => {
         if (dragging) {
@@ -44,10 +60,10 @@ function ApexTh<T>(props: IProps<T>) {
             setDragging(false);
         }
     }
-
+    
     /**
      * 拖动时触发
-     * @param event 
+     * @param event
      */
     const handleMouseMove = (event: MouseEvent) => {
         if (dragging) {
@@ -60,7 +76,7 @@ function ApexTh<T>(props: IProps<T>) {
             }
         }
     }
-
+    
     /**
      * 初始化类名
      */
@@ -82,7 +98,7 @@ function ApexTh<T>(props: IProps<T>) {
         }
         setClassNames(className);
     }
-
+    
     /**
      * 初始化样式
      */
@@ -100,7 +116,7 @@ function ApexTh<T>(props: IProps<T>) {
         });
         setStyles(newStyle);
     }
-
+    
     useEffect(() => {
         if (dragging) {
             window.addEventListener('mousemove', handleMouseMove);
@@ -117,25 +133,33 @@ function ApexTh<T>(props: IProps<T>) {
             window.removeEventListener('mouseup', handleMouseUp);
         };
     }, [dragging]);
-
+    
     useEffect(() => {
         initClassNames();
         initStyles();
     }, [columns]);
-
+    
     return <th
         className={classNames}
         style={styles}
         ref={thRef}
     >
         <div className={`apex-table-thead-th-content`} ref={resizeFather}>
+            <div
+                style={{
+                    ...style,
+                    display: 'none'
+                }}
+                ref={setNodeRef}
+                {...attributes}
+                {...listeners}>{column['title']}</div>
             <span className={`apex-table-thead-th-text overflow-hidden-one`}>{column['title']}</span>
             {
                 allowResize && <div
                     ref={resizeRef}
                     className={`apex-table-thead-th-resize`}
                     onMouseDown={handleMouseDown}
-                ></div>
+                />
             }
         </div>
     </th>

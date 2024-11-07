@@ -53,7 +53,6 @@ const ApexTr = (props: IProps<any>) => {
         ...(activeDragKey === dataSourceItem[rowKey] ? {
             zIndex: 99
         } : {})
-        
     };
     
     return <tr
