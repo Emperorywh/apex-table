@@ -60,13 +60,19 @@ const ApexTr = (props: IProps<any>) => {
             height: rowHeight
         }}
         {...attributes}
-        {...listeners}
     >
         {
             showLineNumber &&
             <td style={{ height: rowHeight }} className='apex-table-tbody-td apex-table-tbody-td-line-number'>
                 {
-                    allowRowDrag ? <HolderOutlined style={{ fontSize: 12, padding: 5, cursor: 'grab' }}/> :
+                    allowRowDrag ? <HolderOutlined
+                            style={{
+                                fontSize: 12,
+                                padding: 5,
+                                cursor: 'grab'
+                            }}
+                            {...listeners}
+                        /> :
                         <div className={`number`}>{dataSourceItem['rowIndex'] + 1}</div>
                 }
                 {
