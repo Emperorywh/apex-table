@@ -35,13 +35,20 @@ function ApexTbody<T>(props: IProps<T>) {
     const bottomHeight = totalHeight - (startIndex * rowHeight) - ((endIndex - startIndex) * rowHeight);
     
     const [dragKeys, setDragKeys] = useState<any[]>([]);
-    
+    const [activeDragKey, setActiveDragKey] = useState<any>('');
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
         })
     );
+    
+    const handleDragStart = (event: DragEndEvent) =>{
+        const { active } = event;
+        flushSync(() => {
+            setActiveDragKey(active.id);
+        })
+    }
     
     const handleDragEnd = (event: DragEndEvent) => {
         flushSync(() => {
@@ -60,6 +67,7 @@ function ApexTbody<T>(props: IProps<T>) {
                     }
                 });
                 onChangeTableData(newDataSource);
+                setActiveDragKey('');
             }
         })
     }
@@ -77,6 +85,7 @@ function ApexTbody<T>(props: IProps<T>) {
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
+        onDragStart={handleDragStart}
     >
         <SortableContext
             items={dragKeys}
@@ -89,6 +98,7 @@ function ApexTbody<T>(props: IProps<T>) {
                         key={`apex-table-tbody-tr-${dataSourceItem['rowIndex']}`}
                         {...props}
                         dataSourceItem={dataSourceItem}
+                        activeDragKey={activeDragKey}
                     />
                 })
             }

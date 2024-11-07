@@ -18,6 +18,7 @@ import { CSS } from '@dnd-kit/utilities';
 const ApexTr = (props: IProps<any>) => {
     
     const {
+        activeDragKey,
         allowSelect,
         allowFixed,
         allowRowDrag,
@@ -49,6 +50,10 @@ const ApexTr = (props: IProps<any>) => {
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
+        ...(activeDragKey === dataSourceItem[rowKey] ? {
+            zIndex: 99
+        } : {})
+        
     };
     
     return <tr
