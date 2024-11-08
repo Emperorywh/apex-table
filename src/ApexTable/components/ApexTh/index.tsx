@@ -8,9 +8,9 @@ function ApexTh<T>(props: IProps<T>) {
     const {
         allowResize = false,
         allowFixed = false,
+        allowColumnDrag = false,
         column,
         columns,
-        dragKey,
         rowHeight,
         allowSelect = false,
         showLineNumber = false,
@@ -139,29 +139,53 @@ function ApexTh<T>(props: IProps<T>) {
         initStyles();
     }, [columns]);
     
+    
     return <th
         className={classNames}
         style={styles}
         ref={thRef}
     >
-        <div className={`apex-table-thead-th-content`} ref={resizeFather}>
-            <div
-                style={{
-                    ...style,
-                    display: 'none'
-                }}
+        {
+            allowColumnDrag ? <div
                 ref={setNodeRef}
                 {...attributes}
-                {...listeners}>{column['title']}</div>
-            <span className={`apex-table-thead-th-text overflow-hidden-one`}>{column['title']}</span>
-            {
-                allowResize && <div
-                    ref={resizeRef}
-                    className={`apex-table-thead-th-resize`}
-                    onMouseDown={handleMouseDown}
-                />
-            }
-        </div>
+                {...listeners}
+                style={style}
+            >
+                <div className={`apex-table-thead-th-content`} ref={resizeFather}>
+                <span
+                    style={{ cursor: 'grab' }}
+                    className={`apex-table-thead-th-text overflow-hidden-one`}
+                >
+                    {column['title']}
+                </span>
+                    {
+                        allowResize && <div
+                            ref={resizeRef}
+                            className={`apex-table-thead-th-resize`}
+                            onMouseDown={handleMouseDown}
+                        />
+                    }
+                </div>
+            </div> : <>
+                <div className={`apex-table-thead-th-content`} ref={resizeFather}>
+                <span
+                    style={{ cursor: 'grab' }}
+                    className={`apex-table-thead-th-text overflow-hidden-one`}
+                >
+                    {column['title']}
+                </span>
+                    {
+                        allowResize && <div
+                            ref={resizeRef}
+                            className={`apex-table-thead-th-resize`}
+                            onMouseDown={handleMouseDown}
+                        />
+                    }
+                </div>
+            </>
+        }
+    
     </th>
 }
 

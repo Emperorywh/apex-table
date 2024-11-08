@@ -28,7 +28,9 @@ function ApexTbody<T>(props: IProps<T>) {
         endIndex,
         rowHeight,
         totalHeight,
-        onChangeTableData
+        allowRowAddDel,
+        onChangeTableData,
+        allowRowDrag
     } = props;
     
     const topHeight = startIndex * rowHeight;
@@ -43,7 +45,7 @@ function ApexTbody<T>(props: IProps<T>) {
         })
     );
     
-    const handleDragStart = (event: DragEndEvent) =>{
+    const handleDragStart = (event: DragEndEvent) => {
         const { active } = event;
         flushSync(() => {
             setActiveDragKey(active.id);
@@ -53,7 +55,7 @@ function ApexTbody<T>(props: IProps<T>) {
     const handleDragEnd = (event: DragEndEvent) => {
         flushSync(() => {
             const { active, over } = event;
-    
+            
             if (active && over && active.id !== over.id) {
                 const oldIndex = dragKeys.indexOf(active.id as any);
                 const newIndex = dragKeys.indexOf(over.id as any);
@@ -81,29 +83,42 @@ function ApexTbody<T>(props: IProps<T>) {
     {
         dataSource.length > 0 && topHeight > 0 && <tr style={{ height: topHeight }}/>
     }
-    <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
-    >
-        <SortableContext
-            items={dragKeys}
-            strategy={verticalListSortingStrategy}
+    {
+        allowRowDrag ? <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            onDragStart={handleDragStart}
         >
-            {
-                dataSource.map((dataSourceItem) => {
-                    
-                    return <ApexTr
-                        key={`apex-table-tbody-tr-${dataSourceItem['rowIndex']}`}
-                        {...props}
-                        dataSourceItem={dataSourceItem}
-                        activeDragKey={activeDragKey}
-                    />
-                })
-            }
-        </SortableContext>
-    </DndContext>
+            <SortableContext
+                items={dragKeys}
+                strategy={verticalListSortingStrategy}
+            >
+                {
+                    dataSource.map((dataSourceItem) => {
+                        
+                        return <ApexTr
+                            key={`apex-table-tbody-tr-${dataSourceItem['rowIndex']}`}
+                            {...props}
+                            dataSourceItem={dataSourceItem}
+                            activeDragKey={activeDragKey}
+                        />
+                    })
+                }
+            </SortableContext>
+        </DndContext> : dataSource.map((dataSourceItem) => {
+            
+            return <ApexTr
+                key={`apex-table-tbody-tr-${dataSourceItem['rowIndex']}`}
+                {...props}
+                dataSourceItem={dataSourceItem}
+                activeDragKey={activeDragKey}
+                allowRowDrag={allowRowDrag}
+                allowRowAddDel={allowRowAddDel}
+            />
+        })
+    }
+    
     {
         dataSource.length > 0 && bottomHeight > 0 && <tr style={{ height: bottomHeight }}/>
     }

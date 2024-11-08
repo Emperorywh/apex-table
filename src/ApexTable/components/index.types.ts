@@ -10,6 +10,7 @@ export interface ITdThCommonProps<T> {
     allowFixed: boolean;
     showLineNumber: boolean;
     allowSelect: boolean;
+    allowColumnDrag?: boolean;
 }
 
 /**

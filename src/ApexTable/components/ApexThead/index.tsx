@@ -17,6 +17,7 @@ import {
     SortableContext,
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
+    horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core/dist/types'
 import { IApexTableColumns } from 'apex-table/ApexTable/index.types'
@@ -30,6 +31,7 @@ function ApexThead<T>(props: IProps<T>) {
         allowSelect = false,
         allowResize = false,
         allowFixed = false,
+        allowColumnDrag = false,
         showHeaderCheckBox = false,
         isSingle = false,
         headerChecked = false,
@@ -126,19 +128,47 @@ function ApexThead<T>(props: IProps<T>) {
                 }
             </th>
         }
-        <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            onDragStart={handleDragStart}
-        >
-            <SortableContext
-                items={items}
-                strategy={verticalListSortingStrategy}
+        {
+            allowColumnDrag ? <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+                onDragStart={handleDragStart}
             >
+                <SortableContext
+                    items={items}
+                    strategy={horizontalListSortingStrategy}
+                >
+                    {
+                        items.map((item, index) => {
+                            const findColumn = columns.find(fItem => fItem.name === item);
+                            if (!findColumn) return null;
+                            if (findColumn?.visible === false) {
+                                return null
+                            } else {
+                                return <ApexTh
+                                    dragKey={dragKey}
+                                    allowSelect={allowSelect}
+                                    allowFixed={allowFixed}
+                                    allowResize={allowResize}
+                                    allowColumnDrag={allowColumnDrag}
+                                    key={`${String(findColumn.name)}-${index}`}
+                                    column={findColumn}
+                                    columns={columns}
+                                    rowHeight={rowHeight}
+                                    showLineNumber={showLineNumber}
+                                    onColWidthChange={onColWidthChange}
+                                />
+                            }
+                        })
+                    }
+                </SortableContext>
+            </DndContext> : <>
                 {
-                    columns.map((item, index) => {
-                        if (item?.visible === false) {
+                    items.map((item, index) => {
+                        const findColumn = columns.find(fItem => fItem.name === item);
+                        if (!findColumn) return null;
+                        if (findColumn?.visible === false) {
                             return null
                         } else {
                             return <ApexTh
@@ -146,8 +176,9 @@ function ApexThead<T>(props: IProps<T>) {
                                 allowSelect={allowSelect}
                                 allowFixed={allowFixed}
                                 allowResize={allowResize}
-                                key={`${String(item.name)}-${index}`}
-                                column={item}
+                                allowColumnDrag={allowColumnDrag}
+                                key={`${String(findColumn.name)}-${index}`}
+                                column={findColumn}
                                 columns={columns}
                                 rowHeight={rowHeight}
                                 showLineNumber={showLineNumber}
@@ -156,8 +187,8 @@ function ApexThead<T>(props: IProps<T>) {
                         }
                     })
                 }
-            </SortableContext>
-        </DndContext>
+            </>
+        }
     </tr>
     <Modal
         title={

@@ -191,6 +191,8 @@ const App: React.FC = () => {
             height={450}
             showColumnConfig
             allowRowDrag
+            allowColumnDrag
+            allowResize
         />
     </>
 };

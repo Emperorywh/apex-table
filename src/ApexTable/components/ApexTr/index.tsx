@@ -77,10 +77,11 @@ const ApexTr = (props: IProps<any>) => {
                             }}
                             {...listeners}
                         /> :
-                        <div className={`number`}>{dataSourceItem['rowIndex'] + 1}</div>
+                        <div
+                            className={`number ${allowRowAddDel ? 'number-add-delete' : ''}`}>{dataSourceItem['rowIndex'] + 1}</div>
                 }
                 {
-                    allowRowAddDel && <div className={`insert-delete-box`}>
+                    allowRowAddDel && !allowRowDrag && <div className={`insert-delete-box`}>
                         <PlusOutlined className="icon" style={{ marginRight: 5 }}
                                       onClick={() => insertRows(dataSourceItem[rowKey], [{ [rowKey]: nanoid() }])}/>
                         <MinusOutlined className="icon" onClick={() => deleteRow(dataSourceItem[rowKey])}/>
