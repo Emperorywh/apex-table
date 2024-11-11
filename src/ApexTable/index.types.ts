@@ -90,6 +90,11 @@ export interface ApexTableProps<T, V> {
     showColumnConfig?: boolean;
     
     /**
+     * 是否展示 合计行
+     */
+    showSummary?: boolean;
+    
+    /**
      * 唯一行号字段名
      */
     rowKey: string;
@@ -150,6 +155,10 @@ export interface IApexTableColumns<T> {
      * 单元格校验
      */
     rules?: IApexTableCellValid;
+    /**
+     * 是否展示 合计列
+     */
+    showSummary?: boolean;
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
     onRender?: (row?: any, value?: any) => React.ReactNode;

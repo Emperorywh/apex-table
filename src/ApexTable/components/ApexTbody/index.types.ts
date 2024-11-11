@@ -12,6 +12,11 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     renderCount: number;
     dataSource: any[];
     tableDataSource: any[];
+    /**
+     * 是否展示 合计行
+     */
+    showSummary: boolean;
+    summaryData: any;
     tableDivRef: React.RefObject<HTMLDivElement>;
     allowRowAddDel?: boolean;
     onRowSelected: (event: CheckboxChangeEvent, row: any) => void;

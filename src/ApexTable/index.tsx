@@ -21,6 +21,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         columns = [],
         dataSource = [],
         showHeaderCheckBox = false,
+        showSummary = false,
         tableTitle = false,
         showPagination = false,
         pagination = {},
@@ -94,6 +95,25 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * 加载中
      */
     const [spinning, setSpinning] = useState(false);
+    
+    const [summaryData, setSummaryData] = useState<any>({});
+    
+    /**
+     * 计算列合计
+     */
+    const handleCalculate = () => {
+        if (!showSummary) return;
+        const result: any = {};
+        columns.forEach(columnItem => {
+            if (columnItem.showSummary) {
+                result[columnItem.name] = tableDataSource.reduce((sum, tabItem) => {
+                    const formatValue = Number.parseFloat(tabItem[columnItem.name]);
+                    return sum + formatValue;
+                }, 0);
+            }
+        });
+        setSummaryData(result);
+    }
     
     /**
      * 表头复选框改变事件
@@ -596,6 +616,10 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         onChangeHeaderCheckBoxIndeter();
     }, [checkedData, dataSource]);
     
+    useEffect(() => {
+        handleCalculate()
+    }, [tableDataSource, columns, showSummary])
+    
     // 缓冲区数量
     const bufferCount = 5;
     // 渲染节点的数量
@@ -697,6 +721,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             columns={apexColumns}
                             dataSource={pageDataSource.slice(startIndex, endIndex)}
                             showLineNumber={showLineNumber}
+                            showSummary={showSummary}
+                            summaryData={summaryData}
                             allowSelect={allowSelect}
                             allowFixed={allowFixed}
                             allowRowDrag={allowRowDrag}

@@ -18,6 +18,7 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
     const {
         allowSelect,
         showLineNumber,
+        showSummary,
         allowFixed,
         column,
         columns,
@@ -154,7 +155,8 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
                 },
                 allowFixed,
                 columns,
-                showLineNumber
+                showLineNumber,
+                showSummary
             })
         }
     }, [focusState]);

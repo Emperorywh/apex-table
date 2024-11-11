@@ -12,6 +12,7 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
     const {
         allowSelect,
         showLineNumber,
+        showSummary,
         allowFixed,
         column,
         columns,
@@ -133,7 +134,8 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
                 },
                 allowFixed,
                 columns,
-                showLineNumber
+                showLineNumber,
+                showSummary
             })
         }
     }, [focusState]);

@@ -118,6 +118,7 @@ const ApexTr = (props: IProps<any>) => {
                 switch (columnType) {
                     case 'input':
                         return <ApexInput
+                            {...props}
                             allowSelect={allowSelect}
                             allowFixed={allowFixed}
                             tableDivRef={tableDivRef}
@@ -136,6 +137,7 @@ const ApexTr = (props: IProps<any>) => {
                         />;
                     case 'inputNumber':
                         return <ApexInputNumber
+                            {...props}
                             allowFixed={allowFixed}
                             allowSelect={allowSelect}
                             tableDivRef={tableDivRef}
@@ -154,6 +156,7 @@ const ApexTr = (props: IProps<any>) => {
                         />;
                     case 'modal':
                         return <ApexModal
+                            {...props}
                             allowFixed={allowFixed}
                             ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                             key={refKey}
@@ -172,6 +175,7 @@ const ApexTr = (props: IProps<any>) => {
                         />
                     case 'select':
                         return <ApexSelect
+                            {...props}
                             allowFixed={allowFixed}
                             ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                             key={refKey}
@@ -190,6 +194,7 @@ const ApexTr = (props: IProps<any>) => {
                         />
                     case 'datePicker':
                         return <ApexDatePicker
+                            {...props}
                             allowFixed={allowFixed}
                             ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                             key={refKey}
@@ -208,6 +213,7 @@ const ApexTr = (props: IProps<any>) => {
                         />
                     default:
                         return <ApexInput
+                            {...props}
                             allowFixed={allowFixed}
                             ref={(inputRef: any) => onSetRef(inputRef, refKey)}
                             allowSelect={allowSelect}

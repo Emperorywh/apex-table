@@ -1,4 +1,5 @@
 import { IApexTableColumns, IFocusAxis } from "../index.types";
+import React from 'react'
 
 /**
  * td/th 通用属性
@@ -22,6 +23,10 @@ export interface ICommonProps<T> extends ITdThCommonProps<T> {
     defaultValue?: string;
     row: any;
     rowIndex: number;
+    /**
+     * 是否展示 合计行
+     */
+    showSummary: boolean;
     tableDivRef: React.RefObject<HTMLDivElement>;
     onCellClick: (rowInfo: IFocusAxis) => void;
     onFocus?: (rowInfo: IFocusAxis) => void;

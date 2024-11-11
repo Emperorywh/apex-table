@@ -12,6 +12,7 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
     const {
         allowSelect,
         showLineNumber,
+        showSummary,
         allowFixed,
         column,
         columns,
@@ -135,7 +136,8 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
                 },
                 allowFixed,
                 columns,
-                showLineNumber
+                showLineNumber,
+                showSummary
             })
         }
     }, [focusState]);

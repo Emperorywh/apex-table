@@ -31,7 +31,7 @@ const App: React.FC = () => {
      */
     const initDataSource = () => {
         const array: ITableListItem[] = [];
-        for (let i = 0; i < 999; i++) {
+        for (let i = 0; i < 1000; i++) {
             array.push({
                 id: nanoid(),
                 kFullName: '默认仓库' + i,
@@ -103,6 +103,7 @@ const App: React.FC = () => {
             title: '数量',
             name: 'assQty',
             columnType: 'inputNumber',
+            showSummary: true
         },
         {
             title: '生产日期',
@@ -137,6 +138,7 @@ const App: React.FC = () => {
         onColumnWidthChange={column => {
             console.log("列宽改变", column)
         }}
+        showSummary
     />
 };
 

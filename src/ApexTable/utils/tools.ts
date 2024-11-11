@@ -1,4 +1,5 @@
 import { IApexTableColumns, IFocusAxis } from "../index.types";
+import React from 'react'
 
 /**
  * 检查聚焦单元格是否被遮挡
@@ -13,8 +14,9 @@ export const onSetScrollBarPosition = (params: {
     allowFixed: boolean;
     columns: IApexTableColumns<any>[];
     showLineNumber: boolean;
+    showSummary: boolean
 }) => {
-    const { axis, tableDivRef, tableTdRef, allowSelect, allowFixed, showLineNumber, columns } = params
+    const { axis, tableDivRef, tableTdRef, allowSelect, allowFixed, showLineNumber, showSummary, columns } = params
     // 容器相关信息
     const tableRect = tableDivRef.current?.getBoundingClientRect();
     const tableTop = tableRect?.top || 0;
@@ -36,14 +38,20 @@ export const onSetScrollBarPosition = (params: {
             y: 0
         }
         // 检查顶部是否在可视区域
-        if (tdTop - tableTop < tdHeight) {
+        if (tdTop - tableTop <= tdHeight) {
             scrollAxis.y = tdTop - tableTop - tdHeight;
         }
         // 检查底部是否在可视区域
-        if (tdBottom > tableBottom) {
-            scrollAxis.y = tdBottom - tableBottom + 15;
+        if (showSummary) {
+            if ((tdBottom + tdHeight) >= tableBottom) {
+                scrollAxis.y = tdBottom - tableBottom + 15 + tdHeight;
+            }
+        } else {
+            if (tdBottom > tableBottom) {
+                scrollAxis.y = tdBottom - tableBottom + 15;
+            }
         }
-        // 检查左侧是否在可视区域 
+        // 检查左侧是否在可视区域
         let fixedLeft = 0;
         if (showLineNumber) {
             fixedLeft += 50;
