@@ -10,7 +10,7 @@ import { ApexTableProps, IApexTableColumns, IFocusAxis } from './index.types';
 
 
 const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
-
+    
     const {
         allowSelect = false,
         allowResize = false,
@@ -32,16 +32,16 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         rowKey,
         onColumnWidthChange
     } = props;
-
+    
     /**
      * 可编辑单元格的 Ref
      */
     const editRefs = useRef<any>({});
-
+    
     const tableDivRef = useRef<HTMLDivElement>(null);
-
+    
     const [apexColumns, setApexColumns] = useState<IApexTableColumns<any>[]>([]);
-
+    
     /**
      * 当前聚焦的坐标
      */
@@ -49,55 +49,55 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         rowIndex: -1,
         columnName: ''
     });
-
+    
     /**
      * 表格数据源
      */
     const [tableDataSource, setTableDataSource] = useState<any[]>([]);
-
+    
     /**
      * 分页数据
      */
     const [pageDataSource, setPageDataSource] = useState<any[]>([]);
-
+    
     /**
      * 当前页码
      */
     const [currentPage, setCurrentPage] = useState(1);
-
+    
     /**
      * 每页条数
      */
     const [pageSize, setPageSize] = useState(10);
-
+    
     /**
      * 数据总数
      */
     const [total, setTotal] = useState(0);
-
+    
     /**
      * 表格选中的数据
      */
     const [checkedData, setCheckedData] = useState<any[]>([]);
-
+    
     /**
      * 表头复选框半选样式
      */
     const [indeterminate, setIndeterminate] = useState(false);
-
+    
     /**
      * 表头复选框是否全选
      */
     const [headerChecked, setHeaderChecked] = useState(false);
-
+    
     /**
      * 加载中
      */
     const [spinning, setSpinning] = useState(false);
-
+    
     /**
      * 表头复选框改变事件
-     * @param event 
+     * @param event
      */
     const onHeaderCheckBoxChange = (event: CheckboxChangeEvent) => {
         const eventValue = event.target.checked;
@@ -113,7 +113,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         }
         setTableDataSource(tempTableDataSource);
     }
-
+    
     /**
      * 行选中事件
      */
@@ -155,7 +155,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             }
         }
     }
-
+    
     /**
      * 表头复选框半选状态
      */
@@ -171,7 +171,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setHeaderChecked(false);
         }
     }
-
+    
     /**
      * 改变单元格的值
      * @param row           当前行信息
@@ -186,7 +186,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setTableDataSource(tempTableDataSource);
         }
     }, [tableDataSource])
-
+    
     /**
      * 初始化外部传入的静态数据源
      */
@@ -200,7 +200,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setTableDataSource(data);
         }
     }
-
+    
     /**
      * 初始化分页数据
      */
@@ -213,25 +213,27 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setPageSize(dataSource.length);
         }
     }
-
+    
     /**
      * 根据表格数据、当前页码、每页条数的变化，重新切片
      */
     const initPageDadaSource = () => {
-        if (Array.isArray(dataSource) && dataSource.length > 0) {
-            const startIndex = (currentPage - 1) * pageSize;
-            const endIndex = currentPage * pageSize;
-            const newArray: any[] = tableDataSource.slice(startIndex, endIndex);
-            newArray.forEach((item, index) => {
-                item['rowIndex'] = index;
-            })
-            setPageDataSource([...newArray]);
-        }
-        if (props.request && typeof props.request === 'function') {
-            setPageDataSource([...tableDataSource]);
-        }
+        flushSync(() => {
+            if (Array.isArray(dataSource) && dataSource.length > 0) {
+                const startIndex = (currentPage - 1) * pageSize;
+                const endIndex = currentPage * pageSize;
+                const newArray: any[] = tableDataSource.slice(startIndex, endIndex);
+                newArray.forEach((item, index) => {
+                    item['rowIndex'] = index;
+                })
+                setPageDataSource([...newArray]);
+            }
+            if (props.request && typeof props.request === 'function') {
+                setPageDataSource([...tableDataSource]);
+            }
+        })
     }
-
+    
     /**
      * 处理 request 的数据
      */
@@ -250,7 +252,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setSpinning(false);
         }
     }
-
+    
     /**
      * 聚焦可编辑单元格
      * @param rowIndex  行号
@@ -263,17 +265,17 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             editRefs.current[findRefName]?.focus();
         }
     }
-
+    
     /**
      * 输入框聚焦时触发
      */
     const handleInputFocus = (axis: IFocusAxis) => {
         focusAxisRef.current = axis;
     };
-
+    
     /**
      * 监听键盘按下
-     * @param event 
+     * @param event
      */
     const onApexTableKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
         const key = event.key;
@@ -294,7 +296,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 break;
         }
     }
-
+    
     /**
      * 监听键盘按键 ↑
      */
@@ -309,7 +311,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             handleFocusEditAbleCell(focusAxisRef.current);
         })
     }
-
+    
     /**
      * 监听键盘按键 ↓
      */
@@ -324,7 +326,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             handleFocusEditAbleCell(focusAxisRef.current);
         })
     }
-
+    
     /**
      * 监听键盘按键 ←
      * @param cursorPosition 光标位置
@@ -374,7 +376,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             }
         })
     }
-
+    
     /**
      * 监听键盘按键 →
      * @param cursorPosition    光标位置
@@ -438,10 +440,10 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             }
         })
     }
-
+    
     /**
      * 监听鼠标滚轮
-     * @param event 
+     * @param event
      */
     const onWheel = (event: any) => {
         event.preventDefault();
@@ -452,8 +454,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             onArrowDown();
         }
     }
-
-
+    
+    
     /***** Start  表格向外暴露的事件 Start *****/
     /**
      * 获取列集合
@@ -461,33 +463,33 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const getColumns = () => {
         return apexColumns;
     }
-
+    
     /**
      * 设置列集合
-     * @param columns 
+     * @param columns
      */
     const setColumns = (columns: IApexTableColumns<any>[]) => {
         setApexColumns(columns);
     }
-
+    
     /**
      * 重置列集合 根据传入的columns进行重置
      */
     const resetColumns = () => {
         setApexColumns([...columns]);
     }
-
+    
     /**
      * 获取表格数据源
-     * @returns 
+     * @returns
      */
     const getDataSource = () => {
         return tableDataSource;
     }
-
+    
     /**
      * 在表尾新增N行，并返回所有数据
-     * @param rows 
+     * @param rows
      */
     const pushRows = (rows: any[]) => {
         const rowList = Array.isArray(rows) ? rows : [rows];
@@ -495,7 +497,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         setTableDataSource(result);
         return result;
     }
-
+    
     /**
      * 在指定的行ID后，批量插入数据。
      * @param uniqueId 行ID
@@ -510,11 +512,11 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setTableDataSource(cloneTable);
         }
     }
-
+    
     /**
      * 更新指定行的数据
-     * @param uniqueId 
-     * @param row 
+     * @param uniqueId
+     * @param row
      */
     const updateRow = (uniqueId: string, row: any) => {
         const cloneTable = structuredClone(tableDataSource);
@@ -527,10 +529,10 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setTableDataSource(cloneTable);
         }
     }
-
+    
     /**
      * 删除一行数据
-     * @param uniqueId 
+     * @param uniqueId
      */
     const deleteRow = (uniqueId: string) => {
         const cloneTable = structuredClone(tableDataSource);
@@ -541,7 +543,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setTableDataSource(cloneTable);
         }
     }
-
+    
     useImperativeHandle(ref, () => {
         return {
             getColumns,
@@ -554,9 +556,9 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             deleteRow
         }
     }, [apexColumns, tableDataSource]);
-
+    
     /***** End  ========================= End *****/
-
+    
     useEffect(() => {
         const cloneColumns = [...columns];
         cloneColumns.forEach(item => {
@@ -566,41 +568,41 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         })
         setApexColumns(cloneColumns)
     }, [columns]);
-
+    
     useEffect(() => {
         const element = tableDivRef.current;
         if (element) {
             element.addEventListener('wheel', onWheel, { passive: false });
-
+            
             return () => {
                 element.removeEventListener('wheel', onWheel);
             }
         }
     }, [pageDataSource]);
-
+    
     useEffect(() => {
         handleRequestData();
     }, [currentPage, pageSize]);
-
+    
     useEffect(() => {
         initOuterDataSource();
     }, [dataSource]);
-
+    
     useEffect(() => {
         initPageDadaSource();
     }, [tableDataSource, currentPage, pageSize]);
-
+    
     useEffect(() => {
         onChangeHeaderCheckBoxIndeter();
     }, [checkedData, dataSource]);
-
+    
     // 缓冲区数量
     const bufferCount = 5;
     // 渲染节点的数量
     const renderCount = Math.ceil(height / rowHeight);
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(renderCount + bufferCount || 0);
-
+    
     /**
      * 滚动时对数据源进行切片
      */
@@ -628,12 +630,12 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setEndIndex(end);
         })
     }
-
+    
     /**
      * 列宽改变
-     * @param column 
-     * @param width 
-     * @returns 
+     * @param column
+     * @param width
+     * @returns
      */
     const handleColWidthChange = (column: IApexTableColumns<any>, width: number) => {
         if (!allowResize) return;
@@ -645,7 +647,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setApexColumns(cloneColumn);
         }
     }
-
+    
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
             <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
@@ -677,7 +679,11 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             headerChecked={headerChecked}
                             onColWidthChange={handleColWidthChange}
                             showColumnConfig={showColumnConfig}
-                            onChangeColumns={columns => setApexColumns(columns)}
+                            onChangeColumns={columns => {
+                                flushSync(() => {
+                                    setApexColumns(columns)
+                                })
+                            }}
                         />
                         <ApexTbody
                             rowKey={rowKey}
@@ -729,7 +735,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                 />
             </div>
         </Spin>
-    </ConfigProvider >
+    </ConfigProvider>
 });
 
 export default ApexTable;

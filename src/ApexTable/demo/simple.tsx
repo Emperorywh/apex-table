@@ -12,7 +12,7 @@ const App: React.FC = () => {
     /**
      * 数据源
      */
-    const [dataSource, setDataSource] = useState<any[]>(mockDataJson.slice(0,100));
+    const [dataSource, setDataSource] = useState<any[]>(mockDataJson.slice(0, 100));
     
     /**
      * 表格列
