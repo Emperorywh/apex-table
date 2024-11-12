@@ -80,6 +80,11 @@ export interface ApexTableProps<T, V> {
     allowColumnDrag?: boolean;
     
     /**
+     * 是否开起排序
+     */
+    allowSort?: boolean;
+    
+    /**
      * 是否展示行号
      */
     showLineNumber?: boolean;
@@ -138,6 +143,10 @@ export interface IApexTableColumns<T> {
     options?: DefaultOptionType[] | ((value: any, row: any) => DefaultOptionType[]);
     defaultValue?: any;
     width?: number;
+    /**
+     * 是否开起排序
+     */
+    allowSortColumn?: boolean;
     showTime?: boolean;
     /**
      * 是否显示

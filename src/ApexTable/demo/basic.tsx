@@ -139,6 +139,7 @@ const App: React.FC = () => {
             console.log("列宽改变", column)
         }}
         showSummary
+        allowColumnDrag
     />
 };
 

@@ -81,6 +81,36 @@
                         }
                     }
 
+                    .apex-table-thead-th-sort {
+                        &:hover {
+                            background-color: #ebebeb;
+                        }
+
+                        .apex-table-thead-th-sort-box {
+                            display: flex;
+                            flex-direction: column;
+                            position: absolute;
+                            right: 5px;
+
+                            .apex-table-thead-th-sort-icon {
+                                font-size: 12px;
+                                color: #bfbfbf;
+                            }
+
+                            .apex-table-thead-th-sort-icon-active {
+                                color: #1890ff;
+                            }
+                        }
+
+                        &:hover .apex-table-thead-th-sort-icon {
+                            color: #000000ad;
+                        }
+
+                        &:hover .apex-table-thead-th-sort-icon-active {
+                            color: #1890ff;
+                        }
+                    }
+
                     .apex-table-thead-th-fixed {
                         position: sticky;
                         z-index: 99;
@@ -287,6 +317,7 @@
                         display: flex;
                         justify-content: center;
                         align-items: center;
+
                         .apex-table-tbody-tr-summary-content {
                             font-weight: 700;
                             color: rgba(0, 0, 0, 0.87);

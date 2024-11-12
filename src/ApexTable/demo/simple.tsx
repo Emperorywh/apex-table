@@ -193,6 +193,7 @@ const App: React.FC = () => {
             allowRowDrag
             allowColumnDrag
             allowResize
+            allowSort
         />
     </>
 };

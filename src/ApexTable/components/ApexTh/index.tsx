@@ -3,12 +3,15 @@ import { IProps } from "./index.types";
 import { handleSetFixedPosition } from "apex-table/ApexTable/utils/tools";
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
+import { Tooltip } from 'antd'
 
 function ApexTh<T>(props: IProps<T>) {
     const {
         allowResize = false,
         allowFixed = false,
         allowColumnDrag = false,
+        allowSort = false,
         column,
         columns,
         rowHeight,
@@ -16,7 +19,7 @@ function ApexTh<T>(props: IProps<T>) {
         showLineNumber = false,
         onColWidthChange
     } = props;
-    const { fixed } = column;
+    const { fixed, allowSortColumn = true } = column;
     const thRef = useRef<HTMLTableHeaderCellElement>(null);
     const resizeFather = useRef<HTMLDivElement>(null);
     const resizeRef = useRef<HTMLDivElement>(null);
@@ -24,6 +27,14 @@ function ApexTh<T>(props: IProps<T>) {
     const [dragging, setDragging] = useState(false);
     const [classNames, setClassNames] = useState('');
     const [styles, setStyles] = useState<any>();
+    /**
+     * 排序方式：
+     * asc： 升序
+     * desc：降序
+     * '' ： 取消排序
+     */
+    const [sortType, setSortType] = useState<'' | 'asc' | 'desc'>('');
+    const [sortTypeText, setSortTypeText] = useState<'点击升序' |'点击降序' | '取消排序'>('点击升序');
     
     const {
         attributes,
@@ -96,6 +107,9 @@ function ApexTh<T>(props: IProps<T>) {
                 className = className.concat(` apex-table-fixed-${fixed}-last`);
             }
         }
+        if (allowSort && allowSortColumn) {
+            className = className.concat(` apex-table-thead-th-sort`);
+        }
         setClassNames(className);
     }
     
@@ -115,6 +129,27 @@ function ApexTh<T>(props: IProps<T>) {
             showLineNumber
         });
         setStyles(newStyle);
+    }
+    
+    /**
+     * 改变排序
+     */
+    const handleChangeSort = () => {
+        if (!allowSort || !allowSortColumn) return;
+        switch (sortType) {
+            case '':
+                setSortType('asc');
+                setSortTypeText('点击降序')
+                break;
+            case 'asc':
+                setSortType('desc');
+                setSortTypeText('取消排序')
+                break;
+            case 'desc':
+                setSortType('');
+                setSortTypeText('点击升序')
+                break;
+        }
     }
     
     useEffect(() => {
@@ -139,53 +174,56 @@ function ApexTh<T>(props: IProps<T>) {
         initStyles();
     }, [columns]);
     
+    useEffect(() => {
+        console.log("sortType", column.name,sortType)
+    }, [sortType])
+    
     
     return <th
         className={classNames}
         style={styles}
         ref={thRef}
     >
-        {
-            allowColumnDrag ? <div
-                ref={setNodeRef}
-                {...attributes}
-                {...listeners}
-                style={style}
+        <Tooltip title={sortTypeText}>
+            <div
+                className={`apex-table-thead-th-content`}
+                ref={resizeFather}
+                onClick={handleChangeSort}
             >
-                <div className={`apex-table-thead-th-content`} ref={resizeFather}>
-                <span
-                    style={{ cursor: 'grab' }}
-                    className={`apex-table-thead-th-text overflow-hidden-one`}
-                >
-                    {column['title']}
-                </span>
-                    {
-                        allowResize && <div
-                            ref={resizeRef}
-                            className={`apex-table-thead-th-resize`}
-                            onMouseDown={handleMouseDown}
+                {
+                    allowColumnDrag ? <span
+                            ref={setNodeRef}
+                            {...attributes}
+                            {...listeners}
+                            style={{
+                                cursor: 'grab',
+                                ...style,
+                            }}
+                            className={`apex-table-thead-th-text overflow-hidden-one`}
+                        >
+                        {column['title']}
+                    </span> :
+                        <span className={`apex-table-thead-th-text overflow-hidden-one`}>{column['title']}</span>
+                }
+                {
+                    allowSort && allowSortColumn && <div className="apex-table-thead-th-sort-box">
+                        <CaretUpOutlined
+                            className={`apex-table-thead-th-sort-icon ${sortType === 'asc' ? 'apex-table-thead-th-sort-icon-active': ''}`}
                         />
-                    }
-                </div>
-            </div> : <>
-                <div className={`apex-table-thead-th-content`} ref={resizeFather}>
-                <span
-                    style={{ cursor: 'grab' }}
-                    className={`apex-table-thead-th-text overflow-hidden-one`}
-                >
-                    {column['title']}
-                </span>
-                    {
-                        allowResize && <div
-                            ref={resizeRef}
-                            className={`apex-table-thead-th-resize`}
-                            onMouseDown={handleMouseDown}
+                        <CaretDownOutlined
+                            className={`apex-table-thead-th-sort-icon ${sortType === 'desc' ? 'apex-table-thead-th-sort-icon-active': ''}`}
                         />
-                    }
-                </div>
-            </>
-        }
-    
+                    </div>
+                }
+                {
+                    allowResize && <div
+                        ref={resizeRef}
+                        className={`apex-table-thead-th-resize`}
+                        onMouseDown={handleMouseDown}
+                    />
+                }
+            </div>
+        </Tooltip>
     </th>
 }
 

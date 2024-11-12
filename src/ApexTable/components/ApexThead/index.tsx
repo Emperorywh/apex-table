@@ -16,7 +16,6 @@ import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
     horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core/dist/types'
@@ -31,6 +30,7 @@ function ApexThead<T>(props: IProps<T>) {
         allowSelect = false,
         allowResize = false,
         allowFixed = false,
+        allowSort = false,
         allowColumnDrag = false,
         showHeaderCheckBox = false,
         isSingle = false,
@@ -152,6 +152,7 @@ function ApexThead<T>(props: IProps<T>) {
                                     allowFixed={allowFixed}
                                     allowResize={allowResize}
                                     allowColumnDrag={allowColumnDrag}
+                                    allowSort={allowSort}
                                     key={`${String(findColumn.name)}-${index}`}
                                     column={findColumn}
                                     columns={columns}
@@ -177,6 +178,7 @@ function ApexThead<T>(props: IProps<T>) {
                                 allowFixed={allowFixed}
                                 allowResize={allowResize}
                                 allowColumnDrag={allowColumnDrag}
+                                allowSort={allowSort}
                                 key={`${String(findColumn.name)}-${index}`}
                                 column={findColumn}
                                 columns={columns}

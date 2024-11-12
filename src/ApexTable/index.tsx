@@ -18,6 +18,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         allowRowDrag = false,
         allowColumnDrag = false,
         allowRowAddDel = false,
+        allowSort = false,
         columns = [],
         dataSource = [],
         showHeaderCheckBox = false,
@@ -693,6 +694,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             allowSelect={allowSelect}
                             allowFixed={allowFixed}
                             allowColumnDrag={allowColumnDrag}
+                            allowSort={allowSort}
                             showLineNumber={showLineNumber}
                             showHeaderCheckBox={showHeaderCheckBox}
                             indeterminate={indeterminate}
