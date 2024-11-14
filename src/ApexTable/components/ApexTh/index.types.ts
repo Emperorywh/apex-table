@@ -10,4 +10,6 @@ export interface IProps<T> extends ITdThCommonProps<T>  {
     column: IApexTableColumns<T>;
     onColWidthChange: (column: IApexTableColumns<T>, width: number) => void;
     onColumnSort: (column: IApexTableColumns<T>, sortType: '' | 'asc' | 'desc') => void;
+    rowSpan?: number;
+    colSpan?: number;
 }

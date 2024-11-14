@@ -92,6 +92,23 @@ function ApexThead<T>(props: IProps<T>) {
         setIsModalOpen(true)
     }
     
+    /**
+     * 获取最大树高
+     * @param column
+     */
+    const getMaxTreeHeight = (column: IApexTableColumns<T>) => {
+        if (!column) return 0;  // 如果节点为空，返回0高度
+        if (!column.children || column.children.length === 0) return 1;  // 如果没有子节点，说明是叶子节点，返回1
+    
+        // 递归计算每个子节点的最大树高，然后取最大值
+        let maxHeight = 0;
+        for (let child of column.children) {
+            maxHeight = Math.max(maxHeight, getMaxTreeHeight(child));
+        }
+    
+        return maxHeight + 1;  // 加1是因为当前节点也是树高的一部分
+    }
+    
     useEffect(() => {
         const sortColumnsArray: IApexTableColumns<any>[] = [];
         items.forEach(sortName => {

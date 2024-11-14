@@ -15,6 +15,8 @@ function ApexTh<T>(props: IProps<T>) {
         column,
         columns,
         rowHeight,
+        rowSpan,
+        colSpan,
         allowSelect = false,
         showLineNumber = false,
         onColWidthChange,
@@ -184,9 +186,50 @@ function ApexTh<T>(props: IProps<T>) {
         className={classNames}
         style={styles}
         ref={thRef}
+        rowSpan={rowSpan}
+        colSpan={colSpan}
     >
-        <Tooltip title={sortTypeText}>
-            <div
+        {
+            allowSort ? <Tooltip title={sortTypeText}>
+                <div
+                    className={`apex-table-thead-th-content`}
+                    ref={resizeFather}
+                    onClick={handleChangeSort}
+                >
+                    {
+                        allowColumnDrag ? <span
+                                ref={setNodeRef}
+                                {...attributes}
+                                {...listeners}
+                                style={{
+                                    cursor: 'grab',
+                                    ...style,
+                                }}
+                                className={`apex-table-thead-th-text overflow-hidden-one`}
+                            >
+                        {column['title']}
+                    </span> :
+                            <span className={`apex-table-thead-th-text overflow-hidden-one`}>{column['title']}</span>
+                    }
+                    {
+                        allowSort && allowSortColumn && <div className="apex-table-thead-th-sort-box">
+                            <CaretUpOutlined
+                                className={`apex-table-thead-th-sort-icon ${sortType === 'asc' ? 'apex-table-thead-th-sort-icon-active': ''}`}
+                            />
+                            <CaretDownOutlined
+                                className={`apex-table-thead-th-sort-icon ${sortType === 'desc' ? 'apex-table-thead-th-sort-icon-active': ''}`}
+                            />
+                        </div>
+                    }
+                    {
+                        allowResize && <div
+                            ref={resizeRef}
+                            className={`apex-table-thead-th-resize`}
+                            onMouseDown={handleMouseDown}
+                        />
+                    }
+                </div>
+            </Tooltip>  : <div
                 className={`apex-table-thead-th-content`}
                 ref={resizeFather}
                 onClick={handleChangeSort}
@@ -224,7 +267,8 @@ function ApexTh<T>(props: IProps<T>) {
                     />
                 }
             </div>
-        </Tooltip>
+        }
+        
     </th>
 }
 

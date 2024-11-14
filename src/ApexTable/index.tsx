@@ -223,6 +223,20 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     }
     
     /**
+     * 重新初始化内部的数据源
+     */
+    const initInnerDataSource = () => {
+        if (Array.isArray(tableDataSource) && tableDataSource.length > 0) {
+            const data: any[] = structuredClone(tableDataSource);
+            data.forEach((item, index) => {
+                item['apexTableChecked'] = false;
+            });
+            initPagenation(data);
+            setTableDataSource(data);
+        }
+    }
+    
+    /**
      * 初始化分页数据
      */
     const initPagenation = (dataSource: any) => {
@@ -586,8 +600,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             if (!item.hasOwnProperty('visible')) {
                 item.visible = true;
             }
-        })
-        setApexColumns(cloneColumns)
+        });
+        setApexColumns(cloneColumns);
     }, [columns]);
     
     useEffect(() => {
@@ -680,7 +694,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const handleColumnSort = (column: IApexTableColumns<any>, sortType: '' | 'asc' | 'desc') => {
         if (sortType === '') {
-            initOuterDataSource();
+            initInnerDataSource();
             return;
         }
         const _dataSource = structuredClone(tableDataSource);

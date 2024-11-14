@@ -168,6 +168,7 @@ export interface IApexTableColumns<T> {
      * 是否展示 合计列
      */
     showSummary?: boolean;
+    children?: IApexTableColumns<T>[],
     onChange?: (value: any, option?: any, options?: any) => void;
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
     onRender?: (row?: any, value?: any) => React.ReactNode;
