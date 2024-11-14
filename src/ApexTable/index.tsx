@@ -683,7 +683,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             initOuterDataSource();
             return;
         }
-        const _dataSource = structuredClone(dataSource);
+        const _dataSource = structuredClone(tableDataSource);
         _dataSource.sort((a, b) => {
             const valueA = a[column.name];
             const valueB = b[column.name];
