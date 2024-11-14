@@ -1,5 +1,5 @@
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
-import { IFocusAxis } from "apex-table/ApexTable/index.types";
+import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable/index.types";
 import { ITdThCommonProps } from "../index.types";
 import React from 'react'
 

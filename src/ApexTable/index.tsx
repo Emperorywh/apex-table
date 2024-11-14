@@ -213,7 +213,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      */
     const initOuterDataSource = () => {
         if (Array.isArray(dataSource) && dataSource.length > 0) {
-            const data: any[] = [...dataSource];
+            const data: any[] = structuredClone(dataSource);
             data.forEach((item, index) => {
                 item['apexTableChecked'] = false;
             });
@@ -673,6 +673,39 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         }
     }
     
+    /**
+     * 排序
+     * @param column
+     * @param sortType
+     */
+    const handleColumnSort = (column: IApexTableColumns<any>, sortType: '' | 'asc' | 'desc') => {
+        if (sortType === '') {
+            initOuterDataSource();
+            return;
+        }
+        const _dataSource = structuredClone(dataSource);
+        _dataSource.sort((a, b) => {
+            const valueA = a[column.name];
+            const valueB = b[column.name];
+            if (typeof valueA === 'string' && typeof valueB === 'string') {
+                if (sortType === 'asc') {
+                    return valueA.localeCompare(valueB);
+                } else {
+                    return valueB.localeCompare(valueA);
+                }
+            } else if (typeof valueA === 'number' && typeof valueB === 'number') {
+                if (sortType === 'asc') {
+                    return valueA - valueB;
+                } else {
+                    return valueB - valueA;
+                }
+            } else {
+                return 0;
+            }
+        });
+        setTableDataSource(_dataSource)
+    }
+    
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
             <div className='apex-table-container' style={{ height: height }} onKeyDown={onApexTableKeyDown}>
@@ -709,6 +742,9 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                                 flushSync(() => {
                                     setApexColumns(columns)
                                 })
+                            }}
+                            onColumnSort={(column, sortType) => {
+                                handleColumnSort(column, sortType);
                             }}
                         />
                         <ApexTbody

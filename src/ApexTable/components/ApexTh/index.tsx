@@ -17,7 +17,8 @@ function ApexTh<T>(props: IProps<T>) {
         rowHeight,
         allowSelect = false,
         showLineNumber = false,
-        onColWidthChange
+        onColWidthChange,
+        onColumnSort
     } = props;
     const { fixed, allowSortColumn = true } = column;
     const thRef = useRef<HTMLTableHeaderCellElement>(null);
@@ -175,7 +176,7 @@ function ApexTh<T>(props: IProps<T>) {
     }, [columns]);
     
     useEffect(() => {
-        console.log("sortType", column.name,sortType)
+        onColumnSort && onColumnSort(column, sortType)
     }, [sortType])
     
     

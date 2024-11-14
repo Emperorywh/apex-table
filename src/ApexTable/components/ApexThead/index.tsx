@@ -39,7 +39,8 @@ function ApexThead<T>(props: IProps<T>) {
         rowHeight,
         onHeaderCheckBoxChange,
         onColWidthChange,
-        onChangeColumns
+        onChangeColumns,
+        onColumnSort
     } = props;
     
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -159,6 +160,7 @@ function ApexThead<T>(props: IProps<T>) {
                                     rowHeight={rowHeight}
                                     showLineNumber={showLineNumber}
                                     onColWidthChange={onColWidthChange}
+                                    onColumnSort={onColumnSort}
                                 />
                             }
                         })
@@ -185,6 +187,7 @@ function ApexThead<T>(props: IProps<T>) {
                                 rowHeight={rowHeight}
                                 showLineNumber={showLineNumber}
                                 onColWidthChange={onColWidthChange}
+                                onColumnSort={onColumnSort}
                             />
                         }
                     })

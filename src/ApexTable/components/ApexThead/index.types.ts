@@ -16,4 +16,5 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     onHeaderCheckBoxChange: (event: CheckboxChangeEvent) => void;
     onColWidthChange: (column: IApexTableColumns<T>, width: number) => void;
     onChangeColumns: (columns: IApexTableColumns<T>[]) => void;
+    onColumnSort: (column: IApexTableColumns<T>, sortType: '' | 'asc' | 'desc') => void;
 }
