@@ -46,7 +46,8 @@ function ApexThead<T>(props: IProps<T>) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [items, setItems] = useState<string[]>([]);
     const [dragKey, setDragKey] = useState<any>('');
-    
+    const [maxLevel, setMaxLevel] = useState(0);
+    const [multiLevelColumns, setMultiLevelColumns] = useState<any[]>([]);
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -99,96 +100,193 @@ function ApexThead<T>(props: IProps<T>) {
     const getMaxTreeHeight = (column: IApexTableColumns<T>) => {
         if (!column) return 0;  // 如果节点为空，返回0高度
         if (!column.children || column.children.length === 0) return 1;  // 如果没有子节点，说明是叶子节点，返回1
-    
+        
         // 递归计算每个子节点的最大树高，然后取最大值
         let maxHeight = 0;
         for (let child of column.children) {
             maxHeight = Math.max(maxHeight, getMaxTreeHeight(child));
         }
-    
+        
         return maxHeight + 1;  // 加1是因为当前节点也是树高的一部分
     }
     
-    useEffect(() => {
-        const sortColumnsArray: IApexTableColumns<any>[] = [];
-        items.forEach(sortName => {
-            const findColumn = columns.find(sortItem => sortItem.name === sortName);
-            if (findColumn) {
-                sortColumnsArray.push(findColumn);
+    /**
+     * 格式化多级表头数据结构
+     * @param columns
+     * @param maxLevel
+     */
+    const onFormatMultiLevelColumns = (columns: IApexTableColumns<T>[], maxLevel = 0, result: any[] = [], level = 0) => {
+        if (columns.length === 0) return;
+        
+        columns.forEach((column, index) => {
+            if (!result[level]) {
+                result[level] = [];
             }
-        })
-    }, [items])
+            // 如果列有子列（即为父级列）
+            if (column?.children && column.children.length > 0) {
+                column.colSpan = onGetMaxChildren(column?.children, 0);    // 设置 colSpan
+                result[level].push(column);                 // 将父列添加到当前层级
+                onFormatMultiLevelColumns(column.children, maxLevel, result, level + 1); // 递归处理子列
+            } else {
+                // 如果列没有子列（即为叶子列）
+                column.rowSpan = maxLevel - level; // 设置 rowSpan
+                result[level] = result[level] || []; // 确保当前索引位置已初始化
+                result[level].push(column); // 将列添加到 result 的对应位置
+            }
+        });
+    }
+    
+    /**
+     * 获取最大子节点数量
+     * @param columns
+     * @param count
+     */
+    const onGetMaxChildren = (columns: IApexTableColumns<T>[], count = 0) => {
+        let result = count;
+        columns.forEach((column, index) => {
+            if (column?.children && column.children.length > 0) {
+                result = onGetMaxChildren(column?.children, result);
+            } else {
+                result += 1;
+            }
+        });
+        return result;
+    }
+    
+    /**
+     * 获取最大树高
+     */
+    const onSetMaxLevel = () => {
+        let level = 0;
+        columns.forEach(item => {
+            level = Math.max(level, getMaxTreeHeight(item));
+        });
+        setMaxLevel(level);
+        const result: any[] = [];
+        onFormatMultiLevelColumns(columns, level, result);
+        setMultiLevelColumns(result);
+    }
+    
     
     useEffect(() => {
         initColumns();
+        onSetMaxLevel();
     }, [columns])
     
     
     return <thead className='apex-table-thead'>
-    <tr style={{ height: rowHeight }}>
-        {
-            showLineNumber ? <th className='apex-table-thead-th apex-table-thead-th-line-number-head'>
-                {
-                    showColumnConfig ? <SettingOutlined
-                        style={{ fontSize: 18, cursor: 'pointer' }}
-                        onClick={handleColumnConfig}
-                    /> : <div>行号</div>
-                }
-            
-            </th> : null
-        }
-        {
-            allowSelect && <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
-                {
-                    showHeaderCheckBox &&
-                    <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate}
-                              onChange={onHeaderCheckBoxChange}/>
-                }
-            </th>
-        }
-        {
-            allowColumnDrag ? <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-                onDragStart={handleDragStart}
-            >
-                <SortableContext
-                    items={items}
-                    strategy={horizontalListSortingStrategy}
-                >
+    {
+        maxLevel < 2 && <tr style={{ height: rowHeight }}>
+            {
+                showLineNumber ? <th className='apex-table-thead-th apex-table-thead-th-line-number-head'>
                     {
-                        items.map((item, index) => {
-                            const findColumn = columns.find(fItem => fItem.name === item);
-                            if (!findColumn) return null;
-                            if (findColumn?.visible === false) {
-                                return null
-                            } else {
-                                return <ApexTh
-                                    dragKey={dragKey}
-                                    allowSelect={allowSelect}
-                                    allowFixed={allowFixed}
-                                    allowResize={allowResize}
-                                    allowColumnDrag={allowColumnDrag}
-                                    allowSort={allowSort}
-                                    key={`${String(findColumn.name)}-${index}`}
-                                    column={findColumn}
-                                    columns={columns}
-                                    rowHeight={rowHeight}
-                                    showLineNumber={showLineNumber}
-                                    onColWidthChange={onColWidthChange}
-                                    onColumnSort={onColumnSort}
-                                />
-                            }
-                        })
+                        showColumnConfig ? <SettingOutlined
+                            style={{ fontSize: 18, cursor: 'pointer' }}
+                            onClick={handleColumnConfig}
+                        /> : <div>行号</div>
                     }
-                </SortableContext>
-            </DndContext> : <>
+                
+                </th> : null
+            }
+            {
+                allowSelect && <th className='apex-table-thead-th apex-table-thead-th-checkbox'>
+                    {
+                        showHeaderCheckBox &&
+                        <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate}
+                                  onChange={onHeaderCheckBoxChange}/>
+                    }
+                </th>
+            }
+            {
+                allowColumnDrag ? <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                    onDragStart={handleDragStart}
+                >
+                    <SortableContext
+                        items={items}
+                        strategy={horizontalListSortingStrategy}
+                    >
+                        {
+                            items.map((item, index) => {
+                                const findColumn = columns.find(fItem => fItem.name === item);
+                                if (!findColumn) return null;
+                                if (findColumn?.visible === false) {
+                                    return null
+                                } else {
+                                    return <ApexTh
+                                        dragKey={dragKey}
+                                        allowSelect={allowSelect}
+                                        allowFixed={allowFixed}
+                                        allowResize={allowResize}
+                                        allowColumnDrag={allowColumnDrag}
+                                        allowSort={allowSort}
+                                        key={`${String(findColumn.name)}-${index}`}
+                                        column={findColumn}
+                                        columns={columns}
+                                        rowHeight={rowHeight}
+                                        showLineNumber={showLineNumber}
+                                        onColWidthChange={onColWidthChange}
+                                        onColumnSort={onColumnSort}
+                                    />
+                                }
+                            })
+                        }
+                    </SortableContext>
+                </DndContext> : columns.map((column, index) => {
+                    if (column?.visible === false) {
+                        return null
+                    } else {
+                        return <ApexTh
+                            dragKey={dragKey}
+                            allowSelect={allowSelect}
+                            allowFixed={allowFixed}
+                            allowResize={allowResize}
+                            allowColumnDrag={allowColumnDrag}
+                            allowSort={allowSort}
+                            key={`${String(column.name)}-${index}`}
+                            column={column}
+                            columns={columns}
+                            rowHeight={rowHeight}
+                            showLineNumber={showLineNumber}
+                            onColWidthChange={onColWidthChange}
+                            onColumnSort={onColumnSort}
+                            rowSpan={column.rowSpan}
+                            colSpan={column.colSpan}
+                        />
+                    }
+                })
+            }
+        </tr>
+    }
+    
+    {
+        maxLevel >= 2 && multiLevelColumns.map((columns: IApexTableColumns<T>[], index) => {
+            return <tr style={{ height: rowHeight }} key={index}>
                 {
-                    items.map((item, index) => {
-                        const findColumn = columns.find(fItem => fItem.name === item);
-                        if (!findColumn) return null;
-                        if (findColumn?.visible === false) {
+                    showLineNumber && index === 0 ? <th rowSpan={maxLevel} className='apex-table-thead-th apex-table-thead-th-line-number-head'>
+                        {
+                            showColumnConfig ? <SettingOutlined
+                                style={{ fontSize: 18, cursor: 'pointer' }}
+                                onClick={handleColumnConfig}
+                            /> : <div>行号</div>
+                        }
+        
+                    </th> : null
+                }
+                {
+                    allowSelect && index === 0 && <th rowSpan={maxLevel}  className='apex-table-thead-th apex-table-thead-th-checkbox'>
+                        {
+                            showHeaderCheckBox &&
+                            <Checkbox disabled={isSingle} checked={headerChecked} indeterminate={indeterminate}
+                                      onChange={onHeaderCheckBoxChange}/>
+                        }
+                    </th>
+                }
+                {
+                    columns.map((column, columnIndex) => {
+                        if (column?.visible === false) {
                             return null
                         } else {
                             return <ApexTh
@@ -198,20 +296,23 @@ function ApexThead<T>(props: IProps<T>) {
                                 allowResize={allowResize}
                                 allowColumnDrag={allowColumnDrag}
                                 allowSort={allowSort}
-                                key={`${String(findColumn.name)}-${index}`}
-                                column={findColumn}
+                                key={`${String(column.name)}-${columnIndex}`}
+                                column={column}
                                 columns={columns}
                                 rowHeight={rowHeight}
                                 showLineNumber={showLineNumber}
                                 onColWidthChange={onColWidthChange}
                                 onColumnSort={onColumnSort}
+                                rowSpan={column.rowSpan}
+                                colSpan={column.colSpan}
                             />
                         }
                     })
                 }
-            </>
-        }
-    </tr>
+            </tr>
+        })
+    }
+    
     <Modal
         title={
             <div style={{

@@ -43,6 +43,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const tableDivRef = useRef<HTMLDivElement>(null);
     
     const [apexColumns, setApexColumns] = useState<IApexTableColumns<any>[]>([]);
+    const [apexBodyColumns, setApexBodyColumns] = useState<IApexTableColumns<any>[]>([]);
     
     /**
      * 当前聚焦的坐标
@@ -594,6 +595,25 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     
     /***** End  ========================= End *****/
     
+    const onSetBodyColumns = () => {
+        const result: IApexTableColumns<any>[] = [];
+        onGetTreeColumns(columns, result);
+        setApexBodyColumns([...result])
+    }
+    
+    const onGetTreeColumns = (columns: IApexTableColumns<any>[], result: IApexTableColumns<any>[]) =>{
+        columns.forEach(column => {
+            if (column.children && column.children.length > 0) {
+                onGetTreeColumns(column.children, result);
+            } else {
+                if (!column.hasOwnProperty('visible')) {
+                    column.visible = true;
+                }
+                result.push(column);
+            }
+        })
+    }
+    
     useEffect(() => {
         const cloneColumns = [...columns];
         cloneColumns.forEach(item => {
@@ -602,6 +622,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             }
         });
         setApexColumns(cloneColumns);
+        onSetBodyColumns();
     }, [columns]);
     
     useEffect(() => {
@@ -730,7 +751,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         <ApexColgroup
                             showLineNumber={showLineNumber}
                             allowSelect={allowSelect}
-                            columns={apexColumns}
+                            columns={apexBodyColumns}
                         />
                         {
                             tableTitle && <caption>{tableTitle}</caption>
@@ -770,7 +791,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             totalHeight={(pageDataSource.length - 1) * rowHeight}
                             renderCount={renderCount}
                             tableDivRef={tableDivRef}
-                            columns={apexColumns}
+                            columns={apexBodyColumns}
                             dataSource={pageDataSource.slice(startIndex, endIndex)}
                             showLineNumber={showLineNumber}
                             showSummary={showSummary}

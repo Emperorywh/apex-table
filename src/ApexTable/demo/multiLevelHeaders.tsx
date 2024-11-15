@@ -80,23 +80,29 @@ const App: React.FC = () => {
             name: 'factoryName',
         },
         {
-            title: '批次',
-            name: 'goodsNumber',
-        },
-        {
-            title: '生产日期',
-            name: 'produceDate',
-            columnType: 'datePicker',
-        },
-        {
-            title: '保质期',
-            name: 'validityDay',
-            columnType: 'inputNumber',
-        },
-        {
-            title: '到期日期',
-            name: 'endDate',
-            columnType: 'datePicker',
+            title: '批次信息',
+            name: 'batchInfo',
+            children: [
+                {
+                    title: '批次',
+                    name: 'goodsNumber',
+                },
+                {
+                    title: '生产日期',
+                    name: 'produceDate',
+                    columnType: 'datePicker',
+                },
+                {
+                    title: '保质期',
+                    name: 'validityDay',
+                    columnType: 'inputNumber',
+                },
+                {
+                    title: '到期日期',
+                    name: 'endDate',
+                    columnType: 'datePicker',
+                },
+            ]
         },
         {
             title: '序列号',
@@ -133,19 +139,37 @@ const App: React.FC = () => {
             columnType: 'inputNumber',
         },
         {
-            title: '计划数量',
-            name: 'assQty',
-            columnType: 'inputNumber',
-        },
-        {
-            title: '已入数量',
-            name: 'preOnShelfQty',
-            readOnly: true,
-        },
-        {
-            title: '未入数量',
-            name: 'preInStockQty',
-            readOnly: true
+            title: '数量',
+            name: 'allQty',
+            children: [
+                {
+                    title: '数量1',
+                    name: 'allQty1',
+                    children: [
+                        {
+                            title: '计划数量',
+                            name: 'assQty',
+                            columnType: 'inputNumber',
+                        },
+                    ]
+                },
+                {
+                    title: '数量2',
+                    name: 'allQty2',
+                    children: [
+                        {
+                            title: '已入数量',
+                            name: 'preOnShelfQty',
+                            columnType: 'inputNumber',
+                        },
+                        {
+                            title: '未入数量',
+                            name: 'preInStockQty',
+                            columnType: 'inputNumber',
+                        },
+                    ]
+                },
+            ]
         },
         {
             title: '换算关系',

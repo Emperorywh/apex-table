@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HolderOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons'
 import { nanoid } from 'nanoid'
 import { Checkbox } from 'antd'
