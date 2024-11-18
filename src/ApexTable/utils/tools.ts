@@ -14,9 +14,11 @@ export const onSetScrollBarPosition = (params: {
     allowFixed: boolean;
     columns: IApexTableColumns<any>[];
     showLineNumber: boolean;
-    showSummary: boolean
+    showSummary: boolean;
+    apexColumns: IApexTableColumns<any>[];
 }) => {
-    const { axis, tableDivRef, tableTdRef, allowSelect, allowFixed, showLineNumber, showSummary, columns } = params
+    const { axis, tableDivRef, tableTdRef, allowSelect, allowFixed, showLineNumber, showSummary, columns, apexColumns } = params
+    const level = onGetMaxLevel(apexColumns);
     // 容器相关信息
     const tableRect = tableDivRef.current?.getBoundingClientRect();
     const tableTop = tableRect?.top || 0;
@@ -38,8 +40,8 @@ export const onSetScrollBarPosition = (params: {
             y: 0
         }
         // 检查顶部是否在可视区域
-        if (tdTop - tableTop <= tdHeight) {
-            scrollAxis.y = tdTop - tableTop - tdHeight;
+        if (tdTop - tableTop <= (tdHeight * level)) {
+            scrollAxis.y = tdTop - tableTop - (tdHeight * level);
         }
         // 检查底部是否在可视区域
         if (showSummary) {
@@ -163,4 +165,33 @@ export const handleSetFixedPosition = (params: {
         }
     }
     return style;
+}
+
+/**
+ * 获取columns最大树高
+ * @param columns
+ */
+const onGetMaxLevel = (columns: IApexTableColumns<any>[]) => {
+    let level = 0;
+    columns.forEach(item => {
+        level = Math.max(level, getMaxTreeHeight(item));
+    });
+    return level;
+}
+
+/**
+ * 获取column最大树高
+ * @param column
+ */
+const getMaxTreeHeight = (column: IApexTableColumns<any>) => {
+    if (!column) return 0;  // 如果节点为空，返回0高度
+    if (!column.children || column.children.length === 0) return 1;  // 如果没有子节点，说明是叶子节点，返回1
+    
+    // 递归计算每个子节点的最大树高，然后取最大值
+    let maxHeight = 0;
+    for (let child of column.children) {
+        maxHeight = Math.max(maxHeight, getMaxTreeHeight(child));
+    }
+    
+    return maxHeight + 1;  // 加1是因为当前节点也是树高的一部分
 }

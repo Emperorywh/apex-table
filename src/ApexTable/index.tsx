@@ -792,6 +792,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             renderCount={renderCount}
                             tableDivRef={tableDivRef}
                             columns={apexBodyColumns}
+                            apexColumns={apexColumns}
                             dataSource={pageDataSource.slice(startIndex, endIndex)}
                             showLineNumber={showLineNumber}
                             showSummary={showSummary}

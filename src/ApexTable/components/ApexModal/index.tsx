@@ -16,6 +16,7 @@ import useCellValidation from 'apex-table/hooks/useCellValidation'
  */
 function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
     const {
+        apexColumns,
         allowSelect,
         showLineNumber,
         showSummary,
@@ -113,7 +114,8 @@ function ApexModal(props: IProps<any>, ref: Ref<IApexInput>) {
                 allowFixed,
                 columns,
                 showLineNumber,
-                showSummary
+                showSummary,
+                apexColumns
             })
         }
     }, [focusState]);

@@ -4,6 +4,7 @@ import { ITdThCommonProps } from "../index.types";
 import React from 'react'
 
 export interface IProps<T> extends ITdThCommonProps<T> {
+    apexColumns: IApexTableColumns<T>[];
     allowRowDrag?: boolean;
     startIndex: number;
     endIndex: number;

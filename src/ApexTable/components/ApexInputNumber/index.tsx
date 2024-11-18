@@ -9,6 +9,7 @@ import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInputNumber>) => {
     const {
+        apexColumns,
         allowSelect,
         showLineNumber,
         showSummary,
@@ -135,7 +136,8 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
                 allowFixed,
                 columns,
                 showLineNumber,
-                showSummary
+                showSummary,
+                apexColumns
             })
         }
     }, [focusState]);

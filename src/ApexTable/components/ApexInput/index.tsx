@@ -5,11 +5,11 @@ import { ApexShowCell } from "..";
 import { IApexInput, IProps } from './index.types';
 import { onSetScrollBarPosition } from "apex-table/ApexTable/utils/tools";
 import ApexTd from "../ApexTd";
-import { IApexTableCellInfo } from 'apex-table/ApexTable/index.types'
 import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => {
     const {
+        apexColumns,
         allowSelect,
         showLineNumber,
         showSummary,
@@ -137,7 +137,8 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
                 allowFixed,
                 columns,
                 showLineNumber,
-                showSummary
+                showSummary,
+                apexColumns
             })
         }
     }, [focusState]);

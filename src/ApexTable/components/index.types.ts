@@ -19,6 +19,7 @@ export interface ITdThCommonProps<T> {
  */
 export interface ICommonProps<T> extends ITdThCommonProps<T> {
     column: IApexTableColumns<T>;
+    apexColumns: IApexTableColumns<T>[];
     children?: React.ReactNode;
     defaultValue?: string;
     row: any;

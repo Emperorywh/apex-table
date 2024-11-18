@@ -16,6 +16,7 @@ import useCellValidation from 'apex-table/hooks/useCellValidation'
  */
 function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
     const {
+        apexColumns,
         allowSelect,
         showLineNumber,
         showSummary,
@@ -156,7 +157,8 @@ function ApexSelect(props: IProps<any>, ref: Ref<IApexSelect>) {
                 allowFixed,
                 columns,
                 showLineNumber,
-                showSummary
+                showSummary,
+                apexColumns
             })
         }
     }, [focusState]);

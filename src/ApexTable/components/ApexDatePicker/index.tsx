@@ -10,6 +10,7 @@ import useCellValidation from 'apex-table/hooks/useCellValidation'
 
 const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePicker>) => {
     const {
+        apexColumns,
         allowSelect,
         showLineNumber,
         showSummary,
@@ -135,7 +136,8 @@ const ApexDatePicker = memo(forwardRef((props: IProps<any>, ref: Ref<IApexDatePi
                 allowFixed,
                 columns,
                 showLineNumber,
-                showSummary
+                showSummary,
+                apexColumns
             })
         }
     }, [focusState]);
