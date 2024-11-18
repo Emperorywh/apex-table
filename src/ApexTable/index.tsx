@@ -591,13 +591,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             updateRow,
             deleteRow
         }
-    }, [apexColumns, tableDataSource]);
+    });
     
     /***** End  ========================= End *****/
     
     const onSetBodyColumns = () => {
         const result: IApexTableColumns<any>[] = [];
-        onGetTreeColumns(columns, result);
+        onGetTreeColumns(apexColumns, result);
         setApexBodyColumns([...result])
     }
     
@@ -622,7 +622,6 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             }
         });
         setApexColumns(cloneColumns);
-        onSetBodyColumns();
     }, [columns]);
     
     useEffect(() => {
@@ -655,6 +654,10 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     useEffect(() => {
         handleCalculate()
     }, [tableDataSource, columns, showSummary])
+    
+    useEffect(() => {
+        onSetBodyColumns();
+    }, [apexColumns])
     
     // 缓冲区数量
     const bufferCount = 5;
