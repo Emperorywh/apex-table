@@ -370,19 +370,19 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const onArrowLeft = (cursorPosition: number) => {
         flushSync(() => {
             if (cursorPosition === 0) {
-                const findIndex = apexColumns.findIndex(item => item.name === focusAxisRef.current.columnName);
+                const findIndex = apexBodyColumns.findIndex(item => item.name === focusAxisRef.current.columnName);
                 if (findIndex > 0) {
                     let findColumn;
                     for (let i = findIndex - 1; i > -1; i--) {
-                        const item = apexColumns[i];
+                        const item = apexBodyColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                             findColumn = item;
                             break;
                         }
                     }
                     if (!findColumn) {
-                        for (let i = apexColumns.length - 1; i > findIndex; i--) {
-                            const item = apexColumns[i];
+                        for (let i = apexBodyColumns.length - 1; i > findIndex; i--) {
+                            const item = apexBodyColumns[i];
                             if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                                 findColumn = item;
                                 break;
@@ -397,8 +397,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         focusAxisRef.current.rowIndex -= 1;
                     }
                     let findColumn;
-                    for (let i = apexColumns.length - 1; i > findIndex; i--) {
-                        const item = apexColumns[i];
+                    for (let i = apexBodyColumns.length - 1; i > findIndex; i--) {
+                        const item = apexBodyColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                             findColumn = item;
                             break;
@@ -421,13 +421,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const onArrowRight = (cursorPosition: number, eventValue: any) => {
         flushSync(() => {
             if (cursorPosition === eventValue.length) {
-                const findIndex = apexColumns.findIndex(item => {
+                const findIndex = apexBodyColumns.findIndex(item => {
                     return item.name === focusAxisRef.current.columnName;
                 });
                 // 最后一个可编辑列
                 let findLastEditIndex = -1;
-                for (let i = apexColumns.length - 1; i > -1; i--) {
-                    const item = apexColumns[i];
+                for (let i = apexBodyColumns.length - 1; i > -1; i--) {
+                    const item = apexBodyColumns[i];
                     if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                         findLastEditIndex = i;
                         break;
@@ -440,8 +440,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                         focusAxisRef.current.rowIndex += 1;
                     }
                     let findColumn;
-                    for (let i = 0; i < apexColumns.length - 1; i++) {
-                        const item = apexColumns[i];
+                    for (let i = 0; i < apexBodyColumns.length - 1; i++) {
+                        const item = apexBodyColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                             findColumn = item;
                             break;
@@ -452,8 +452,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                     }
                 } else {
                     let findColumn;
-                    for (let i = findIndex + 1; i < apexColumns.length; i++) {
-                        const item = apexColumns[i];
+                    for (let i = findIndex + 1; i < apexBodyColumns.length; i++) {
+                        const item = apexBodyColumns[i];
                         if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                             findColumn = item;
                             break;
@@ -461,7 +461,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                     }
                     if (!findColumn) {
                         for (let i = 0; i < findIndex; i++) {
-                            const item = apexColumns[i];
+                            const item = apexBodyColumns[i];
                             if ((item.columnType !== 'customer' || !item.columnType) && !item.readOnly) {
                                 findColumn = item;
                                 break;
