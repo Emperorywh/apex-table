@@ -1,6 +1,6 @@
 {
 	"name": "apex-table",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "一个React Table 组件",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",
