@@ -1,7 +1,7 @@
 {
 	"name": "apex-table",
-	"version": "1.0.0",
-	"description": "一个React Table 组件",
+	"version": "1.0.2",
+	"description": "一个开箱即用的React Table 组件，支持纯键盘操作、多级表头、排序、合计列、固定列等高级功能",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
