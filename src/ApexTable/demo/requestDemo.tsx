@@ -16,7 +16,9 @@ const App: React.FC = () => {
             columnType: 'customer',
             onFormatter: (row) => {
                 return <Space>
-                    <Button type="link">修改</Button>
+                    <Button type="link" onClick={() => {
+                        
+                    }}>修改</Button>
                 </Space>
             }
         },
@@ -197,7 +199,7 @@ const App: React.FC = () => {
         allowResize
         showSummary
         showLineNumber
-    
+        readOnly
     />
 }
 

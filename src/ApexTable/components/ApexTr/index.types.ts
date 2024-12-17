@@ -14,6 +14,7 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     totalHeight: number;
     renderCount: number;
     dataSource: any[];
+    tableReadOnly: boolean;
     /**
      * 是否展示 合计行
      */

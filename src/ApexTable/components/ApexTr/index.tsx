@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { HolderOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons'
 import { nanoid } from 'nanoid'
-import { Checkbox } from 'antd'
+import { Checkbox, Input } from 'antd'
 import ApexTd from 'apex-table/ApexTable/components/ApexTd'
 import {
     ApexDatePicker,
@@ -14,6 +14,7 @@ import {
 import { IProps } from 'apex-table/ApexTable/components/ApexTr/index.types'
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import ApexShowCellChildren from '../ApexShowCellChildren'
 
 const ApexTr = (props: IProps<any>) => {
     
@@ -36,7 +37,8 @@ const ApexTr = (props: IProps<any>) => {
         onEnter,
         insertRows,
         deleteRow,
-        dataSourceItem
+        dataSourceItem,
+        tableReadOnly
     } = props;
     
     const {
@@ -98,10 +100,10 @@ const ApexTr = (props: IProps<any>) => {
         }
         {
             columns.map((columnItem) => {
-                const { columnType = 'input', readOnly = false } = columnItem;
+                const { columnType = 'input', readOnly = false, onFormatter } = columnItem;
                 if (columnItem?.visible === false) return;
                 const refKey: string = `${dataSourceItem['rowIndex']}-${columnItem.name as string}`;
-                if (readOnly) {
+                if ((readOnly || tableReadOnly) && columnType !== 'customer') {
                     return <ApexTd
                         key={refKey}
                         column={columnItem}
@@ -205,6 +207,44 @@ const ApexTr = (props: IProps<any>) => {
                             rowIndex={dataSourceItem['rowIndex']}
                             rowHeight={rowHeight}
                             tableDivRef={tableDivRef}
+                            showLineNumber={showLineNumber}
+                            onCellClick={onCellClick}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                            onEnter={onEnter}
+                        />;
+                    case 'customer':
+                        if (onFormatter && typeof onFormatter === 'function') {
+                            return <ApexTd
+                                row={dataSourceItem}
+                                column={columnItem}
+                                columns={columns}
+                                rowHeight={rowHeight}
+                                ref={(inputRef: any) => onSetRef(inputRef, refKey)}
+                                allowSelect={allowSelect}
+                                allowFixed={allowFixed}
+                                showLineNumber={showLineNumber}
+                                isValid={true}
+                            >
+                                <div className="apex-show-cell">
+                                    <div className="overflow-hidden-one">
+                                        {onFormatter(dataSourceItem, dataSourceItem[columnItem.name])}
+                                    </div>
+                                </div>
+                            </ApexTd>
+                        }
+                        return <ApexInput
+                            {...props}
+                            allowFixed={allowFixed}
+                            ref={(inputRef: any) => onSetRef(inputRef, refKey)}
+                            allowSelect={allowSelect}
+                            tableDivRef={tableDivRef}
+                            key={refKey}
+                            column={columnItem}
+                            columns={columns}
+                            row={dataSourceItem}
+                            rowIndex={dataSourceItem['rowIndex']}
+                            rowHeight={rowHeight}
                             showLineNumber={showLineNumber}
                             onCellClick={onCellClick}
                             onChange={onChange}

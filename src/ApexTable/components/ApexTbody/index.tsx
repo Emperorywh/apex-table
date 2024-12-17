@@ -32,6 +32,7 @@ function ApexTbody<T>(props: IProps<T>) {
         onChangeTableData,
         allowRowDrag,
         showSummary,
+        readOnly = false
     } = props;
     const topHeight = startIndex * rowHeight;
     const bottomHeight = totalHeight - (startIndex * rowHeight) - ((endIndex - startIndex) * rowHeight) + (showSummary ? 40 : 0);
@@ -102,6 +103,7 @@ function ApexTbody<T>(props: IProps<T>) {
                             {...props}
                             dataSourceItem={dataSourceItem}
                             activeDragKey={activeDragKey}
+                            tableReadOnly={readOnly}
                         />
                     })
                 }
@@ -115,6 +117,7 @@ function ApexTbody<T>(props: IProps<T>) {
                 activeDragKey={activeDragKey}
                 allowRowDrag={allowRowDrag}
                 allowRowAddDel={allowRowAddDel}
+                tableReadOnly={readOnly}
             />
         })
     }

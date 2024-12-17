@@ -13,6 +13,7 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     renderCount: number;
     dataSource: any[];
     tableDataSource: any[];
+    readOnly: boolean;
     /**
      * 是否展示 合计行
      */

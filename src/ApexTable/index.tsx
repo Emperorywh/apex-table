@@ -32,6 +32,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         showLineNumber = true,
         showColumnConfig = false,
         rowKey,
+        readOnly = false,
         onColumnWidthChange
     } = props;
     
@@ -806,6 +807,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             allowFixed={allowFixed}
                             allowRowDrag={allowRowDrag}
                             allowRowAddDel={allowRowAddDel}
+                            readOnly={readOnly}
                             onRowSelected={handleRowSelected}
                             onCellClick={handleInputFocus}
                             onChange={handleChangeCellValue}
