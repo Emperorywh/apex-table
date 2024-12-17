@@ -5,7 +5,7 @@ import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import zh_CN from 'antd/es/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { flushSync } from 'react-dom';
-import { ApexColgroup, ApexPagination, ApexTbody, ApexThead } from './components';
+import { ApexColgroup, ApexPagination, ApexTbody, ApexThead, ApexTrSummary } from './components';
 import { ApexTableProps, IApexTableColumns, IFocusAxis } from './index.types';
 
 
@@ -254,20 +254,18 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
      * 根据表格数据、当前页码、每页条数的变化，重新切片
      */
     const initPageDadaSource = () => {
-        flushSync(() => {
-            if (Array.isArray(dataSource) && dataSource.length > 0) {
-                const startIndex = (currentPage - 1) * pageSize;
-                const endIndex = currentPage * pageSize;
-                const newArray: any[] = tableDataSource.slice(startIndex, endIndex);
-                newArray.forEach((item, index) => {
-                    item['rowIndex'] = index;
-                })
-                setPageDataSource([...newArray]);
-            }
-            if (props.request && typeof props.request === 'function') {
-                setPageDataSource([...tableDataSource]);
-            }
-        })
+        if (Array.isArray(dataSource) && dataSource.length > 0) {
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = currentPage * pageSize;
+            const newArray: any[] = tableDataSource.slice(startIndex, endIndex);
+            newArray.forEach((item, index) => {
+                item['rowIndex'] = index;
+            })
+            setPageDataSource([...newArray]);
+        }
+        if (props.request && typeof props.request === 'function') {
+            setPageDataSource([...tableDataSource]);
+        }
     }
     
     /**
@@ -278,11 +276,12 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             setSpinning(true);
             const { data, success, total } = await props.request({ pageSize, currentPage });
             if (success && Array.isArray(data) && data.length > 0) {
-                data.forEach((item) => {
+                data.forEach((item, index) => {
                     const findChecked = checkedData.find(checkItem => checkItem[rowKey] === item[rowKey]);
                     item['apexTableChecked'] = findChecked ? true : false;
+                    item['rowIndex'] = index;
                 });
-                setTableDataSource(data);
+                setTableDataSource([...data]);
             }
             setTotal(total);
             setSpinning(false);
@@ -601,7 +600,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         setApexBodyColumns([...result])
     }
     
-    const onGetTreeColumns = (columns: IApexTableColumns<any>[], result: IApexTableColumns<any>[]) =>{
+    const onGetTreeColumns = (columns: IApexTableColumns<any>[], result: IApexTableColumns<any>[]) => {
         columns.forEach(column => {
             if (column.children && column.children.length > 0) {
                 onGetTreeColumns(column.children, result);
@@ -672,7 +671,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const handleScrollBySlice = (scrollTop: number) => {
         flushSync(() => {
             let start = Math.floor(scrollTop / rowHeight);
-            const startBottom = pageDataSource.length - 1 - renderCount - bufferCount;
+            const startBottom = pageDataSource.length - renderCount - bufferCount;
             if (start > startBottom) {
                 start = startBottom;
             }
@@ -681,13 +680,16 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             } else {
                 start = 0;
             }
-            const endBottom = pageDataSource.length - 1;
-            let end = Math.floor(start + renderCount + bufferCount);
+            const endBottom = pageDataSource.length;
+            let end = Math.floor(start + renderCount + bufferCount) + 1;
             if (end > endBottom) {
                 end = endBottom;
             }
             if (start > bufferCount) {
                 end += bufferCount;
+            }
+            if (showSummary) {
+                end++;
             }
             setStartIndex(start);
             setEndIndex(end);
@@ -821,6 +823,15 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                                 })
                             }}
                         />
+                        {
+                            showSummary && <ApexTrSummary
+                                {...props as any}
+                                dataSourceItem={{
+                                    rowIndex: tableDataSource.length
+                                }}
+                                summaryData={summaryData}
+                            />
+                        }
                     </table>
                 </div>
                 <ApexPagination

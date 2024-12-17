@@ -18,7 +18,6 @@ import {
 } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core/dist/types'
 import { flushSync } from 'react-dom'
-import ApexTrSummary from 'apex-table/ApexTable/components/ApexTrSummary'
 
 function ApexTbody<T>(props: IProps<T>) {
     const {
@@ -33,11 +32,9 @@ function ApexTbody<T>(props: IProps<T>) {
         onChangeTableData,
         allowRowDrag,
         showSummary,
-        summaryData
     } = props;
-    
     const topHeight = startIndex * rowHeight;
-    const bottomHeight = totalHeight - (startIndex * rowHeight) - ((endIndex - startIndex) * rowHeight);
+    const bottomHeight = totalHeight - (startIndex * rowHeight) - ((endIndex - startIndex) * rowHeight) + (showSummary ? 40 : 0);
     
     const [dragKeys, setDragKeys] = useState<any[]>([]);
     const [activeDragKey, setActiveDragKey] = useState<any>('');
@@ -120,15 +117,6 @@ function ApexTbody<T>(props: IProps<T>) {
                 allowRowAddDel={allowRowAddDel}
             />
         })
-    }
-    {
-        showSummary && <ApexTrSummary
-            {...props}
-            dataSourceItem={{
-                rowIndex: tableDataSource.length
-            }}
-            summaryData={summaryData}
-        />
     }
     {
         dataSource.length > 0 && bottomHeight > 0 && <tr style={{ height: bottomHeight }}/>

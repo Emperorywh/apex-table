@@ -1,8 +1,5 @@
 import React from "react";
 import ApexTd from 'apex-table/ApexTable/components/ApexTd'
-import {
-    ApexShowCell
-} from 'apex-table/ApexTable/components'
 import { IProps } from 'apex-table/ApexTable/components/ApexTrSummary/index.types'
 
 const ApexTrSummary = (props: IProps<any>) => {
@@ -18,7 +15,8 @@ const ApexTrSummary = (props: IProps<any>) => {
     } = props;
     
     
-    return <tr
+    return <tfoot className='apex-table-tfoot'>
+    <tr
         key={`apex-table-tbody-tr-summary}`}
         className='apex-table-tbody-tr apex-table-tbody-tr-summary'
         style={{
@@ -60,6 +58,7 @@ const ApexTrSummary = (props: IProps<any>) => {
             })
         }
     </tr>
+    </tfoot>
 }
 
 export default ApexTrSummary;

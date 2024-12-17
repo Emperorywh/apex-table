@@ -57,24 +57,6 @@ const App: React.FC = () => {
         {
             title: '仓库',
             name: 'kFullName',
-            columnType: 'modal',
-            fixed: 'left',
-            modalOptions: (row, value, modalRef) => {
-                return {
-                    title: '仓库信息',
-                    width: '50vw',
-                    content: <div>
-                        <h1>仓库列表</h1>
-                        <div>{value}</div>
-                        <Space>
-                            <Button onClick={() => {
-                                modalRef.current?.destroy();
-                            }}>取消</Button>
-                            <Button type='primary' onClick={() => { modalRef.current?.destroy(); }}>确定</Button>
-                        </Space>
-                    </div>
-                }
-            }
         },
         {
             title: '商品编号',
@@ -103,7 +85,6 @@ const App: React.FC = () => {
             title: '数量',
             name: 'assQty',
             columnType: 'inputNumber',
-            showSummary: true
         },
         {
             title: '生产日期',
@@ -118,7 +99,6 @@ const App: React.FC = () => {
             title: '到期日期',
             name: 'endDate',
             columnType: 'datePicker',
-            fixed: 'right',
         }
     ]
 
@@ -127,19 +107,11 @@ const App: React.FC = () => {
     }, []);
 
     return <ApexTable
-        allowSelect
-        allowResize
-        allowFixed
         columns={columns}
         dataSource={dataSource}
-        showHeaderCheckBox
         rowKey='id'
         rowHeight={45}
-        onColumnWidthChange={column => {
-            console.log("列宽改变", column)
-        }}
-        showSummary
-        allowSort
+        allowSort={false}
     />
 };
 

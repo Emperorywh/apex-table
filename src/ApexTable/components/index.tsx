@@ -10,6 +10,7 @@ import ApexShowCellChildren from "./ApexShowCellChildren";
 import ApexTbody from "./ApexTbody";
 import ApexTh from "./ApexTh";
 import ApexThead from "./ApexThead";
+import  ApexTrSummary from "./ApexTrSummary"
  
 export {
     ApexColgroup,
@@ -23,5 +24,6 @@ export {
     ApexDatePicker,
     ApexShowCellChildren,
     ApexTh,
-    ApexShowCell
+    ApexShowCell,
+    ApexTrSummary
 }

@@ -2,12 +2,14 @@
 
 <h1>ApexTable</h1>
 
-一套企业级 UI 设计语言和 React 组件库。
+一个开箱即用的React Table 组件，支持纯键盘操作、多级表头、排序、合计列、固定列、行拖动、列拖动、等高级功能。
 
 [![dumi][dumi-image]][dumi-url]
 
 
-## ❤️ 赞助者
+## ❤️ 在线地址
+
+https://table.imywh.com/
 
 [dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
 [dumi-url]: https://table.imywh.com
@@ -28,8 +30,6 @@
 支持范围：https://browsersl.ist/#q=defaults
 
 - 现代浏览器。
-- 支持服务端渲染。
-- [Electron](https://www.electronjs.org/)
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)<br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)<br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/electron/electron_48x48.png" alt="Electron" width="24px" height="24px" />](https://godban.github.io/browsers-support-badges/)<br>Electron |
 | --- | --- | --- | --- | --- |
@@ -51,19 +51,7 @@ pnpm add apex-table
 
 ## 🔨 示例
 
-```tsx
-import React from 'react';
-import { Button, DatePicker } from 'antd';
-
-const App = () => (
-  <>
-    <Button type="primary">PRESS ME</Button>
-    <DatePicker />
-  </>
-);
-
-export default App;
-```
+https://table.imywh.com/
 
 ### 🌈 定制主题
 
