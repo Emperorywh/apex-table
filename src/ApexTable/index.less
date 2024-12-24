@@ -350,6 +350,13 @@
                 font-size: 14px;
                 z-index: 100;
 
+                .apex-table-tbody-td {
+                    box-sizing: border-box;
+                    border: 1px solid rgba(5, 5, 5, 0.06);
+                    text-align: left;
+                    border-top: none;
+                }
+
                 .apex-table-tbody-tr-summary {
                     .apex-table-tbody-tr-summary-box {
                         display: flex;
@@ -359,6 +366,14 @@
                         .apex-table-tbody-tr-summary-content {
                             font-weight: 700;
                             color: rgba(0, 0, 0, 0.87);
+                        }
+                    }
+
+                    .apex-table-tbody-td-line-number {
+                        .number {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
                         }
                     }
                 }

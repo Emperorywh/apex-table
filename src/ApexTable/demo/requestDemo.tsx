@@ -17,7 +17,7 @@ const App: React.FC = () => {
             onFormatter: (row) => {
                 return <Space>
                     <Button type="link" onClick={() => {
-                        
+                    
                     }}>修改</Button>
                 </Space>
             }
