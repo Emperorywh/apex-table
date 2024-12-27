@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ApexTable } from 'apex-table';
-import { Button, Space } from 'antd';
 import { nanoid } from "nanoid";
 import { IApexTableColumns } from '../index.types';
 interface ITableListItem {
@@ -57,10 +56,18 @@ const App: React.FC = () => {
         {
             title: '仓库',
             name: 'kFullName',
+            rules: {
+                isValid: ({ row, value }) => value.length > 0,
+                noticeMessage: '仓库必填'
+            }
         },
         {
             title: '商品编号',
             name: 'pUserCode',
+            rules: {
+                isValid: ({ row, value }) => value.length > 0,
+                noticeMessage: '商品编号必填'
+            }
         },
         {
             title: '商品名称',
@@ -113,6 +120,8 @@ const App: React.FC = () => {
         rowHeight={45}
         allowSort={false}
         allowRowAddDel
+        showHeaderCheckBox
+        allowSelect
     />
 };
 

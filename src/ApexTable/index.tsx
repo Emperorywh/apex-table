@@ -581,6 +581,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         }
     }
     
+    /**
+     * 获取选中的数据
+     */
+    const getCheckedData = () => {
+        return structuredClone(checkedData);
+    }
+    
     useImperativeHandle(ref, () => {
         return {
             getColumns,
@@ -590,7 +597,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             pushRows,
             insertRows,
             updateRow,
-            deleteRow
+            deleteRow,
+            getCheckedData
         }
     });
     

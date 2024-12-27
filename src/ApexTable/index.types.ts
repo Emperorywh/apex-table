@@ -227,6 +227,11 @@ export interface ApexTableRef {
      * @param rowKey
      */
     deleteRow: (rowKey: string) => void
+    
+    /**
+     * 获取选中的数据
+     */
+    getCheckedData: () => any[];
 }
 
 /**
