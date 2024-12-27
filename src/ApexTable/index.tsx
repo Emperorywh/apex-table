@@ -545,6 +545,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         if (findIndex > -1) {
             const cloneTable = structuredClone(tableDataSource);
             cloneTable.splice(findIndex + 1, 0, ...rowList);
+            initPagenation(cloneTable);
             setTableDataSource(cloneTable);
         }
     }

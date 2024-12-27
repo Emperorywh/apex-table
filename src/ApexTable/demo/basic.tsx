@@ -112,6 +112,7 @@ const App: React.FC = () => {
         rowKey='id'
         rowHeight={45}
         allowSort={false}
+        allowRowAddDel
     />
 };
 
