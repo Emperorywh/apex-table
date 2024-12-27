@@ -232,6 +232,12 @@ export interface ApexTableRef {
      * 获取选中的数据
      */
     getCheckedData: () => any[];
+    
+    /**
+     * 设置请求参数，并重新请求接口
+     * @param params
+     */
+    setRequestParams: (params: any) => void;
 }
 
 /**

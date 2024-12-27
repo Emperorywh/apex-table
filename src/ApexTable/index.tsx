@@ -272,14 +272,14 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     /**
      * 处理 request 的数据
      */
-    const handleRequestData = async () => {
+    const handleRequestData = async (params: any = {}) => {
         if (props.request && typeof props.request === 'function') {
             setSpinning(true);
-            const { data, success, total } = await props.request({ pageSize, currentPage });
+            const { data, success, total } = await props.request({ ...params, pageSize, currentPage });
             if (success && Array.isArray(data) && data.length > 0) {
                 data.forEach((item, index) => {
                     const findChecked = checkedData.find(checkItem => checkItem[rowKey] === item[rowKey]);
-                    item['apexTableChecked'] = findChecked ? true : false;
+                    item['apexTableChecked'] = !!findChecked;
                     item['rowIndex'] = index;
                 });
                 setTableDataSource([...data]);
@@ -588,6 +588,13 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
         return structuredClone(checkedData);
     }
     
+    /**
+     * 设置请求参数，并重新请求接口
+     */
+    const setRequestParams = (params: any) => {
+        handleRequestData(params);
+    }
+    
     useImperativeHandle(ref, () => {
         return {
             getColumns,
@@ -598,7 +605,8 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
             insertRows,
             updateRow,
             deleteRow,
-            getCheckedData
+            getCheckedData,
+            setRequestParams
         }
     });
     
