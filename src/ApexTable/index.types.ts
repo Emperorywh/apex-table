@@ -1,4 +1,4 @@
-import { ModalFuncProps, PaginationProps } from "antd";
+import { InputProps, ModalFuncProps, PaginationProps } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import React, { ReactNode } from "react";
 import { ApexModalRef } from "./components/ApexModal/index.types";
@@ -175,6 +175,10 @@ export interface IApexTableColumns<T> {
     onFormatter?: (row?: any, value?: any) => React.ReactNode;
     onRender?: (row?: any, value?: any) => React.ReactNode;
     modalOptions?: (row: any, value: any, modalRef: React.RefObject<ApexModalRef>) => ModalFuncProps;
+    /**
+     * 输入框 属性
+     */
+    apexTableInputProps?: InputProps
 }
 
 /**

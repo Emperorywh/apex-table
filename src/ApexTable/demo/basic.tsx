@@ -59,6 +59,20 @@ const App: React.FC = () => {
             rules: {
                 isValid: ({ row, value }) => value.length > 0,
                 noticeMessage: '仓库必填'
+            },
+            apexTableInputProps: {
+                onPressEnter: (event) => {
+                    console.log("回车", event)
+                },
+                onBlur: (event) => {
+                    console.log("失去焦点", event);
+                },
+                onFocus: (event) => {
+                    console.log("聚焦", event);
+                },
+                onChange: (event) => {
+                    console.log("值改变", event);
+                },
             }
         },
         {

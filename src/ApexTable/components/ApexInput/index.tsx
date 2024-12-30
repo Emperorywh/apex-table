@@ -59,6 +59,9 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
      * @param event
      */
     const handleInputFocus = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+        if (column?.apexTableInputProps?.onFocus) {
+            column?.apexTableInputProps?.onFocus?.(event)
+        }
         event.preventDefault();
         setIsValid(true);
         setFocusState(true);
@@ -73,7 +76,9 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
      * @param event
      */
     const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
-        const value = event.target.value;
+        if (column?.apexTableInputProps?.onBlur) {
+            column?.apexTableInputProps?.onBlur?.(event)
+        }
         setFocusState(false);
         onBlur && onBlur(event);
     }
@@ -83,10 +88,26 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
      * @param event
      */
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (column?.apexTableInputProps?.onChange) {
+            column?.apexTableInputProps?.onChange?.(event)
+        }
         onChange && onChange(row, name, event.target.value)
     }
     
+    /**
+     * 监听回车键
+     * @param event
+     */
+    const handlePressEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (column?.apexTableInputProps?.onPressEnter) {
+            column?.apexTableInputProps?.onPressEnter?.(event)
+        }
+    }
+    
     const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
+        if (column?.apexTableInputProps?.onKeyDown) {
+            column?.apexTableInputProps?.onKeyDown?.(event)
+        }
         const key = event.key;
         const cursorPosition = event.target.selectionStart;
         const selectionEnd = event.target.selectionEnd;
@@ -163,12 +184,14 @@ const ApexInput = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput>) => 
     >
         {
             focusState && <Input
+                {...column?.apexTableInputProps}
                 defaultValue={defaultValue || row[name]}
                 ref={inputRef}
                 onBlur={handleInputBlur}
                 onFocus={handleInputFocus}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                onPressEnter={handlePressEnter}
             />
         }
         {

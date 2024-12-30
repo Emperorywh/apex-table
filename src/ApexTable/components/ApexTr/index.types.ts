@@ -2,6 +2,7 @@ import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable/index.types";
 import { ITdThCommonProps } from "../index.types";
 import React from 'react'
+import { ApexTableInputProps } from 'apex-table/ApexTable/components/ApexInput/index.types'
 
 export interface IProps<T> extends ITdThCommonProps<T> {
     apexColumns: IApexTableColumns<T>[];
@@ -28,5 +29,9 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     onSetRef: (ref: any, refKey: string) => any;
     onEnter?: () => void;
     insertRows: (rowKey: string, dataSource: any[]) => void;
-    deleteRow: (rowKey: string) => void
+    deleteRow: (rowKey: string) => void;
+    /**
+     * 输入框属性
+     */
+    apexTableInputProps?: ApexTableInputProps
 }
