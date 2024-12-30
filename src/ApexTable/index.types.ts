@@ -119,7 +119,7 @@ export interface ApexTableProps<T, V> {
      * @param params
      * @returns
      */
-    request?: (params?: { pageSize: number, currentPage: number }) => Promise<{
+    request?: (params?: { pageSize: number, currentPage: number, args?: any }) => Promise<{
         data: any[],
         success: boolean,
         total: number

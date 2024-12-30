@@ -275,7 +275,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     const handleRequestData = async (params: any = {}) => {
         if (props.request && typeof props.request === 'function') {
             setSpinning(true);
-            const { data, success, total } = await props.request({ ...params, pageSize, currentPage });
+            const { data, success, total } = await props.request({ pageSize, currentPage,  ...params });
             if (success && Array.isArray(data) && data.length > 0) {
                 data.forEach((item, index) => {
                     const findChecked = checkedData.find(checkItem => checkItem[rowKey] === item[rowKey]);
@@ -291,8 +291,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
     
     /**
      * 聚焦可编辑单元格
-     * @param rowIndex  行号
-     * @param rowName   列名
+     * @param rowInfo
      */
     const handleFocusEditAbleCell = (rowInfo: IFocusAxis) => {
         const name = `${rowInfo.rowIndex}-${rowInfo.columnName}`;
