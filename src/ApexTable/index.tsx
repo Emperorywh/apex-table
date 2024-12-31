@@ -805,6 +805,7 @@ const ApexTable = forwardRef((props: ApexTableProps<any, any>, ref) => {
                             }}
                         />
                         <ApexTbody
+                            {...props}
                             rowKey={rowKey}
                             startIndex={startIndex}
                             endIndex={endIndex}

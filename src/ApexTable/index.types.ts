@@ -100,6 +100,11 @@ export interface ApexTableProps<T, V> {
     showSummary?: boolean;
     
     /**
+     * 是否支持点击行勾选
+     */
+    selectByRowClick?: boolean;
+    
+    /**
      * 唯一行号字段名
      */
     rowKey: string;

@@ -200,6 +200,8 @@ const App: React.FC = () => {
         showSummary
         showLineNumber
         readOnly
+        allowSelect
+        showHeaderCheckBox
     />
 }
 

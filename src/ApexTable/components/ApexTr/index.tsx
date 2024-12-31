@@ -38,7 +38,8 @@ const ApexTr = (props: IProps<any>) => {
         insertRows,
         deleteRow,
         dataSourceItem,
-        tableReadOnly
+        tableReadOnly,
+        selectByRowClick = false
     } = props;
     
     const {
@@ -66,6 +67,15 @@ const ApexTr = (props: IProps<any>) => {
             height: rowHeight
         }}
         {...attributes}
+        onClick={() => {
+            if (selectByRowClick) {
+                onRowSelected({
+                    target: {
+                        checked: !dataSourceItem?.apexTableChecked
+                    }
+                } as any, dataSourceItem)
+            }
+        }}
     >
         {
             showLineNumber &&

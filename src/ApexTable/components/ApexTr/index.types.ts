@@ -2,7 +2,7 @@ import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 import { IApexTableColumns, IFocusAxis } from "apex-table/ApexTable/index.types";
 import { ITdThCommonProps } from "../index.types";
 import React from 'react'
-import { ApexTableInputProps } from 'apex-table/ApexTable/components/ApexInput/index.types'
+import { InputProps } from 'antd'
 
 export interface IProps<T> extends ITdThCommonProps<T> {
     apexColumns: IApexTableColumns<T>[];
@@ -33,5 +33,10 @@ export interface IProps<T> extends ITdThCommonProps<T> {
     /**
      * 输入框属性
      */
-    apexTableInputProps?: ApexTableInputProps
+    apexTableInputProps?: InputProps
+    
+    /**
+     * 是否支持点击行勾选
+     */
+    selectByRowClick?: boolean;
 }

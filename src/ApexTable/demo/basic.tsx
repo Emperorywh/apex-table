@@ -136,6 +136,7 @@ const App: React.FC = () => {
         allowRowAddDel
         showHeaderCheckBox
         allowSelect
+        selectByRowClick
     />
 };
 

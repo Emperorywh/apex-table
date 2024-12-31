@@ -19,6 +19,10 @@ export interface IProps<T> extends ITdThCommonProps<T> {
      */
     showSummary: boolean;
     summaryData: any;
+    /**
+     * 是否支持点击行勾选
+     */
+    selectByRowClick?: boolean;
     tableDivRef: React.RefObject<HTMLDivElement>;
     allowRowAddDel?: boolean;
     onRowSelected: (event: CheckboxChangeEvent, row: any) => void;
