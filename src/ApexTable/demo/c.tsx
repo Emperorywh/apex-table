@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { ApexTable } from 'apex-table';
 import { ApexTableRef, IApexTableColumns } from "../index.types";
-import { Button, Space } from 'antd'
 
 const App: React.FC = () => {
     const apexTableRef = useRef<ApexTableRef>();
@@ -10,18 +9,6 @@ const App: React.FC = () => {
      * 表格列
      */
     const [columns, setColumns] = useState<IApexTableColumns<any>[]>([
-        {
-            title: '操作',
-            name: 'action',
-            columnType: 'customer',
-            onFormatter: (row) => {
-                return <Space>
-                    <Button type="link" onClick={() => {
-                    
-                    }}>修改</Button>
-                </Space>
-            }
-        },
         {
             title: '单据日期',
             name: 'billDate',
@@ -70,52 +57,42 @@ const App: React.FC = () => {
         {
             title: '计划数量',
             name: 'sumAssQty',
-            showSummary: true
         },
         {
             title: '已入库数量',
             name: 'sumAssInstockQty',
-            showSummary: true
         },
         {
             title: '未入库数量',
             name: 'sumAssPreInstockQty',
-            showSummary: true
         },
         {
             title: '已上架数量',
             name: 'sumAssOnShelfQty',
-            showSummary: true
         },
         {
             title: '未上架数量',
             name: 'sumAssPreOnShelfQty',
-            showSummary: true
         },
         {
             title: '单据金额',
             name: 'total',
-            showSummary: true
         },
         {
             title: '折扣金额',
             name: 'disTotal',
-            showSummary: true
         },
         {
             title: '含税金额',
             name: 'taxedTotal',
-            showSummary: true
         },
         {
             title: '总体积(M³)',
             name: 'sumVolume',
-            showSummary: true
         },
         {
             title: '总重量(Kg)',
             name: 'sumWeight',
-            showSummary: true
         },
         {
             title: '承运单位',
@@ -157,7 +134,6 @@ const App: React.FC = () => {
         {
             title: '单据打印次数',
             name: 'printCount',
-            showSummary: true
         },
         {
             title: '打印时间',
@@ -191,17 +167,12 @@ const App: React.FC = () => {
         columns={columns}
         rowKey='billIndexId'
         rowHeight={40}
-        height={745}
+        height={600}
         showPagination
         pagination={{
             showSizeChanger: true
         }}
-        allowResize
-        showSummary
-        showLineNumber
         readOnly
-        allowSelect
-        showHeaderCheckBox
     />
 }
 

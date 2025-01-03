@@ -12,13 +12,25 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 ## 何时使用
 
 - 当有大量结构化的数据需要展现时；
-- 当需要对数据进行排序、搜索、分页、自定义操作等复杂行为时。
+- ApexTable 开发了很多便捷易用的功能，内置排序、筛选、分组、排序、编辑、等高级功能，并为多种类型数据展示提供了内置格式化，欢迎尝试使用。
 
 ## 代码演示
+<code src="./demo/a.tsx" title="基本用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>
+<code src="./demo/b.tsx" title="报表模式" description="将 readOnly 属性设置为 true，则不允许对表格进行手工编辑，仅为展示作用"></code>
+<code src="./demo/c.tsx" title="远程数据请求" description="数据源使用request属性，传递请求数据方法"></code>
+<code src="./demo/d.tsx" title="可选择" description="表格展现复选框列，showHeaderCheckBox是否展示表格头的复选框，allowSelect是否显示复选框列，isSingle是否单选"></code>
+<code src="./demo/e.tsx" title="控件列" description="在列上配置columnType,实现不同控件列"></code>
+<code src="./demo/f.tsx" title="固定列" description="allowFixed为true,列属性上配置fixed，参数为left或right"></code>
+<code src="./demo/g.tsx" title="行拖动" description="配置allowRowDrag为true开启行拖动功能"></code>
+<code src="./demo/h.tsx" title="列拖动" description="配置allowColumnDrag为true开启列拖动功能"></code>
+<code src="./demo/i.tsx" title="行图标删除增加" description="配置allowRowAddDel为true开启行图标删除增加功能"></code>
+<code src="./demo/j.tsx" title="单元格验证" description="不符合单元格规则的会被标记为红色,所有单元格不能为空，其中kFullName列不能为空，失去焦点时触发校验"></code>
+
+
+<!-- 
 <code src="./demo/basic.tsx" title="基本用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>
 <code src="./demo/simple.tsx" title="综合用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>
-<code src="./demo/multiLevelHeaders.tsx" title="多级表头" description="多级表头"></code>
-<code src="./demo/requestDemo.tsx" title="远程数据请求" description="远程数据请求"></code>
+<code src="./demo/multiLevelHeaders.tsx" title="多级表头" description="多级表头"></code>-->
 
 
 <!-- ### ApexTable API
