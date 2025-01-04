@@ -25,7 +25,7 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 <code src="./demo/h.tsx" title="列拖动" description="配置allowColumnDrag为true开启列拖动功能"></code>
 <code src="./demo/i.tsx" title="行图标删除增加" description="配置allowRowAddDel为true开启行图标删除增加功能"></code>
 <code src="./demo/j.tsx" title="单元格验证" description="不符合单元格规则的会被标记为红色,所有单元格不能为空，其中kFullName列不能为空，失去焦点时触发校验"></code>
-
+<code src="./demo/k.tsx" title="合计列" description="自动将每列的数字值合计，需要在表格属性开启showSummary和column中开启showSummary"></code>
 
 <!-- 
 <code src="./demo/basic.tsx" title="基本用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>

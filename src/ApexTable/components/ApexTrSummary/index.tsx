@@ -8,7 +8,7 @@ const ApexTrSummary = (props: IProps<any>) => {
         allowSelect,
         allowFixed,
         columns,
-        showLineNumber,
+        showLineNumber = true,
         rowHeight,
         dataSourceItem,
         summaryData
