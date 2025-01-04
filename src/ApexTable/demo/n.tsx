@@ -214,9 +214,7 @@ const App: React.FC = () => {
         dataSource={dataSource}
         rowKey='detailId'
         rowHeight={40}
-        allowSelect
-        showHeaderCheckBox
-        height={450}
+        height={500}
     />
 };
 

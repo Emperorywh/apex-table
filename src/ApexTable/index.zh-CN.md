@@ -11,8 +11,8 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 
 ## 何时使用
 
-- 当有大量结构化的数据需要展现时；
-- ApexTable 开发了很多便捷易用的功能，内置排序、筛选、分组、排序、编辑、等高级功能，并为多种类型数据展示提供了内置格式化，欢迎尝试使用。
+- 当有大量结构化的数据需要展现时，需要便捷操作时；
+- 一个开箱即用的React Table 组件，支持纯键盘操作（上、下、左、右、鼠标滚轮）、多级表头、排序、合计列、固定列、行拖动、列拖动等高级功能。
 
 ## 代码演示
 <code src="./demo/a.tsx" title="基本用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>
@@ -26,11 +26,13 @@ coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAA
 <code src="./demo/i.tsx" title="行图标删除增加" description="配置allowRowAddDel为true开启行图标删除增加功能"></code>
 <code src="./demo/j.tsx" title="单元格验证" description="不符合单元格规则的会被标记为红色,所有单元格不能为空，其中kFullName列不能为空，失去焦点时触发校验"></code>
 <code src="./demo/k.tsx" title="合计列" description="自动将每列的数字值合计，需要在表格属性开启showSummary和column中开启showSummary"></code>
-
+<code src="./demo/l.tsx" title="列宽拖动调整" description="将allowResize开启，onColumnWidthChange可监听列宽拖动事件"></code>
+<code src="./demo/m.tsx" title="列字段排序" description="将allowSort开启所有列排序，column配置allowSortColumn可单独关闭/开启某列的排序功能"></code>
+<code src="./demo/n.tsx" title="多级表头" description="多级表头，column 中有children属性"></code>
 <!-- 
 <code src="./demo/basic.tsx" title="基本用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>
 <code src="./demo/simple.tsx" title="综合用法" description="表格最基本的用法，只设置静态数据源，并配置了几个列，其它所有属性默认"></code>
-<code src="./demo/multiLevelHeaders.tsx" title="多级表头" description="多级表头"></code>-->
+-->
 
 
 <!-- ### ApexTable API
