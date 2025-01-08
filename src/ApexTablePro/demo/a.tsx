@@ -45,7 +45,7 @@ const App: React.FC = () => {
      */
     const [columns, setColumns] = useState<ApexTableColumns<Row>[]>([]);
     
-    return <ApexTablePro<Row>
+    return <ApexTablePro
         columns={columns}
         ref={apexTableRef}
     />
