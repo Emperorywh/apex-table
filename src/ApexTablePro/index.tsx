@@ -9,10 +9,14 @@ import ApexColgroup from "./components/ApexColgroup";
 /**
  * 表格组件
  */
-const ApexTablePro = <T, >(props: ApexTableProps<T>, ref: React.Ref<ApexTableRef<T>>) => {
-    const { columns } = props;
+const ApexTablePro = <T extends object>(props: ApexTableProps<T>, ref: React.Ref<ApexTableRef<T>>) => {
     
-    const [apexTableProps, setApexTableProps] = useState<ApexTableProps<T>>();
+    const {
+        allowSelect = false,
+        showLineNumber = true,
+        columns = [],
+        ...otherProps
+    } = props;
     
     /**
      * 加载中
@@ -20,30 +24,19 @@ const ApexTablePro = <T, >(props: ApexTableProps<T>, ref: React.Ref<ApexTableRef
     const [spinning, setSpinning] = useState(false);
     
     useImperativeHandle(ref, () => ({
-        getColumns: () => columns,
+        getColumns: () => [],
         getDataSource: () => []
     }));
     
-    /**
-     * 处理默认参数
-     */
-    const handleDefaultProps = () =>  {
-        const defaultProps: ApexTableProps<T> = {
-            allowSelect: false,
-            columns: [],
-            showLineNumber: true
-        }
-        const tempProps = Object.assign({}, defaultProps, props);
-        setApexTableProps(tempProps);
-    }
-    
-    useEffect(() => {
-        handleDefaultProps();
-    }, [props]);
     
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
-            <ApexContextProvider value={apexTableProps}>
+            <ApexContextProvider value={{
+                ...otherProps,
+                allowSelect,
+                columns,
+                showLineNumber,
+            }}>
                 <div className='apex-table-container'>
                     <div className='apex-table-content'>
                         <table className='apex-table'>

@@ -1,7 +1,7 @@
 ---
 category: Components
 group: 数据展示
-title: ApexTable
+title: ApexTablePro
 subtitle: 表格
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*3yz3QqMlShYAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*Sv8XQ50NB40AAAAAAAAAAAAADrJ8AQ/original
