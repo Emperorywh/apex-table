@@ -1,6 +1,4 @@
-import { createContext } from 'react'
-import { ApexTableProps } from 'apex-table/ApexTablePro/index.types'
-
-const ApexContext = createContext<ApexTableProps<unknown>>(null);
+import React, { createContext } from 'react'
+const ApexContext = createContext(null);
 
 export default ApexContext;

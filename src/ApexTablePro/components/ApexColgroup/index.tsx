@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import ApexContext from "../../utils/ApexContext";
-
-const ApexColgroup = () => {
+import { ApexTableProps } from '../../index.types';
+function ApexColgroup<T>() {
     
     const {
         allowSelect,
         columns,
         showLineNumber
-    } = useContext(ApexContext);
+    } = useContext<ApexTableProps<T>>(ApexContext);
     
     return <colgroup>
         {

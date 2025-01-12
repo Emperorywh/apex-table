@@ -23,12 +23,12 @@ export interface ApexTableProps<T> {
     /**
      * 表格的列配置
      */
-    columns: ApexTableColumns<T>[];
+    columns: ApexTableColumn<T>[];
     
     /**
      * 表格数据源(静态)
      */
-    dataSource?: T[];
+    dataSource?: (T & ApexTableColumnHideProps)[];
     
     /**
      * 是否展示表头复选框
@@ -136,17 +136,36 @@ export interface ApexTableProps<T> {
      * @param column
      * @returns
      */
-    onColumnWidthChange?: (column: ApexTableColumns<T>) => void;
+    onColumnWidthChange?: (column: ApexTableColumn<T>) => void;
+}
+
+/**
+ * 表格内部扩展的 props
+ */
+export interface ApexTableExtendProps<T> {
+    tableDataSource?: T[]
 }
 
 /**
  * 列
  */
-export interface ApexTableColumns<T> {
+export interface ApexTableColumn<T> {
     title: string;
-    name: keyof T;
+    name: string;
     columnType?: ApexColumnType;
     width?: number;
+    /**
+     * 是否显示
+     */
+    visible?: boolean;
+}
+
+/**
+ * 表格数据源中，隐藏的属性（内部）
+ */
+export interface ApexTableColumnHideProps {
+    apexTableRowIndex?: number;
+    apexTableChecked?: boolean;
 }
 
 /**
@@ -159,13 +178,6 @@ export type ApexColumnType = 'input' | 'inputNumber' | 'datePicker' | 'rangePick
  * 表格的 ref 类型
  */
 export interface ApexTableRef<T> {
-    getColumns: () => ApexTableColumns<T>[];
+    getColumns: () => ApexTableColumn<T>[];
     getDataSource: () => T[];
-}
-
-/**
- * 表格数据源中，隐藏的属性（内部）
- */
-export interface ApexTableColumnHideProps {
-    apexTableRowIndex: number;
 }

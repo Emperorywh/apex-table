@@ -1,7 +1,7 @@
 import React from 'react'
-import { ApexTableProps } from 'apex-table/ApexTablePro/index.types'
+import { ApexTableExtendProps, ApexTableProps } from 'apex-table/ApexTablePro/index.types'
 
 export interface IProps<T> {
     children: React.ReactNode;
-    value: ApexTableProps<T>
+    value: ApexTableProps<T> & ApexTableExtendProps<T>
 }
