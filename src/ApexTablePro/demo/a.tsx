@@ -155,7 +155,7 @@ const App: React.FC = () => {
         showHeaderCheckBox
         columns={columns}
         ref={apexTableRef}
-        rowHeight={50}
+        rowHeight={45}
         rowKey="detailId"
         dataSource={dataSource}
     />

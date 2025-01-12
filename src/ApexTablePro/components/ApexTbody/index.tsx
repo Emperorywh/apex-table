@@ -4,12 +4,10 @@ import ApexContext from '../../utils/ApexContext'
 import ApexTr from '../ApexTr';
 import { ApexTableExtendProps, ApexTableProps } from '../../index.types';
 
-function ApexTbody<T>(props: IProps) {
+function ApexTbody<T>(props: IProps<T>) {
     const {
         tableDataSource
     } = useContext<ApexTableProps<T> & ApexTableExtendProps<T>>(ApexContext);
-    
-    debugger;
     
     return <tbody className='apex-table-tbody'>
     {

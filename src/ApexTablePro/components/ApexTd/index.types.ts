@@ -4,5 +4,4 @@ import React from 'react'
 export interface IProps<T> {
     row: T & ApexTableColumnHideProps;
     column: ApexTableColumn<T>;
-    children: React.ReactNode;
 }

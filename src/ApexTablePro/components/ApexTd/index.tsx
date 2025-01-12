@@ -1,9 +1,10 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 import { IProps } from "./index.types";
+import ApexCell from 'apex-table/ApexTablePro/components/ApexCell'
 
 function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
     
-    const { row, column, children } = props;
+    const { row, column } = props;
     
     const [classNames, setClassNames] = useState('');
     
@@ -24,7 +25,7 @@ function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
         ref={ref}
         id={`td-${row.apexTableRowIndex}-${column.name}`}
     >
-        {children}
+        <ApexCell row={row} column={column} />
     </td>
 }
 

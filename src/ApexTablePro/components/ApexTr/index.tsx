@@ -47,11 +47,7 @@ function ApexTr<T>(props: IProps<T>) {
                 return <ApexTd<T>
                     row={row}
                     column={column}
-                >
-                    {
-                        row?.[column.name]
-                    }
-                </ApexTd>
+                />
             })
         }
     </tr>

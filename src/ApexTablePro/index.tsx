@@ -39,7 +39,7 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
             row.apexTableRowIndex = rowIndex;
             row.apexTableChecked = false;
         });
-        setTableDataSource(tableDataSource);
+        setTableDataSource(cloneDataSource);
     }
     
     useEffect(() => {
