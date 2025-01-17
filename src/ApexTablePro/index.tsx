@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { ApexTableColumnHideProps, ApexTableProps, ApexTableRef } from './index.types';
 import { ConfigProvider, Spin } from 'antd'
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -30,6 +30,7 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
      */
     const [tableDataSource, setTableDataSource] = useState<T[]>([]);
     
+    
     /**
      * 格式化外部传入的dataSource
      */
@@ -41,6 +42,20 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
         });
         setTableDataSource(cloneDataSource);
     }
+    
+    /**
+     * 上下文中传递的值
+     */
+    const providerValue = useMemo(() => {
+        return {
+            ...otherProps,
+            allowSelect,
+            columns,
+            dataSource,
+            showLineNumber,
+            tableDataSource
+        }
+    }, [tableDataSource, columns, dataSource])
     
     useEffect(() => {
         onFormatDataSource();
@@ -54,14 +69,7 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
     return <ConfigProvider locale={zh_CN}>
         <Spin size="large" spinning={spinning}>
             <ApexContextProvider<T>
-                value={{
-                    ...otherProps,
-                    allowSelect,
-                    columns,
-                    dataSource,
-                    showLineNumber,
-                    tableDataSource
-                }}>
+                value={providerValue}>
                 <div className='apex-table-container'>
                     <div className='apex-table-content'>
                         <table className='apex-table'>

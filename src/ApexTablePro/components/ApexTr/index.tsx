@@ -44,7 +44,9 @@ function ApexTr<T>(props: IProps<T>) {
         }
         {
             columns.map(column => {
+                const refKey: string = `${row.apexTableRowIndex}-${column.name as string}`;
                 return <ApexTd<T>
+                    key={refKey}
                     row={row}
                     column={column}
                 />

@@ -2,7 +2,8 @@
  * 表格
  */
 import React, { ReactNode } from 'react'
-import { PaginationProps } from 'antd'
+import { InputProps, PaginationProps } from 'antd'
+import { DefaultOptionType } from 'antd/es/select'
 
 export interface ApexTableProps<T> {
     /**
@@ -154,11 +155,20 @@ export interface ApexTableColumn<T> {
     name: string;
     columnType?: ApexColumnType;
     width?: number;
-    /**
-     * 是否显示
-     */
     visible?: boolean;
+    options?: DefaultOptionType[] | ((params: ApexTableParams<T>) => DefaultOptionType[]);
+    onRender?: (params: ApexTableParams<T>) => React.ReactNode;
+    /**
+     * 输入框 属性
+     */
+    apexTableInputProps?: InputProps
 }
+
+export interface ApexTableParams<T> {
+    row: T,
+    value: any
+}
+
 
 /**
  * 表格数据源中，隐藏的属性（内部）
