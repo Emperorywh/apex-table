@@ -1,10 +1,26 @@
-import React, { forwardRef, useEffect, useState } from 'react'
+import React, { forwardRef, useContext, useEffect, useState } from 'react'
 import { IProps } from "./index.types";
-import ApexCell from 'apex-table/ApexTablePro/components/ApexCell'
+import ApexInput from '../ApexInput'
+import { ApexTableExtendProps, ApexTableProps } from '../../index.types'
+import ApexContext from '../../utils/ApexContext'
 
 function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
-    
+    console.log("渲染")
     const { row, column } = props;
+    
+    const {
+        rowHeight,
+        focusAxis
+    } = useContext<ApexTableProps<T>  & ApexTableExtendProps<T>>(ApexContext);
+    
+    /**
+     * 单元格的Key值
+     */
+    const cellKey = `${row.apexTableRowIndex}-${column.name}`;
+    /**
+     * 聚焦的单元格
+     */
+    const focusKey = `${focusAxis.x}-${focusAxis.y}`;
     
     const [classNames, setClassNames] = useState('');
     
@@ -16,7 +32,7 @@ function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
         setClassNames(className);
     }
     
-    useEffect(() =>{
+    useEffect(() => {
         initClassNames();
     }, [])
     
@@ -24,8 +40,12 @@ function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
         className={classNames}
         ref={ref}
         id={`td-${row.apexTableRowIndex}-${column.name}`}
+        style={{
+            height: rowHeight,
+            borderColor: cellKey === focusKey ? '#40a9ff' : 'rgba(5, 5, 5, 0.06)'
+        }}
     >
-        <ApexCell row={row} column={column} />
+        <ApexInput row={row} column={column}/>
     </td>
 }
 

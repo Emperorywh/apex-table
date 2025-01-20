@@ -144,7 +144,9 @@ export interface ApexTableProps<T> {
  * 表格内部扩展的 props
  */
 export interface ApexTableExtendProps<T> {
-    tableDataSource?: T[]
+    tableDataSource?: T[];
+    focusAxis: ApexFocusAxis;
+    onChangeFocusAxis?: (axis: ApexFocusAxis) => void;
 }
 
 /**
@@ -190,4 +192,12 @@ export type ApexColumnType = 'input' | 'inputNumber' | 'datePicker' | 'rangePick
 export interface ApexTableRef<T> {
     getColumns: () => ApexTableColumn<T>[];
     getDataSource: () => T[];
+}
+
+/**
+ * 表格聚焦的坐标点
+ */
+export interface ApexFocusAxis {
+    x: number;
+    y: string;
 }

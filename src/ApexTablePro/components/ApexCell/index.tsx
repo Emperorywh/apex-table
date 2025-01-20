@@ -5,11 +5,21 @@ import dayjs from 'dayjs'
 
 function ApexCell<T>(props: IProps<T>) {
     
-    const { row, column } = props;
+    const { row, column, onClick } = props;
     
     const value = row?.[column?.name] || '';
     
     const { columnType = 'input', options } = column;
+    
+    /**
+     * 点击
+     * @param event
+     */
+    const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) =>  {
+        onClick?.(event);
+    }
+    
+    
     
     /**
      * 渲染单元格value
@@ -51,7 +61,7 @@ function ApexCell<T>(props: IProps<T>) {
         }
     }
     
-    return <div className="apex-show-cell">
+    return <div className="apex-show-cell" onClick={handleClick}>
         <div className="overflow-hidden-one">
             {renderValue()}
         </div>
