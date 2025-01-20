@@ -17,8 +17,6 @@ function ApexInput<T extends ApexTableColumnHideProps>(props: IProps<T>) {
     const { apexTableInputProps = {}, name } = column;
     
     const {
-        focusAxis,
-        onChangeFocusAxis
     } = useContext<ApexTableProps<T> & ApexTableExtendProps<T>>(ApexContext);
     
     const [focusState, setFocusState] = useState(false);
@@ -28,19 +26,10 @@ function ApexInput<T extends ApexTableColumnHideProps>(props: IProps<T>) {
     const defaultValue = row?.[name];
     
     /**
-     * 单元格的Key值
-     */
-    const cellKey = `${row.apexTableRowIndex}-${name}`
-    
-    /**
      * 单击单元格触发
      */
     const handleClick: React.MouseEventHandler<HTMLDivElement> = () => {
-        onChangeFocusAxis?.({
-            x: row.apexTableRowIndex,
-            y: name
-        });
-        setFocusState(true);
+        // setFocusState(true);
     }
     
     /**
@@ -56,11 +45,6 @@ function ApexInput<T extends ApexTableColumnHideProps>(props: IProps<T>) {
             inputRef.current?.select();
         }
     }, [focusState]);
-    
-    // useEffect(() => {
-    //     const focusKey = `${focusAxis.x}-${focusAxis.y}`;
-    //     setFocusState(focusKey === cellKey)
-    // }, [focusAxis])
     
     return <>
         {

@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { ApexFocusAxis, ApexTableColumnHideProps, ApexTableProps, ApexTableRef } from './index.types';
 import { ConfigProvider, Spin } from 'antd'
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -35,9 +35,9 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
     /**
      * 当前聚焦的单元格
      */
-    const [focusAxis, setFocusAxis] = useState<ApexFocusAxis>({
-        x: -1,
-        y: ''
+    const focusAxis = useRef<ApexFocusAxis>({
+        x: 0,
+        y: 'kFullName'
     });
     
     
@@ -57,6 +57,7 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
      * 监听表格键盘按下事件
      */
     const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event: any) => {
+        event.preventDefault();
         const key = event.key;
         const eventValue = event.target.value;
         const cursorPosition = event.target.selectionStart;
@@ -81,14 +82,18 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
      */
     const onArrowUp = () => {
         const axis: ApexFocusAxis = {
-            x: focusAxis.x - 1,
-            y: focusAxis.y
+            x: focusAxis.current.x - 1,
+            y: focusAxis.current.y
         }
         if (axis.x < 0) {
             axis.x = 0;
         }
-        if (axis.x !== focusAxis.x) {
-            setFocusAxis(axis);
+        if (axis.x !== focusAxis.current.x) {
+            const doc = document.getElementById(`td-${axis.x}-${axis.y}`);
+            if (doc) {
+                doc.focus();
+            }
+            focusAxis.current = axis;
         }
     }
     
@@ -97,14 +102,18 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
      */
     const onArrowDown = () => {
         const axis: ApexFocusAxis = {
-            x: focusAxis.x + 1,
-            y: focusAxis.y
+            x: focusAxis.current.x + 1,
+            y: focusAxis.current.y
         }
         if (axis.x > tableDataSource.length - 1) {
             axis.x = tableDataSource.length - 1;
         }
-        if (axis.x !== focusAxis.x) {
-            setFocusAxis(axis);
+        if (axis.x !== focusAxis.current.x) {
+            const doc = document.getElementById(`td-${axis.x}-${axis.y}`);
+            if (doc) {
+                doc.focus();
+            }
+            focusAxis.current = axis;
         }
     }
     
@@ -128,9 +137,9 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
     /**
      * 改变单元格坐标
      */
-    const handleChangeFocusAxis = useCallback((axis: ApexFocusAxis) => {
-        setFocusAxis(structuredClone(axis))
-    }, [])
+    const handleChangeFocusAxis = (axis: ApexFocusAxis) => {
+        focusAxis.current = axis;
+    }
     
     /**
      * 上下文中传递的值
@@ -141,13 +150,12 @@ const ApexTablePro = <T extends ApexTableColumnHideProps>(props: ApexTableProps<
             allowSelect,
             columns,
             dataSource,
-            focusAxis,
             showLineNumber,
             tableDataSource,
             rowHeight,
             onChangeFocusAxis: handleChangeFocusAxis
         }
-    }, [tableDataSource, columns, dataSource, focusAxis]);
+    }, [tableDataSource, columns, dataSource]);
     
     useEffect(() => {
         onFormatDataSource();

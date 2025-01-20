@@ -5,22 +5,14 @@ import { ApexTableExtendProps, ApexTableProps } from '../../index.types'
 import ApexContext from '../../utils/ApexContext'
 
 function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
-    console.log("渲染")
+    console.log("渲染");
+    
     const { row, column } = props;
     
     const {
         rowHeight,
-        focusAxis
+        onChangeFocusAxis
     } = useContext<ApexTableProps<T>  & ApexTableExtendProps<T>>(ApexContext);
-    
-    /**
-     * 单元格的Key值
-     */
-    const cellKey = `${row.apexTableRowIndex}-${column.name}`;
-    /**
-     * 聚焦的单元格
-     */
-    const focusKey = `${focusAxis.x}-${focusAxis.y}`;
     
     const [classNames, setClassNames] = useState('');
     
@@ -30,6 +22,16 @@ function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
     const initClassNames = () => {
         let className = 'apex-table-tbody-td';
         setClassNames(className);
+    }
+    
+    /**
+     * 点击单元格
+     */
+    const handleClick = () => {
+        onChangeFocusAxis?.({
+            x: row.apexTableRowIndex,
+            y: column.name
+        });
     }
     
     useEffect(() => {
@@ -42,8 +44,9 @@ function ApexTd<T>(props: IProps<T>, ref: React.Ref<HTMLTableDataCellElement>) {
         id={`td-${row.apexTableRowIndex}-${column.name}`}
         style={{
             height: rowHeight,
-            borderColor: cellKey === focusKey ? '#40a9ff' : 'rgba(5, 5, 5, 0.06)'
         }}
+        tabIndex={-1}
+        onClick={handleClick}
     >
         <ApexInput row={row} column={column}/>
     </td>

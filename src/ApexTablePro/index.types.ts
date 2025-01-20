@@ -145,8 +145,7 @@ export interface ApexTableProps<T> {
  */
 export interface ApexTableExtendProps<T> {
     tableDataSource?: T[];
-    focusAxis: ApexFocusAxis;
-    onChangeFocusAxis?: (axis: ApexFocusAxis) => void;
+    onChangeFocusAxis: (axis: ApexFocusAxis) => void;
 }
 
 /**
