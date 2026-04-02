@@ -1,4 +1,5 @@
 import { InputNumber } from "antd";
+import type { InputNumberRef } from "rc-input-number";
 import React, { Ref, memo, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { forwardRef } from "react";
 import { ApexShowCell } from "..";
@@ -29,7 +30,7 @@ const ApexInputNumber = memo(forwardRef((props: IProps<any>, ref: Ref<IApexInput
     
     const { name, rules } = column;
     const [focusState, setFocusState] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<InputNumberRef>(null);
     const tableTdRef = useRef<HTMLTableDataCellElement>(null);
     /**
      * 是否通过单元格校验

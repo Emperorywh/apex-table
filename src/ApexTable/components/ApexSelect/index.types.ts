@@ -12,4 +12,5 @@ export interface BaseSelectRef {
     focus: () => void;
     blur: () => void;
     scrollTo: any;
+    nativeElement: HTMLElement;
 }
